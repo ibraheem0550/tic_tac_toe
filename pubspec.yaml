@@ -1,0 +1,57 @@
+name: tic_tac_toe
+description: A new Flutter project.
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  audioplayers: ^5.2.1
+  shared_preferences: ^2.0.15
+  path_provider: ^2.0.11
+  share_plus: ^11.0.0
+  url_launcher: ^6.1.14
+  intl: ^0.20.2
+  http: ^1.1.0
+  fl_chart: ^0.68.0
+    # Firebase Services
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.15.3
+  cloud_firestore: ^4.13.6
+  firebase_storage: ^11.5.6
+  firebase_analytics: ^10.7.4
+  
+  # Payment & Stripe
+  flutter_stripe: ^10.1.1  # Authentication & Social Login
+  google_sign_in: ^6.1.6
+  sign_in_with_apple: ^5.0.0
+  games_services: ^4.0.1
+  
+  # Payment Processing
+  pay: ^1.1.2
+  # Security & Encryption
+  crypto: ^3.0.3
+  encrypt: ^5.0.1
+  # Online Gaming & Networking
+  socket_io_client: ^2.0.3+1
+  # Additional UI & UX
+  cached_network_image: ^3.3.0
+  image_picker: ^1.0.4
+  connectivity_plus: ^5.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/sounds/
+    - assets/images/

@@ -1,0 +1,46 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Flutter Main App",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "args": [],
+            "flutterMode": "debug"
+        },
+        {
+            "name": "Flutter Admin Mode",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "args": [],
+            "toolArgs": [
+                "--dart-define=app_mode=admin"
+            ],
+            "flutterMode": "debug"
+        },
+        {
+            "name": "Flutter Product Manager",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "args": [],
+            "toolArgs": [
+                "--dart-define=app_mode=product-manager"
+            ],
+            "flutterMode": "debug"
+        },
+        {
+            "name": "Flutter Simple Admin",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "args": [],
+            "toolArgs": [
+                "--dart-define=app_mode=simple-admin"
+            ],
+            "flutterMode": "debug"
+        }
+    ]
+}
