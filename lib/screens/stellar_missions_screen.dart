@@ -70,7 +70,8 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
       final hours = remaining.inHours;
       final minutes = remaining.inMinutes % 60;
       final seconds = remaining.inSeconds % 60;
-      _timeUntilReset = '${hours.toString().padLeft(2, '0')}:'
+      _timeUntilReset =
+          '${hours.toString().padLeft(2, '0')}:'
           '${minutes.toString().padLeft(2, '0')}:'
           '${seconds.toString().padLeft(2, '0')}';
     });
@@ -98,17 +99,13 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
 
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.starfieldGradient,
-        ),
+        decoration: const BoxDecoration(gradient: AppColors.starfieldGradient),
         child: SafeArea(
           child: Column(
             children: [
               _buildHeader(screenSize, isTablet),
               _buildTimeUntilReset(screenSize, isTablet),
-              Expanded(
-                child: _buildMissionsList(screenSize, isTablet),
-              ),
+              Expanded(child: _buildMissionsList(screenSize, isTablet)),
             ],
           ),
         ),
@@ -314,7 +311,7 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.accent.withOpacity(0.3),
+                        color: AppColors.accent.withValues(alpha: 0.3),
                         blurRadius: 20,
                         spreadRadius: 5,
                       ),
@@ -352,7 +349,11 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
   }
 
   Widget _buildMissionCard(
-      Mission mission, Size screenSize, bool isTablet, int index) {
+    Mission mission,
+    Size screenSize,
+    bool isTablet,
+    int index,
+  ) {
     final isCompleted = mission.isCompleted;
     final padding = isTablet ? 20.0 : 16.0;
     final spacing = isTablet ? 16.0 : 12.0;
@@ -364,8 +365,8 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isCompleted
-              ? AppColors.success.withOpacity(0.5)
-              : AppColors.primaryLight.withOpacity(0.3),
+              ? AppColors.success.withValues(alpha: 0.5)
+              : AppColors.primaryLight.withValues(alpha: 0.3),
           width: 1,
         ),
         boxShadow: AppShadows.card,
@@ -383,15 +384,17 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
                   decoration: BoxDecoration(
                     gradient: isCompleted
                         ? const LinearGradient(
-                            colors: [AppColors.success, AppColors.successLight])
+                            colors: [AppColors.success, AppColors.successLight],
+                          )
                         : AppColors.cosmicButtonGradient,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: (isCompleted
-                                ? AppColors.success
-                                : AppColors.primary)
-                            .withOpacity(0.3),
+                        color:
+                            (isCompleted
+                                    ? AppColors.success
+                                    : AppColors.primary)
+                                .withValues(alpha: 0.3),
                         blurRadius: 8,
                         spreadRadius: 1,
                       ),
@@ -414,8 +417,9 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
                           color: isCompleted
                               ? AppColors.success
                               : AppColors.primaryLight,
-                          decoration:
-                              isCompleted ? TextDecoration.lineThrough : null,
+                          decoration: isCompleted
+                              ? TextDecoration.lineThrough
+                              : null,
                           fontSize: isTablet ? 18 : 16,
                         ),
                       ),
@@ -437,11 +441,12 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
                   ),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                        colors: [AppColors.accent, AppColors.accentLight]),
+                      colors: [AppColors.accent, AppColors.accentLight],
+                    ),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.accent.withOpacity(0.3),
+                        color: AppColors.accent.withValues(alpha: 0.3),
                         blurRadius: 6,
                         spreadRadius: 1,
                       ),

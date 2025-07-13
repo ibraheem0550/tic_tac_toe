@@ -1,7 +1,6 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../services/payment_service_new.dart';
-import '../services/firebase_auth_service.dart';
+import '../services/unified_auth_services.dart';
 import '../models/gems_models.dart';
 import '../models/complete_user_models.dart';
 import '../utils/app_theme_new.dart';
@@ -59,10 +58,7 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
       final user = _authService.currentUser;
       if (user != null) {
         final currentGems = await _paymentService.getCurrentUserGems();
-        _userGems = UserGems(
-          userId: user.id,
-          currentGems: currentGems,
-        );
+        _userGems = UserGems(userId: user.id, currentGems: currentGems);
         _savedPaymentMethods = await _paymentService.getSavedPaymentMethods();
       }
     } catch (e) {
@@ -78,7 +74,8 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final deviceType = ResponsiveHelper.getDeviceType(width);
-    final isDesktopOrTablet = deviceType == DeviceType.desktop ||
+    final isDesktopOrTablet =
+        deviceType == DeviceType.desktop ||
         deviceType == DeviceType.tablet ||
         deviceType == DeviceType.largeDesktop;
 
@@ -135,11 +132,7 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
-            Icons.diamond,
-            color: Colors.white,
-            size: 20,
-          ),
+          const Icon(Icons.diamond, color: Colors.white, size: 20),
           const SizedBox(width: AppDimensions.paddingSM),
           Text(
             '${_userGems?.currentGems ?? 0}',
@@ -155,9 +148,7 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
 
   Widget _buildLoadingWidget() {
     return const Center(
-      child: CircularProgressIndicator(
-        color: AppColors.primary,
-      ),
+      child: CircularProgressIndicator(color: AppColors.primary),
     );
   }
 
@@ -204,22 +195,16 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.primary.withOpacity(0.1),
-            AppColors.secondary.withOpacity(0.1),
+            AppColors.primary.withValues(alpha: 0.1),
+            AppColors.secondary.withValues(alpha: 0.1),
           ],
         ),
         borderRadius: BorderRadius.circular(AppDimensions.radiusXL),
-        border: Border.all(
-          color: AppColors.primary.withOpacity(0.2),
-        ),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
-          Icon(
-            Icons.diamond,
-            size: 64,
-            color: AppColors.primary,
-          ),
+          Icon(Icons.diamond, size: 64, color: AppColors.primary),
           const SizedBox(height: AppDimensions.paddingMD),
           Text(
             'اشحن جواهرك الآن',
@@ -265,18 +250,12 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            AppColors.surfaceLight,
-            AppColors.surface,
-          ],
+          colors: [AppColors.surfaceLight, AppColors.surface],
         ),
         borderRadius: BorderRadius.circular(AppDimensions.radiusXL),
         boxShadow: AppShadows.elevated,
         border: package.isPopular
-            ? Border.all(
-                color: AppColors.accent,
-                width: 2,
-              )
+            ? Border.all(color: AppColors.accent, width: 2)
             : null,
       ),
       child: Stack(
@@ -308,11 +287,7 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.diamond,
-                  size: 48,
-                  color: AppColors.primary,
-                ),
+                Icon(Icons.diamond, size: 48, color: AppColors.primary),
                 const SizedBox(height: AppDimensions.paddingMD),
                 Text(
                   package.name,
@@ -357,8 +332,9 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.success,
-                      borderRadius:
-                          BorderRadius.circular(AppDimensions.radiusSM),
+                      borderRadius: BorderRadius.circular(
+                        AppDimensions.radiusSM,
+                      ),
                     ),
                     child: Text(
                       'خصم ${package.discount}%',
@@ -381,8 +357,9 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
                         vertical: AppDimensions.paddingMD,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(AppDimensions.radiusLG),
+                        borderRadius: BorderRadius.circular(
+                          AppDimensions.radiusLG,
+                        ),
                       ),
                     ),
                     child: Text(
@@ -417,8 +394,9 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
           ),
         ),
         const SizedBox(height: AppDimensions.paddingLG),
-        ...(_savedPaymentMethods
-            .map((method) => _buildPaymentMethodCard(method))),
+        ...(_savedPaymentMethods.map(
+          (method) => _buildPaymentMethodCard(method),
+        )),
       ],
     );
   }
@@ -513,11 +491,7 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.diamond,
-                size: 64,
-                color: AppColors.primary,
-              ),
+              Icon(Icons.diamond, size: 64, color: AppColors.primary),
               const SizedBox(height: AppDimensions.paddingLG),
               Text(
                 'تأكيد الشراء',
@@ -546,8 +520,9 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
                           vertical: AppDimensions.paddingMD,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(AppDimensions.radiusLG),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusLG,
+                          ),
                         ),
                       ),
                       child: Text(
@@ -571,8 +546,9 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
                           vertical: AppDimensions.paddingMD,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(AppDimensions.radiusLG),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusLG,
+                          ),
                         ),
                       ),
                       child: Text(
@@ -633,8 +609,9 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
               ),
               if (_savedPaymentMethods.isNotEmpty) ...[
                 Divider(color: AppColors.borderPrimary),
-                ...(_savedPaymentMethods.map((method) =>
-                    _buildSavedPaymentMethodButton(package, method))),
+                ...(_savedPaymentMethods.map(
+                  (method) => _buildSavedPaymentMethodButton(package, method),
+                )),
               ],
             ],
           ),
@@ -644,7 +621,10 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
   }
 
   Widget _buildPaymentMethodButton(
-      String title, IconData icon, VoidCallback onPressed) {
+    String title,
+    IconData icon,
+    VoidCallback onPressed,
+  ) {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: AppDimensions.paddingMD),
@@ -669,7 +649,9 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
   }
 
   Widget _buildSavedPaymentMethodButton(
-      GemsPackage package, SavedPaymentMethod method) {
+    GemsPackage package,
+    SavedPaymentMethod method,
+  ) {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: AppDimensions.paddingMD),
@@ -776,7 +758,9 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
   }
 
   Future<void> _purchaseWithSavedMethod(
-      GemsPackage package, SavedPaymentMethod method) async {
+    GemsPackage package,
+    SavedPaymentMethod method,
+  ) async {
     Navigator.of(context).pop(); // Close dialog
 
     setState(() {
@@ -807,8 +791,8 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
       setState(() {
         _userGems = UserGems(
           userId: user.id,
-          currentGems: user.gems,
-          totalEarned: user.gems,
+          currentGems: 0, // سنستبدل هذا بقيمة صحيحة
+          totalEarned: 0, // سنستبدل هذا بقيمة صحيحة
           totalSpent: 0, // This would come from transaction history
           lastUpdated: DateTime.now(),
         );
@@ -832,11 +816,7 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.check_circle,
-                size: 64,
-                color: AppColors.success,
-              ),
+              Icon(Icons.check_circle, size: 64, color: AppColors.success),
               const SizedBox(height: AppDimensions.paddingLG),
               Text(
                 'تم الشراء بنجاح!',
@@ -864,8 +844,9 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
                       vertical: AppDimensions.paddingMD,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(AppDimensions.radiusLG),
+                      borderRadius: BorderRadius.circular(
+                        AppDimensions.radiusLG,
+                      ),
                     ),
                   ),
                   child: Text(
@@ -887,10 +868,7 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          message,
-          style: const TextStyle(color: Colors.white),
-        ),
+        content: Text(message, style: const TextStyle(color: Colors.white)),
         backgroundColor: AppColors.error,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
@@ -901,7 +879,9 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
   }
 
   Future<void> _processPurchaseSuccess(
-      GemsPackage package, PurchaseResult result) async {
+    GemsPackage package,
+    PurchaseResult result,
+  ) async {
     try {
       final currentUser = _authService.currentUser;
       if (currentUser != null) {
@@ -916,14 +896,15 @@ class _GemsStoreScreenState extends State<GemsStoreScreen>
         _showSuccessDialog(package);
 
         // Log transaction
-        print(
-            'Purchase successful: ${package.gemsAmount} gems added to user ${currentUser.id}');
+        debugPrint(
+          'Purchase successful: ${package.gemsAmount} gems added to user ${currentUser.id}',
+        );
       } else {
         _showErrorSnackBar('خطأ: المستخدم غير مسجل الدخول');
       }
     } catch (e) {
       _showErrorSnackBar('حدث خطأ أثناء تحديث حسابك');
-      print('Error processing purchase: $e');
+      debugPrint('Error processing purchase: $e');
     }
   }
 }

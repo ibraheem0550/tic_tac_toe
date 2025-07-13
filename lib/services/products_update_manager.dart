@@ -162,7 +162,7 @@ class ProductsUpdateManager extends ChangeNotifier {
     _hasError = true;
     _errorMessage = message;
     notifyListeners();
-    print('ProductsUpdateManager Error: $message');
+    debugPrint('ProductsUpdateManager Error: $message');
   }
 
   /// مسح الأخطاء
@@ -177,7 +177,7 @@ class ProductsUpdateManager extends ChangeNotifier {
   /// إظهار إشعار التحديث
   void _showUpdateNotification() {
     // يمكن استخدام local notifications أو إشعار داخل التطبيق
-    print('تم تحديث المنتجات! ${_products.length} منتج متاح');
+    debugPrint('تم تحديث المنتجات! ${_products.length} منتج متاح');
   }
 
   /// فرض التحديث

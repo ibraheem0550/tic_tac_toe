@@ -131,7 +131,7 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.3),
+                  color: AppColors.primary.withValues(alpha: 0.3),
                   blurRadius: 8,
                   spreadRadius: 1,
                 ),
@@ -182,7 +182,7 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.accent.withOpacity(0.3),
+                        color: AppColors.accent.withValues(alpha: 0.3),
                         blurRadius: 12,
                         spreadRadius: 2,
                       ),
@@ -217,12 +217,12 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.primaryLight.withOpacity(0.3),
+          color: AppColors.primaryLight.withValues(alpha: 0.3),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.2),
+            color: AppColors.primary.withValues(alpha: 0.2),
             blurRadius: 8,
             spreadRadius: 1,
           ),
@@ -253,9 +253,9 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: [
-                      AppColors.accent.withOpacity(0.5),
+                      AppColors.accent.withValues(alpha: 0.5),
                       AppColors.accent,
-                      AppColors.accent.withOpacity(0.5),
+                      AppColors.accent.withValues(alpha: 0.5),
                     ],
                     stops: [
                       (_shimmerAnimation.value - 1).clamp(0.0, 1.0),
@@ -318,7 +318,7 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.accent.withOpacity(0.3),
+                        color: AppColors.accent.withValues(alpha: 0.3),
                         blurRadius: 20,
                         spreadRadius: 5,
                       ),
@@ -372,13 +372,13 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isCompleted
-              ? AppColors.success.withOpacity(0.5)
-              : AppColors.primaryLight.withOpacity(0.3),
+              ? AppColors.success.withValues(alpha: 0.5)
+              : AppColors.primaryLight.withValues(alpha: 0.3),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.2),
+            color: AppColors.primary.withValues(alpha: 0.2),
             blurRadius: 8,
             spreadRadius: 1,
           ),
@@ -408,7 +408,7 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
                         color: (isCompleted
                                 ? AppColors.success
                                 : AppColors.primary)
-                            .withOpacity(0.3),
+                            .withValues(alpha: 0.3),
                         blurRadius: 8,
                         spreadRadius: 1,
                       ),
@@ -462,7 +462,7 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.accent.withOpacity(0.3),
+                        color: AppColors.accent.withValues(alpha: 0.3),
                         blurRadius: 6,
                         spreadRadius: 1,
                       ),
@@ -521,7 +521,7 @@ class _StellarMissionsScreenState extends State<StellarMissionsScreen>
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.3),
+                      color: AppColors.primary.withValues(alpha: 0.3),
                       blurRadius: 6,
                       spreadRadius: 1,
                     ),

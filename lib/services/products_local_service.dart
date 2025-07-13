@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/product_model.dart';
 
@@ -14,7 +15,7 @@ class ProductsLocalService {
       final productsJson = products.map((product) => product.toJson()).toList();
       await prefs.setString(_productsKey, json.encode(productsJson));
     } catch (e) {
-      print('خطأ في حفظ المنتجات محلياً: $e');
+      debugPrint('خطأ في حفظ المنتجات محلياً: $e');
     }
   }
 
@@ -29,7 +30,7 @@ class ProductsLocalService {
       final List<dynamic> productsJson = json.decode(productsString);
       return productsJson.map((item) => Product.fromJson(item)).toList();
     } catch (e) {
-      print('خطأ في جلب المنتجات المحلية: $e');
+      debugPrint('خطأ في جلب المنتجات المحلية: $e');
       return [];
     }
   }
@@ -40,7 +41,7 @@ class ProductsLocalService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_lastUpdateKey, lastUpdate.toIso8601String());
     } catch (e) {
-      print('خطأ في حفظ تاريخ التحديث: $e');
+      debugPrint('خطأ في حفظ تاريخ التحديث: $e');
     }
   }
 
@@ -54,7 +55,7 @@ class ProductsLocalService {
 
       return DateTime.parse(lastUpdateString);
     } catch (e) {
-      print('خطأ في جلب تاريخ التحديث: $e');
+      debugPrint('خطأ في جلب تاريخ التحديث: $e');
       return null;
     }
   }
@@ -65,7 +66,7 @@ class ProductsLocalService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setInt(_versionKey, version);
     } catch (e) {
-      print('خطأ في حفظ إصدار المنتجات: $e');
+      debugPrint('خطأ في حفظ إصدار المنتجات: $e');
     }
   }
 
@@ -75,7 +76,7 @@ class ProductsLocalService {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getInt(_versionKey) ?? 0;
     } catch (e) {
-      print('خطأ في جلب إصدار المنتجات: $e');
+      debugPrint('خطأ في جلب إصدار المنتجات: $e');
       return 0;
     }
   }
@@ -88,7 +89,7 @@ class ProductsLocalService {
       await prefs.remove(_lastUpdateKey);
       await prefs.remove(_versionKey);
     } catch (e) {
-      print('خطأ في مسح البيانات المحلية: $e');
+      debugPrint('خطأ في مسح البيانات المحلية: $e');
     }
   }
 
@@ -98,7 +99,7 @@ class ProductsLocalService {
       final prefs = await SharedPreferences.getInstance();
       return prefs.containsKey(_productsKey);
     } catch (e) {
-      print('خطأ في التحقق من المنتجات المحلية: $e');
+      debugPrint('خطأ في التحقق من المنتجات المحلية: $e');
       return false;
     }
   }
@@ -110,7 +111,7 @@ class ProductsLocalService {
       products.add(product);
       await saveProducts(products);
     } catch (e) {
-      print('خطأ في إضافة المنتج محلياً: $e');
+      debugPrint('خطأ في إضافة المنتج محلياً: $e');
     }
   }
 
@@ -121,7 +122,7 @@ class ProductsLocalService {
       products.removeWhere((product) => product.id == productId);
       await saveProducts(products);
     } catch (e) {
-      print('خطأ في حذف المنتج محلياً: $e');
+      debugPrint('خطأ في حذف المنتج محلياً: $e');
     }
   }
 
@@ -137,7 +138,7 @@ class ProductsLocalService {
         await saveProducts(products);
       }
     } catch (e) {
-      print('خطأ في تحديث المنتج محلياً: $e');
+      debugPrint('خطأ في تحديث المنتج محلياً: $e');
     }
   }
 
@@ -152,7 +153,7 @@ class ProductsLocalService {
               product.category.toLowerCase().contains(query.toLowerCase()))
           .toList();
     } catch (e) {
-      print('خطأ في البحث في المنتجات: $e');
+      debugPrint('خطأ في البحث في المنتجات: $e');
       return [];
     }
   }
@@ -166,7 +167,7 @@ class ProductsLocalService {
               product.category.toLowerCase() == category.toLowerCase())
           .toList();
     } catch (e) {
-      print('خطأ في فلترة المنتجات: $e');
+      debugPrint('خطأ في فلترة المنتجات: $e');
       return [];
     }
   }
@@ -188,7 +189,7 @@ class ProductsLocalService {
         ...categories,
       };
     } catch (e) {
-      print('خطأ في جلب إحصائيات المنتجات: $e');
+      debugPrint('خطأ في جلب إحصائيات المنتجات: $e');
       return {};
     }
   }

@@ -50,7 +50,7 @@ class _PerformanceDashboardScreenState extends State<PerformanceDashboardScreen>
         bottom: TabBar(
           controller: _tabController,
           labelColor: AppColors.textLight,
-          unselectedLabelColor: AppColors.textLight.withOpacity(0.7),
+          unselectedLabelColor: AppColors.textLight.withValues(alpha: 0.7),
           indicatorColor: AppColors.accent,
           tabs: const [
             Tab(icon: Icon(Icons.dashboard), text: 'لوحة التحكم'),
@@ -100,7 +100,7 @@ class _PerformanceDashboardScreenState extends State<PerformanceDashboardScreen>
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppColors.primary.withOpacity(0.1),
+              AppColors.primary.withValues(alpha: 0.1),
               AppColors.backgroundLight,
             ],
           ),
@@ -145,7 +145,7 @@ class _PerformanceDashboardScreenState extends State<PerformanceDashboardScreen>
                 const SizedBox(height: AppDimensions.paddingSM),
                 CircularProgressIndicator(
                   value: health / 100,
-                  backgroundColor: AppColors.textLight.withOpacity(0.3),
+                  backgroundColor: AppColors.textLight.withValues(alpha: 0.3),
                   valueColor: AlwaysStoppedAnimation<Color>(
                     health > 80
                         ? AppColors.success
@@ -272,7 +272,7 @@ class _PerformanceDashboardScreenState extends State<PerformanceDashboardScreen>
         color: AppColors.surfaceLight,
         borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
         boxShadow: AppShadows.card,
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -347,7 +347,7 @@ class _PerformanceDashboardScreenState extends State<PerformanceDashboardScreen>
             horizontalInterval: 100,
             getDrawingHorizontalLine: (value) {
               return FlLine(
-                color: AppColors.secondary.withOpacity(0.3),
+                color: AppColors.secondary.withValues(alpha: 0.3),
                 strokeWidth: 1,
               );
             },
@@ -392,7 +392,7 @@ class _PerformanceDashboardScreenState extends State<PerformanceDashboardScreen>
           borderData: FlBorderData(
             show: true,
             border: Border.all(
-              color: AppColors.secondary.withOpacity(0.3),
+              color: AppColors.secondary.withValues(alpha: 0.3),
               width: 1,
             ),
           ),
@@ -416,7 +416,7 @@ class _PerformanceDashboardScreenState extends State<PerformanceDashboardScreen>
               ),
               belowBarData: BarAreaData(
                 show: true,
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
               ),
             ),
           ],
@@ -516,7 +516,7 @@ class _PerformanceDashboardScreenState extends State<PerformanceDashboardScreen>
             borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
             boxShadow: AppShadows.card,
             border: Border.all(
-              color: _getLogTypeColor(log.type).withOpacity(0.3),
+              color: _getLogTypeColor(log.type).withValues(alpha: 0.3),
             ),
           ),
           child: Column(
@@ -605,7 +605,7 @@ class _PerformanceDashboardScreenState extends State<PerformanceDashboardScreen>
             borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
             boxShadow: AppShadows.card,
             border: Border.all(
-              color: _getAlertSeverityColor(alert.severity).withOpacity(0.3),
+              color: _getAlertSeverityColor(alert.severity).withValues(alpha: 0.3),
             ),
           ),
           child: Column(
@@ -846,7 +846,7 @@ class _PerformanceDashboardScreenState extends State<PerformanceDashboardScreen>
         color: AppColors.surfaceLight,
         borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
         boxShadow: AppShadows.card,
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -877,7 +877,7 @@ class _PerformanceDashboardScreenState extends State<PerformanceDashboardScreen>
           const SizedBox(height: AppDimensions.paddingSM),
           LinearProgressIndicator(
             value: percentage / 100,
-            backgroundColor: color.withOpacity(0.2),
+            backgroundColor: color.withValues(alpha: 0.2),
             valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
         ],

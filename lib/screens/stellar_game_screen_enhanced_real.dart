@@ -1,15 +1,15 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 import '../AI/ai_engine.dart';
 import '../audio_helper.dart';
 import '../utils/app_theme_new.dart';
 import '../utils/responsive_system.dart';
-import '../services/firebase_auth_service.dart';
+import '../services/unified_auth_services.dart';
 import '../services/game_stats_service.dart';
 import '../models/complete_user_models.dart';
 
-/// نموذج اللاعب في اللعبة
+/// ????? ?????? ?? ??????
 class GamePlayer {
   final String id;
   final String name;
@@ -26,11 +26,11 @@ class GamePlayer {
   });
 }
 
-/// شاشة اللعب المحسنة - تصميم نجمي احترافي مع بيانات حقيقية
+/// ???? ????? ??????? - ????? ???? ??????? ?? ?????? ??????
 class StellarGameScreenEnhanced extends StatefulWidget {
   final String gameMode; // 'ai', 'local', 'online'
-  final int? aiLevel; // 1-5 للذكاء الاصطناعي
-  final String? opponentId; // للعب الأونلاين
+  final int? aiLevel; // 1-5 ?????? ?????????
+  final String? opponentId; // ???? ?????????
   final Map<String, dynamic>? gameData;
 
   const StellarGameScreenEnhanced({
@@ -101,17 +101,17 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
     super.dispose();
   }
 
-  /// تحميل بيانات المستخدم الحقيقية
+  /// ????? ?????? ???????? ????????
   Future<void> _loadUserData() async {
     try {
-      currentUser = _authService.currentUser;
+      currentUser = _authService.currentUserModel;
       userStats = await _gameStatsService.loadGameStats();
 
       setState(() {
         _isDataLoaded = true;
       });
     } catch (e) {
-      print('خطأ في تحميل بيانات المستخدم: $e');
+      debugPrint('خطأ في تحميل بيانات اللاعبين: $e');
       setState(() {
         _isDataLoaded = true;
       });
@@ -126,23 +126,22 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
     winningLine = [];
     moveCount = 0;
 
-    // إعداد اللاعبين بناءً على البيانات الحقيقية
+    // ????? ???????? ????? ??? ???????? ????????
     _setupPlayers();
   }
 
   void _setupPlayers() {
-    // اللاعب الأول (المستخدم الحالي)
-    final user = _authService.currentUser;
+    // ?????? ????? (???????? ??????)
+    final user = _authService.currentUserModel;
     player1 = GamePlayer(
       id: user?.id ?? 'player1',
-      name:
-          user?.displayName ?? (user?.isGuest == true ? 'ضيف' : 'اللاعب الأول'),
+      name: user?.displayName ?? (user?.isGuest == true ? 'ضيف' : 'لاعب جديد'),
       symbol: 'X',
       isAI: false,
       avatar: user?.photoURL,
     );
 
-    // اللاعب الثاني حسب نوع اللعبة
+    // ?????? ?????? ??? ??? ??????
     if (widget.gameMode == 'ai') {
       player2 = GamePlayer(
         id: 'ai',
@@ -153,7 +152,7 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
     } else if (widget.gameMode == 'local') {
       player2 = GamePlayer(
         id: 'player2',
-        name: 'اللاعب الثاني',
+        name: '?????? ??????',
         symbol: 'O',
         isAI: false,
       );
@@ -161,7 +160,7 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
       // Online mode
       player2 = GamePlayer(
         id: widget.opponentId ?? 'opponent',
-        name: 'الخصم',
+        name: '?????',
         symbol: 'O',
         isAI: false,
       );
@@ -288,7 +287,7 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
 
     _gameTimer?.cancel();
     _winController.forward();
-    // تحديد نتيجة اللعبة للاعب الأول (المستخدم الحالي)
+    // ????? ????? ?????? ????? ????? (???????? ??????)
     String gameResult;
     if (result == 'X') {
       gameResult = 'win';
@@ -306,14 +305,14 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
       await AudioHelper.playDrawSound();
     }
 
-    // حفظ نتيجة اللعبة في الإحصائيات الحقيقية
+    // ??? ????? ?????? ?? ?????????? ????????
     await _saveGameResult(gameResult);
 
-    // عرض نتيجة اللعبة
+    // ??? ????? ??????
     _showGameResult();
   }
 
-  /// حفظ نتيجة اللعبة في الإحصائيات الحقيقية
+  /// ??? ????? ?????? ?? ?????????? ????????
   Future<void> _saveGameResult(String gameResult) async {
     try {
       await _gameStatsService.recordGameResult(
@@ -324,11 +323,11 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
         opponentId: widget.opponentId,
       );
 
-      // تحديث الإحصائيات المحلية
+      // ????? ?????????? ???????
       userStats = await _gameStatsService.loadGameStats();
       setState(() {});
     } catch (e) {
-      print('خطأ في حفظ نتيجة اللعبة: $e');
+      debugPrint('خطأ في حفظ نتيجة اللعبة: $e');
     }
   }
 
@@ -359,13 +358,13 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
   String _getGameModeTitle() {
     switch (widget.gameMode) {
       case 'ai':
-        return 'ضد الذكاء الاصطناعي';
+        return '?? ?????? ?????????';
       case 'local':
-        return 'لعب محلي';
+        return '??? ????';
       case 'online':
-        return 'لعب أونلاين';
+        return '??? ???????';
       default:
-        return 'تيك تاك تو نجمي';
+        return '??? ??? ?? ????';
     }
   }
 
@@ -380,9 +379,7 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: AppColors.starfieldGradient,
-        ),
+        decoration: BoxDecoration(gradient: AppColors.starfieldGradient),
         child: SafeArea(
           child: ResponsiveBuilder(
             builder: (context, sizingInfo) {
@@ -390,9 +387,7 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
                 children: [
                   _buildHeader(sizingInfo),
                   _buildPlayersInfo(sizingInfo),
-                  Expanded(
-                    child: _buildGameBoard(sizingInfo),
-                  ),
+                  Expanded(child: _buildGameBoard(sizingInfo)),
                   _buildBottomControls(sizingInfo),
                 ],
               );
@@ -464,8 +459,9 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
   Widget _buildPlayersInfo(SizingInformation sizingInfo) {
     if (!_isDataLoaded) {
       return Container(
-        margin:
-            EdgeInsets.symmetric(horizontal: sizingInfo.isDesktop ? 24 : 16),
+        margin: EdgeInsets.symmetric(
+          horizontal: sizingInfo.isDesktop ? 24 : 16,
+        ),
         padding: EdgeInsets.all(20),
         child: Center(
           child: CircularProgressIndicator(
@@ -480,8 +476,8 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
       child: Row(
         children: [
           Expanded(
-              child:
-                  _buildPlayerCard(player1, currentPlayer == 'X', sizingInfo)),
+            child: _buildPlayerCard(player1, currentPlayer == 'X', sizingInfo),
+          ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
@@ -495,7 +491,7 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
                 ),
                 if (userStats != null)
                   Text(
-                    'معدل الفوز: ${userStats!.winRate.toStringAsFixed(1)}%',
+                    '???? ?????: ${userStats!.winRate.toStringAsFixed(1)}%',
                     style: AppTextStyles.bodySmall.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -504,22 +500,26 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
             ),
           ),
           Expanded(
-              child:
-                  _buildPlayerCard(player2, currentPlayer == 'O', sizingInfo)),
+            child: _buildPlayerCard(player2, currentPlayer == 'O', sizingInfo),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildPlayerCard(
-      GamePlayer player, bool isActive, SizingInformation sizingInfo) {
+    GamePlayer player,
+    bool isActive,
+    SizingInformation sizingInfo,
+  ) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
       padding: EdgeInsets.all(sizingInfo.isDesktop ? 16 : 12),
       decoration: BoxDecoration(
         gradient: isActive ? AppColors.nebularGradient : null,
-        color:
-            isActive ? null : AppColors.surfacePrimary.withValues(alpha: 0.7),
+        color: isActive
+            ? null
+            : AppColors.surfacePrimary.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isActive ? AppColors.starGold : AppColors.borderPrimary,
@@ -595,7 +595,7 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
           if (player == player1 && userStats != null) ...[
             SizedBox(height: 4),
             Text(
-              'الانتصارات: ${userStats!.wins}',
+              '??????????: ${userStats!.wins}',
               style: AppTextStyles.bodySmall.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -626,8 +626,8 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
     final boardSize = sizingInfo.isDesktop
         ? 360.0
         : sizingInfo.isTablet
-            ? 320.0
-            : 280.0;
+        ? 320.0
+        : 280.0;
 
     return Center(
       child: AnimatedBuilder(
@@ -706,8 +706,8 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
                     fontSize: sizingInfo.isDesktop
                         ? 48
                         : sizingInfo.isTablet
-                            ? 40
-                            : 32,
+                        ? 40
+                        : 32,
                   ),
                 ),
               ),
@@ -727,7 +727,7 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
           // Restart button
           _buildControlButton(
             icon: Icons.refresh,
-            label: 'إعادة تشغيل',
+            label: '????? ?????',
             onPressed: _resetGame,
             sizingInfo: sizingInfo,
           ),
@@ -736,7 +736,7 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
           if (gameStatus == 'playing')
             _buildControlButton(
               icon: Icons.pause,
-              label: 'إيقاف مؤقت',
+              label: '????? ????',
               onPressed: _pauseGame,
               sizingInfo: sizingInfo,
             ),
@@ -744,7 +744,7 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
           // Stats button
           _buildControlButton(
             icon: Icons.analytics,
-            label: 'الإحصائيات',
+            label: '??????????',
             onPressed: _showStatsDialog,
             sizingInfo: sizingInfo,
           ),
@@ -800,18 +800,22 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surfacePrimary,
         title: Text(
-          'إعدادات اللعبة',
-          style: AppTextStyles.headlineSmall
-              .copyWith(color: AppColors.textPrimary),
+          '??????? ??????',
+          style: AppTextStyles.headlineSmall.copyWith(
+            color: AppColors.textPrimary,
+          ),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
               leading: Icon(Icons.volume_up, color: AppColors.textPrimary),
-              title: Text('الصوت',
-                  style: AppTextStyles.bodyLarge
-                      .copyWith(color: AppColors.textPrimary)),
+              title: Text(
+                '?????',
+                style: AppTextStyles.bodyLarge.copyWith(
+                  color: AppColors.textPrimary,
+                ),
+              ),
               trailing: Switch(
                 value: true, // TODO: implement audio settings
                 onChanged: (value) {},
@@ -820,9 +824,12 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
             ),
             ListTile(
               leading: Icon(Icons.vibration, color: AppColors.textPrimary),
-              title: Text('الاهتزاز',
-                  style: AppTextStyles.bodyLarge
-                      .copyWith(color: AppColors.textPrimary)),
+              title: Text(
+                '????????',
+                style: AppTextStyles.bodyLarge.copyWith(
+                  color: AppColors.textPrimary,
+                ),
+              ),
               trailing: Switch(
                 value: true, // TODO: implement haptic settings
                 onChanged: (value) {},
@@ -834,7 +841,7 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('إغلاق', style: TextStyle(color: AppColors.starGold)),
+            child: Text('?????', style: TextStyle(color: AppColors.starGold)),
           ),
         ],
       ),
@@ -849,29 +856,34 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.surfacePrimary,
         title: Text(
-          'إحصائياتك',
-          style: AppTextStyles.headlineSmall
-              .copyWith(color: AppColors.textPrimary),
+          '?????????',
+          style: AppTextStyles.headlineSmall.copyWith(
+            color: AppColors.textPrimary,
+          ),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildStatRow('إجمالي الألعاب', '${userStats!.totalGames}'),
-            _buildStatRow('الانتصارات', '${userStats!.wins}'),
-            _buildStatRow('الخسارات', '${userStats!.losses}'),
-            _buildStatRow('التعادل', '${userStats!.draws}'),
+            _buildStatRow('?????? ???????', '${userStats!.totalGames}'),
+            _buildStatRow('??????????', '${userStats!.wins}'),
+            _buildStatRow('????????', '${userStats!.losses}'),
+            _buildStatRow('???????', '${userStats!.draws}'),
             _buildStatRow(
-                'معدل الفوز', '${userStats!.winRate.toStringAsFixed(1)}%'),
-            _buildStatRow('أفضل سلسلة انتصارات', '${userStats!.bestWinStreak}'),
-            _buildStatRow('متوسط وقت اللعبة',
-                '${(userStats!.averageGameTime / 60).toStringAsFixed(1)} دقيقة'),
+              '???? ?????',
+              '${userStats!.winRate.toStringAsFixed(1)}%',
+            ),
+            _buildStatRow('???? ????? ????????', '${userStats!.bestWinStreak}'),
+            _buildStatRow(
+              '????? ??? ??????',
+              '${(userStats!.averageGameTime / 60).toStringAsFixed(1)} ?????',
+            ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('إغلاق', style: TextStyle(color: AppColors.starGold)),
+            child: Text('?????', style: TextStyle(color: AppColors.starGold)),
           ),
         ],
       ),
@@ -886,8 +898,9 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
         children: [
           Text(
             label,
-            style: AppTextStyles.bodyMedium
-                .copyWith(color: AppColors.textSecondary),
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.textSecondary,
+            ),
           ),
           Text(
             value,
@@ -907,21 +920,21 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
     Color titleColor;
 
     if (winner == 'X') {
-      title = '🎉 تهانينا!';
-      message = 'لقد فزت في هذه الجولة!';
+      title = '?? ???????!';
+      message = '??? ??? ?? ??? ??????!';
       titleColor = AppColors.primary;
     } else if (winner == 'O') {
       if (widget.gameMode == 'ai') {
-        title = '😔 الذكاء الاصطناعي فاز';
-        message = 'حاول مرة أخرى، يمكنك الفوز!';
+        title = '?? ?????? ????????? ???';
+        message = '???? ??? ????? ????? ?????!';
       } else {
-        title = '🎉 اللاعب الثاني فاز!';
-        message = 'تهانينا للفائز!';
+        title = '?? ?????? ?????? ???!';
+        message = '??????? ??????!';
       }
       titleColor = AppColors.secondary;
     } else {
-      title = '🤝 تعادل!';
-      message = 'لعبة متوازنة ومثيرة!';
+      title = '?? ?????!';
+      message = '???? ??????? ??????!';
       titleColor = AppColors.starGold;
     }
 
@@ -940,22 +953,25 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
           children: [
             Text(
               message,
-              style: AppTextStyles.bodyLarge
-                  .copyWith(color: AppColors.textPrimary),
+              style: AppTextStyles.bodyLarge.copyWith(
+                color: AppColors.textPrimary,
+              ),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 16),
             Text(
-              'وقت اللعبة: ${_formatTime(gameDuration)}',
-              style: AppTextStyles.bodyMedium
-                  .copyWith(color: AppColors.textSecondary),
+              '??? ??????: ${_formatTime(gameDuration)}',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
             if (userStats != null) ...[
               SizedBox(height: 8),
               Text(
-                'إجمالي انتصاراتك: ${userStats!.wins}',
-                style: AppTextStyles.bodyMedium
-                    .copyWith(color: AppColors.starGold),
+                '?????? ?????????: ${userStats!.wins}',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.starGold,
+                ),
               ),
             ],
           ],
@@ -963,16 +979,20 @@ class _StellarGameScreenEnhancedState extends State<StellarGameScreenEnhanced>
         actions: [
           TextButton(
             onPressed: _resetGame,
-            child: Text('لعب مرة أخرى',
-                style: TextStyle(color: AppColors.starGold)),
+            child: Text(
+              '??? ??? ????',
+              style: TextStyle(color: AppColors.starGold),
+            ),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               Navigator.pop(context);
             },
-            child: Text('العودة للقائمة',
-                style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(
+              '?????? ???????',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
           ),
         ],
       ),

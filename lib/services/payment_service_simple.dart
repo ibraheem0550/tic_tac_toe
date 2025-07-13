@@ -1,7 +1,8 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/gems_models.dart';
-import 'firebase_auth_service.dart';
+import 'unified_auth_services.dart';
 
 class PaymentService {
   static final PaymentService _instance = PaymentService._internal();
@@ -60,8 +61,9 @@ class PaymentService {
   // Get gems package by ID
   GemsPackage? getPackageById(String packageId) {
     try {
-      return _availablePackages
-          .firstWhere((package) => package.id == packageId);
+      return _availablePackages.firstWhere(
+        (package) => package.id == packageId,
+      );
     } catch (e) {
       return null;
     }
@@ -78,7 +80,7 @@ class PaymentService {
         );
       }
 
-      final user = _authService.currentUser;
+      final user = _authService.currentUserModel;
       if (user == null) {
         return PurchaseResult(
           success: false,
@@ -87,8 +89,11 @@ class PaymentService {
       }
 
       // Simulate successful purchase
-      await _processPurchase(user.id, package,
-          'simulated_payment_${DateTime.now().millisecondsSinceEpoch}');
+      await _processPurchase(
+        user.id,
+        package,
+        'simulated_payment_${DateTime.now().millisecondsSinceEpoch}',
+      );
 
       return PurchaseResult(
         success: true,
@@ -105,12 +110,16 @@ class PaymentService {
 
   // Process successful purchase
   Future<void> _processPurchase(
-      String userId, GemsPackage package, String transactionId) async {
+    String userId,
+    GemsPackage package,
+    String transactionId,
+  ) async {
     try {
       // Record payment in Supabase
       // TODO: تحديث لتستخدم FirestoreService
-      print(
-          'PaymentServiceSimple: recordPayment placeholder for $transactionId');
+      debugPrint(
+        'PaymentServiceSimple: recordPayment placeholder for $transactionId',
+      );
 
       // Store locally for offline access
       await _storePurchaseLocally(userId, package, transactionId);
@@ -121,7 +130,10 @@ class PaymentService {
 
   // Store purchase information locally
   Future<void> _storePurchaseLocally(
-      String userId, GemsPackage package, String transactionId) async {
+    String userId,
+    GemsPackage package,
+    String transactionId,
+  ) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final purchases = prefs.getStringList('user_purchases_$userId') ?? [];
@@ -139,14 +151,14 @@ class PaymentService {
       await prefs.setStringList('user_purchases_$userId', purchases);
     } catch (e) {
       // Log error but don't throw - local storage is not critical
-      print('Failed to store purchase locally: $e');
+      debugPrint('Failed to store purchase locally: $e');
     }
   }
 
   // Get purchase history
   Future<List<PurchaseHistory>> getPurchaseHistory() async {
     try {
-      final user = _authService.currentUser;
+      final user = _authService.currentUserModel;
       if (user == null) return [];
 
       final prefs = await SharedPreferences.getInstance();
@@ -174,7 +186,7 @@ class PaymentService {
   // Get current user gems
   Future<int> getCurrentUserGems() async {
     try {
-      final user = _authService.currentUser;
+      final user = _authService.currentUserModel;
       if (user == null) return 0;
 
       return user.gems;
@@ -186,12 +198,13 @@ class PaymentService {
   // Award free gems (for daily rewards, achievements, etc.)
   Future<bool> awardFreeGems(int amount, String reason) async {
     try {
-      final user = _authService.currentUser;
+      final user = _authService.currentUserModel;
       if (user == null) return false;
 
       // TODO: تحديث الجواهر عبر FirestoreService
-      print(
-          'PaymentServiceSimple: منح ${amount} جوهرة للمستخدم ${user.id} - السبب: $reason');
+      debugPrint(
+        'PaymentServiceSimple: منح ${amount} جوهرة للمستخدم ${user.id} - السبب: $reason',
+      );
 
       return true;
     } catch (e) {
@@ -209,8 +222,9 @@ class PaymentService {
       if (currentGems < amount) return false;
 
       // TODO: تحديث الجواهر عبر FirestoreService
-      print(
-          'PaymentServiceSimple: updateUserGems placeholder - subtract ${amount} gems from user ${user.id}');
+      debugPrint(
+        'PaymentServiceSimple: updateUserGems placeholder - subtract ${amount} gems from user ${user.id}',
+      );
       return true;
     } catch (e) {
       return false;

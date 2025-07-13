@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../utils/app_theme_new.dart';
-import '../services/firebase_auth_service.dart';
+import '../services/unified_auth_services.dart';
 
 /// خدمة إدارة الأصدقاء الحقيقية (مبسطة مؤقتاً)
 class FriendsService {
@@ -18,11 +17,11 @@ class FriendsService {
       if (user == null) return [];
 
       // TODO: Implement with Firestore when ready
-      print('FriendsService: getFriends called for user ${user.id}');
+      debugPrint('FriendsService: getFriends called for user ${user.id}');
 
       return [];
     } catch (e) {
-      print('خطأ في جلب الأصدقاء: $e');
+      debugPrint('خطأ في جلب الأصدقاء: $e');
       return [];
     }
   }
@@ -34,11 +33,13 @@ class FriendsService {
       if (user == null) return [];
 
       // TODO: Implement with Firestore when ready
-      print('FriendsService: getFriendRequests called for user ${user.id}');
+      debugPrint(
+        'FriendsService: getFriendRequests called for user ${user.id}',
+      );
 
       return [];
     } catch (e) {
-      print('خطأ في جلب طلبات الصداقة: $e');
+      debugPrint('خطأ في جلب طلبات الصداقة: $e');
       return [];
     }
   }
@@ -50,11 +51,11 @@ class FriendsService {
       if (user == null || query.isEmpty) return [];
 
       // TODO: Implement with Firestore when ready
-      print('FriendsService: searchUsers called with query: $query');
+      debugPrint('FriendsService: searchUsers called with query: $query');
 
       return [];
     } catch (e) {
-      print('خطأ في البحث عن المستخدمين: $e');
+      debugPrint('خطأ في البحث عن المستخدمين: $e');
       return [];
     }
   }
@@ -66,11 +67,13 @@ class FriendsService {
       if (user == null) return false;
 
       // TODO: Implement with Firestore when ready
-      print('FriendsService: sendFriendRequest called for friend: $friendId');
+      debugPrint(
+        'FriendsService: sendFriendRequest called for friend: $friendId',
+      );
 
       return true;
     } catch (e) {
-      print('خطأ في إرسال طلب الصداقة: $e');
+      debugPrint('خطأ في إرسال طلب الصداقة: $e');
       return false;
     }
   }
@@ -79,12 +82,13 @@ class FriendsService {
   Future<bool> acceptFriendRequest(String requestId) async {
     try {
       // TODO: Implement with Firestore when ready
-      print(
-          'FriendsService: acceptFriendRequest called for request: $requestId');
+      debugPrint(
+        'FriendsService: acceptFriendRequest called for request: $requestId',
+      );
 
       return true;
     } catch (e) {
-      print('خطأ في قبول طلب الصداقة: $e');
+      debugPrint('خطأ في قبول طلب الصداقة: $e');
       return false;
     }
   }
@@ -93,12 +97,13 @@ class FriendsService {
   Future<bool> rejectFriendRequest(String requestId) async {
     try {
       // TODO: Implement with Firestore when ready
-      print(
-          'FriendsService: rejectFriendRequest called for request: $requestId');
+      debugPrint(
+        'FriendsService: rejectFriendRequest called for request: $requestId',
+      );
 
       return true;
     } catch (e) {
-      print('خطأ في رفض طلب الصداقة: $e');
+      debugPrint('خطأ في رفض طلب الصداقة: $e');
       return false;
     }
   }
@@ -107,12 +112,13 @@ class FriendsService {
   Future<bool> removeFriend(String friendshipId) async {
     try {
       // TODO: Implement with Firestore when ready
-      print(
-          'FriendsService: removeFriend called for friendship: $friendshipId');
+      debugPrint(
+        'FriendsService: removeFriend called for friendship: $friendshipId',
+      );
 
       return true;
     } catch (e) {
-      print('خطأ في إزالة الصديق: $e');
+      debugPrint('خطأ في إزالة الصديق: $e');
       return false;
     }
   }
@@ -169,7 +175,7 @@ class _StellarFriendsScreenRealState extends State<StellarFriendsScreenReal> {
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
-        print('خطأ في تحميل بيانات الأصدقاء: $e');
+        debugPrint('خطأ في تحميل بيانات الأصدقاء: $e');
       }
     }
   }
@@ -191,7 +197,7 @@ class _StellarFriendsScreenRealState extends State<StellarFriendsScreenReal> {
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
-        print('خطأ في البحث: $e');
+        debugPrint('خطأ في البحث: $e');
       }
     }
   }
@@ -261,26 +267,33 @@ class _StellarFriendsScreenRealState extends State<StellarFriendsScreenReal> {
               children: [
                 Expanded(
                   child: _buildTabButton(
-                      'friends', 'الأصدقاء', '${_friends.length}'),
+                    'friends',
+                    'الأصدقاء',
+                    '${_friends.length}',
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: _buildTabButton(
-                      'requests', 'الطلبات', '${_friendRequests.length}'),
+                    'requests',
+                    'الطلبات',
+                    '${_friendRequests.length}',
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: _buildTabButton(
-                      'search', 'البحث', '${_searchResults.length}'),
+                    'search',
+                    'البحث',
+                    '${_searchResults.length}',
+                  ),
                 ),
               ],
             ),
           ),
 
           // محتوى التبويب
-          Expanded(
-            child: _buildTabContent(),
-          ),
+          Expanded(child: _buildTabContent()),
         ],
       ),
     );
@@ -329,9 +342,7 @@ class _StellarFriendsScreenRealState extends State<StellarFriendsScreenReal> {
   Widget _buildTabContent() {
     if (_isLoading) {
       return const Center(
-        child: CircularProgressIndicator(
-          color: AppColors.primary,
-        ),
+        child: CircularProgressIndicator(color: AppColors.primary),
       );
     }
 
@@ -353,18 +364,11 @@ class _StellarFriendsScreenRealState extends State<StellarFriendsScreenReal> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.people_outline,
-              size: 64,
-              color: AppColors.textMuted,
-            ),
+            Icon(Icons.people_outline, size: 64, color: AppColors.textMuted),
             SizedBox(height: 16),
             Text(
               'لا توجد أصدقاء بعد',
-              style: TextStyle(
-                color: AppColors.textMuted,
-                fontSize: 16,
-              ),
+              style: TextStyle(color: AppColors.textMuted, fontSize: 16),
             ),
           ],
         ),
@@ -387,18 +391,11 @@ class _StellarFriendsScreenRealState extends State<StellarFriendsScreenReal> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.inbox_outlined,
-              size: 64,
-              color: AppColors.textMuted,
-            ),
+            Icon(Icons.inbox_outlined, size: 64, color: AppColors.textMuted),
             SizedBox(height: 16),
             Text(
               'لا توجد طلبات صداقة',
-              style: TextStyle(
-                color: AppColors.textMuted,
-                fontSize: 16,
-              ),
+              style: TextStyle(color: AppColors.textMuted, fontSize: 16),
             ),
           ],
         ),
@@ -427,10 +424,7 @@ class _StellarFriendsScreenRealState extends State<StellarFriendsScreenReal> {
             decoration: InputDecoration(
               hintText: 'ابحث عن أصدقاء...',
               hintStyle: const TextStyle(color: AppColors.textMuted),
-              prefixIcon: const Icon(
-                Icons.search,
-                color: AppColors.primary,
-              ),
+              prefixIcon: const Icon(Icons.search, color: AppColors.primary),
               filled: true,
               fillColor: AppColors.surfacePrimary,
               border: OutlineInputBorder(
@@ -453,11 +447,7 @@ class _StellarFriendsScreenRealState extends State<StellarFriendsScreenReal> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.search,
-                        size: 64,
-                        color: AppColors.textMuted,
-                      ),
+                      Icon(Icons.search, size: 64, color: AppColors.textMuted),
                       SizedBox(height: 16),
                       Text(
                         'ابدأ بالبحث عن أصدقاء',
@@ -489,10 +479,7 @@ class _StellarFriendsScreenRealState extends State<StellarFriendsScreenReal> {
       decoration: BoxDecoration(
         color: AppColors.surfacePrimary,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.borderPrimary,
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.borderPrimary, width: 1),
       ),
       child: Row(
         children: [
@@ -555,10 +542,7 @@ class _StellarFriendsScreenRealState extends State<StellarFriendsScreenReal> {
             onPressed: () {
               // إضافة خيارات الصديق (رسالة، إزالة، إلخ)
             },
-            icon: const Icon(
-              Icons.more_vert,
-              color: AppColors.textMuted,
-            ),
+            icon: const Icon(Icons.more_vert, color: AppColors.textMuted),
           ),
         ],
       ),
@@ -574,10 +558,7 @@ class _StellarFriendsScreenRealState extends State<StellarFriendsScreenReal> {
       decoration: BoxDecoration(
         color: AppColors.surfacePrimary,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.borderPrimary,
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.borderPrimary, width: 1),
       ),
       child: Row(
         children: [
@@ -615,20 +596,14 @@ class _StellarFriendsScreenRealState extends State<StellarFriendsScreenReal> {
                   request['id'],
                   requester['display_name'] ?? 'مستخدم مجهول',
                 ),
-                icon: const Icon(
-                  Icons.check_circle,
-                  color: AppColors.success,
-                ),
+                icon: const Icon(Icons.check_circle, color: AppColors.success),
               ),
               IconButton(
                 onPressed: () => _rejectFriendRequest(
                   request['id'],
                   requester['display_name'] ?? 'مستخدم مجهول',
                 ),
-                icon: const Icon(
-                  Icons.cancel,
-                  color: AppColors.error,
-                ),
+                icon: const Icon(Icons.cancel, color: AppColors.error),
               ),
             ],
           ),
@@ -644,10 +619,7 @@ class _StellarFriendsScreenRealState extends State<StellarFriendsScreenReal> {
       decoration: BoxDecoration(
         color: AppColors.surfacePrimary,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.borderPrimary,
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.borderPrimary, width: 1),
       ),
       child: Row(
         children: [
@@ -691,10 +663,7 @@ class _StellarFriendsScreenRealState extends State<StellarFriendsScreenReal> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text(
-              'إضافة',
-              style: TextStyle(fontSize: 12),
-            ),
+            child: const Text('إضافة', style: TextStyle(fontSize: 12)),
           ),
         ],
       ),

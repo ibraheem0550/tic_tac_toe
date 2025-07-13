@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../services/payment_service_new.dart';
-import '../services/firebase_auth_service.dart';
+import '../services/unified_auth_services.dart';
 import '../models/gems_models.dart';
 import '../utils/app_theme_new.dart';
 
@@ -24,7 +23,6 @@ class _StellarComprehensiveStoreScreenState
 
   UserGems? _userGems;
   bool _isLoading = false;
-  String _selectedCategory = 'gems';
   List<GemsPackage> _gemsPackages = [];
 
   @override
@@ -54,7 +52,7 @@ class _StellarComprehensiveStoreScreenState
   Future<void> _initializeData() async {
     setState(() => _isLoading = true);
     try {
-      final user = _authService.currentUser;
+      final user = _authService.currentUserModel;
       if (user != null) {
         _userGems = UserGems(
           userId: user.id,
@@ -66,7 +64,7 @@ class _StellarComprehensiveStoreScreenState
       }
       await _loadGemsPackages();
     } catch (e) {
-      print('خطأ في تحميل البيانات: $e');
+      debugPrint('خطأ في تحميل البيانات: $e');
     } finally {
       setState(() => _isLoading = false);
     }
@@ -76,7 +74,7 @@ class _StellarComprehensiveStoreScreenState
     try {
       _gemsPackages = _paymentService.getAvailablePackages();
     } catch (e) {
-      print('خطأ في تحميل حزم الجواهر: $e');
+      debugPrint('خطأ في تحميل حزم الجواهر: $e');
     }
   }
 
@@ -141,7 +139,7 @@ class _StellarComprehensiveStoreScreenState
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: AppColors.primary.withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -149,11 +147,7 @@ class _StellarComprehensiveStoreScreenState
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.diamond,
-            color: AppColors.starGold,
-            size: 32,
-          ),
+          const Icon(Icons.diamond, color: AppColors.starGold, size: 32),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -234,7 +228,7 @@ class _StellarComprehensiveStoreScreenState
         boxShadow: [
           BoxShadow(
             color: (isPopular ? AppColors.starGold : AppColors.primary)
-                .withOpacity(0.2),
+                .withValues(alpha: 0.2),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -249,8 +243,10 @@ class _StellarComprehensiveStoreScreenState
               children: [
                 if (isPopular)
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.starGold,
                       borderRadius: BorderRadius.circular(12),
@@ -265,11 +261,7 @@ class _StellarComprehensiveStoreScreenState
                     ),
                   ),
                 const SizedBox(height: 8),
-                const Icon(
-                  Icons.diamond,
-                  color: AppColors.starGold,
-                  size: 40,
-                ),
+                const Icon(Icons.diamond, color: AppColors.starGold, size: 40),
                 const SizedBox(height: 12),
                 Text(
                   package.name,
@@ -307,8 +299,9 @@ class _StellarComprehensiveStoreScreenState
                   child: ElevatedButton(
                     onPressed: () => _handlePurchase(package),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          isPopular ? AppColors.starGold : AppColors.primary,
+                      backgroundColor: isPopular
+                          ? AppColors.starGold
+                          : AppColors.primary,
                       foregroundColor: AppColors.backgroundPrimary,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
@@ -375,8 +368,10 @@ class _StellarComprehensiveStoreScreenState
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child:
-              const Text('إلغاء', style: TextStyle(color: AppColors.textMuted)),
+          child: const Text(
+            'إلغاء',
+            style: TextStyle(color: AppColors.textMuted),
+          ),
         ),
         ElevatedButton(
           onPressed: () => Navigator.pop(context, true),

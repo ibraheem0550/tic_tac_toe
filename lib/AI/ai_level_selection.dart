@@ -5,6 +5,8 @@ import '../utils/responsive_helper.dart';
 import '../screens/game_screen.dart';
 
 class AILevelSelectionScreen extends StatefulWidget {
+  const AILevelSelectionScreen({super.key});
+
   @override
   _AILevelSelectionScreenState createState() => _AILevelSelectionScreenState();
 }
@@ -36,14 +38,15 @@ class _AILevelSelectionScreenState extends State<AILevelSelectionScreen>
       await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (_) => GameScreen(isAI: true, aiLevel: level)),
+          builder: (_) => GameScreen(isAI: true, aiLevel: level),
+        ),
       );
       // ✅ بعد العودة من GameScreen نعيد تحميل المستويات
       loadUnlockedLevels();
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('هذا المستوى مقفل 🔒')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('هذا المستوى مقفل 🔒')));
     }
   }
 
@@ -79,7 +82,7 @@ class _AILevelSelectionScreenState extends State<AILevelSelectionScreen>
               end: Alignment.bottomRight,
               colors: [
                 AppColors.backgroundDark,
-                AppColors.primaryDark.withOpacity(0.3),
+                AppColors.primaryDark.withValues(alpha: 0.3),
               ],
             ),
           ),
@@ -150,21 +153,21 @@ class _AILevelSelectionScreenState extends State<AILevelSelectionScreen>
                 )
               : LinearGradient(
                   colors: [
-                    AppColors.surfaceLight.withOpacity(0.3),
-                    AppColors.surfaceLight.withOpacity(0.1)
+                    AppColors.surfaceLight.withValues(alpha: 0.3),
+                    AppColors.surfaceLight.withValues(alpha: 0.1),
                   ],
                 ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isUnlocked
-                ? AppColors.primary.withOpacity(0.5)
-                : AppColors.surfaceLight.withOpacity(0.3),
+                ? AppColors.primary.withValues(alpha: 0.5)
+                : AppColors.surfaceLight.withValues(alpha: 0.3),
           ),
           boxShadow: [
             BoxShadow(
               color: isUnlocked
-                  ? AppColors.primary.withOpacity(0.3)
-                  : Colors.black.withOpacity(0.2),
+                  ? AppColors.primary.withValues(alpha: 0.3)
+                  : Colors.black.withValues(alpha: 0.2),
               offset: const Offset(0, 6),
               blurRadius: 12,
             ),
@@ -181,7 +184,7 @@ class _AILevelSelectionScreenState extends State<AILevelSelectionScreen>
                     size: ResponsiveHelper.getIconSize(context) * 1.5,
                     color: isUnlocked
                         ? AppColors.textLight
-                        : AppColors.textLight.withOpacity(0.5),
+                        : AppColors.textLight.withValues(alpha: 0.5),
                   ),
                   SizedBox(height: ResponsiveHelper.getPadding(context) * 0.25),
                   Text(
@@ -190,19 +193,20 @@ class _AILevelSelectionScreenState extends State<AILevelSelectionScreen>
                       fontSize: ResponsiveHelper.getFontSize(context, 18),
                       color: isUnlocked
                           ? AppColors.textLight
-                          : AppColors.textLight.withOpacity(0.5),
+                          : AppColors.textLight.withValues(alpha: 0.5),
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
-                      height: ResponsiveHelper.getPadding(context) * 0.125),
+                    height: ResponsiveHelper.getPadding(context) * 0.125,
+                  ),
                   Text(
                     _getLevelDescription(level),
                     style: AppTextStyles.bodySmall.copyWith(
                       color: isUnlocked
-                          ? AppColors.textLight.withOpacity(0.9)
-                          : AppColors.textLight.withOpacity(0.4),
+                          ? AppColors.textLight.withValues(alpha: 0.9)
+                          : AppColors.textLight.withValues(alpha: 0.4),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -216,7 +220,7 @@ class _AILevelSelectionScreenState extends State<AILevelSelectionScreen>
                 child: Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.2),
+                    color: Colors.red.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
@@ -233,7 +237,7 @@ class _AILevelSelectionScreenState extends State<AILevelSelectionScreen>
                 child: Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: AppColors.accent.withOpacity(0.2),
+                    color: AppColors.accent.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(

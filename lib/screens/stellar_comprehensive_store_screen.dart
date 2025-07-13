@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/firebase_auth_service.dart';
+import '../services/unified_auth_services.dart';
 import '../models/gems_models.dart';
 import '../utils/app_theme_new.dart';
 
@@ -119,7 +119,7 @@ class _StellarComprehensiveStoreScreenState
     setState(() => _isLoading = true);
     try {
       // تحميل بيانات المستخدم
-      final user = _authService.currentUser;
+      final user = _authService.currentUserModel;
       if (user != null) {
         _userGems = UserGems(
           userId: user.id,
@@ -131,9 +131,7 @@ class _StellarComprehensiveStoreScreenState
       }
 
       // تحميل البيانات من الخدمات
-      await Future.wait([
-        _loadGemsPackages(),
-      ]);
+      await Future.wait([_loadGemsPackages()]);
     } catch (e) {
       debugPrint('Error initializing store data: $e');
     } finally {
@@ -238,8 +236,9 @@ class _StellarComprehensiveStoreScreenState
         return Opacity(
           opacity: _fadeAnimation.value,
           child: Container(
-            margin:
-                const EdgeInsets.symmetric(horizontal: AppDimensions.paddingLG),
+            margin: const EdgeInsets.symmetric(
+              horizontal: AppDimensions.paddingLG,
+            ),
             padding: const EdgeInsets.all(AppDimensions.paddingLG),
             decoration: BoxDecoration(
               gradient: AppColors.stellarGradient,
@@ -289,8 +288,9 @@ class _StellarComprehensiveStoreScreenState
       margin: const EdgeInsets.symmetric(vertical: AppDimensions.paddingLG),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding:
-            const EdgeInsets.symmetric(horizontal: AppDimensions.paddingLG),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppDimensions.paddingLG,
+        ),
         itemCount: _categories.length,
         itemBuilder: (context, index) {
           final category = _categories[index];
@@ -334,8 +334,9 @@ class _StellarComprehensiveStoreScreenState
                       color: isSelected
                           ? AppColors.textPrimary
                           : AppColors.textSecondary,
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -394,8 +395,9 @@ class _StellarComprehensiveStoreScreenState
     return Container(
       margin: const EdgeInsets.only(bottom: AppDimensions.paddingLG),
       decoration: BoxDecoration(
-        gradient:
-            isPopular ? AppColors.stellarGradient : AppColors.surfaceGradient,
+        gradient: isPopular
+            ? AppColors.stellarGradient
+            : AppColors.surfaceGradient,
         borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
         boxShadow: [
           BoxShadow(
@@ -422,8 +424,9 @@ class _StellarComprehensiveStoreScreenState
                       padding: const EdgeInsets.all(AppDimensions.paddingMD),
                       decoration: BoxDecoration(
                         gradient: AppColors.cosmicButtonGradient,
-                        borderRadius:
-                            BorderRadius.circular(AppDimensions.radiusMD),
+                        borderRadius: BorderRadius.circular(
+                          AppDimensions.radiusMD,
+                        ),
                       ),
                       child: const Icon(
                         Icons.diamond,
@@ -447,10 +450,11 @@ class _StellarComprehensiveStoreScreenState
                           Text(
                             package.description,
                             style: AppTextStyles.bodyMedium.copyWith(
-                              color: (isPopular
-                                      ? AppColors.textPrimary
-                                      : AppColors.textSecondary)
-                                  .withValues(alpha: 0.8),
+                              color:
+                                  (isPopular
+                                          ? AppColors.textPrimary
+                                          : AppColors.textSecondary)
+                                      .withValues(alpha: 0.8),
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -491,8 +495,9 @@ class _StellarComprehensiveStoreScreenState
                       ),
                       decoration: BoxDecoration(
                         gradient: AppColors.cosmicButtonGradient,
-                        borderRadius:
-                            BorderRadius.circular(AppDimensions.radiusLG),
+                        borderRadius: BorderRadius.circular(
+                          AppDimensions.radiusLG,
+                        ),
                       ),
                       child: Text(
                         '\$${package.price.toStringAsFixed(2)}',
@@ -587,7 +592,11 @@ class _StellarComprehensiveStoreScreenState
   }
 
   Future<bool?> _showPurchaseConfirmationDialog(
-      String title, double price, String currency, IconData icon) {
+    String title,
+    double price,
+    String currency,
+    IconData icon,
+  ) {
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -609,8 +618,10 @@ class _StellarComprehensiveStoreScreenState
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child:
-                Text('إلغاء', style: TextStyle(color: AppColors.textSecondary)),
+            child: Text(
+              'إلغاء',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
@@ -635,10 +646,7 @@ class _StellarComprehensiveStoreScreenState
 
   void _showErrorMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.errorPrimary,
-      ),
+      SnackBar(content: Text(message), backgroundColor: AppColors.errorPrimary),
     );
   }
 }

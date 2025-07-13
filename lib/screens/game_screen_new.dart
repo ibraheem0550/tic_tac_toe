@@ -412,7 +412,7 @@ class _GameScreenNewState extends State<GameScreenNew>
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withValues(alpha: 0.3),
                 blurRadius: 10,
                 offset: const Offset(0, 5),
               ),
@@ -449,7 +449,7 @@ class _GameScreenNewState extends State<GameScreenNew>
       onTap: () => _makeMove(index),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9),
+          color: Colors.white.withValues(alpha: 0.9),
           border: Border.all(
             color: Colors.deepPurple.shade300,
             width: 2,

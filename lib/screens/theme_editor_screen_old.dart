@@ -49,17 +49,21 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
     _primaryColor = Color(metadata['primaryColor'] ?? Colors.deepPurple.value);
     _secondaryColor = Color(metadata['secondaryColor'] ?? Colors.teal.value);
     _accentColor = Color(metadata['accentColor'] ?? Colors.amberAccent.value);
-    _backgroundColor =
-        Color(metadata['backgroundColor'] ?? Colors.grey.shade900.value);
+    _backgroundColor = Color(
+      metadata['backgroundColor'] ?? Colors.grey.shade900.value,
+    );
 
     _textColor = Color(metadata['textColor'] ?? Colors.white.value);
-    _buttonColor =
-        Color(metadata['buttonColor'] ?? Colors.deepPurple.shade500.value);
+    _buttonColor = Color(
+      metadata['buttonColor'] ?? Colors.deepPurple.shade500.value,
+    );
 
-    _gradientStart =
-        Color(metadata['gradientStart'] ?? Colors.grey.shade900.value);
-    _gradientMiddle =
-        Color(metadata['gradientMiddle'] ?? Colors.deepPurple.shade900.value);
+    _gradientStart = Color(
+      metadata['gradientStart'] ?? Colors.grey.shade900.value,
+    );
+    _gradientMiddle = Color(
+      metadata['gradientMiddle'] ?? Colors.deepPurple.shade900.value,
+    );
     _gradientEnd = Color(metadata['gradientEnd'] ?? Colors.grey.shade900.value);
   }
 
@@ -86,15 +90,9 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
       body: Row(
         children: [
           // لوحة التحكم
-          Expanded(
-            flex: 1,
-            child: _buildControlPanel(),
-          ),
+          Expanded(flex: 1, child: _buildControlPanel()),
           // معاينة مباشرة
-          Expanded(
-            flex: 2,
-            child: _buildPreview(),
-          ),
+          Expanded(flex: 2, child: _buildPreview()),
         ],
       ),
     );
@@ -205,17 +203,15 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
   }
 
   Widget _buildColorPicker(
-      String label, Color currentColor, Function(Color) onColorChanged) {
+    String label,
+    Color currentColor,
+    Function(Color) onColorChanged,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          Expanded(
-            child: Text(
-              label,
-              style: const TextStyle(fontSize: 14),
-            ),
-          ),
+          Expanded(child: Text(label, style: const TextStyle(fontSize: 14))),
           GestureDetector(
             onTap: () =>
                 _showColorPicker(context, currentColor, onColorChanged),
@@ -251,10 +247,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
       padding: const EdgeInsets.only(bottom: 8),
       child: SizedBox(
         width: double.infinity,
-        child: ElevatedButton(
-          onPressed: onPressed,
-          child: Text(name),
-        ),
+        child: ElevatedButton(onPressed: onPressed, child: Text(name)),
       ),
     );
   }
@@ -265,11 +258,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            _gradientStart,
-            _gradientMiddle,
-            _gradientEnd,
-          ],
+          colors: [_gradientStart, _gradientMiddle, _gradientEnd],
         ),
       ),
       child: Scaffold(
@@ -280,14 +269,8 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
           foregroundColor: Colors.white,
           automaticallyImplyLeading: false,
           actions: [
-            IconButton(
-              icon: const Icon(Icons.store),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(Icons.assignment),
-              onPressed: () {},
-            ),
+            IconButton(icon: const Icon(Icons.store), onPressed: () {}),
+            IconButton(icon: const Icon(Icons.assignment), onPressed: () {}),
           ],
         ),
         body: Center(
@@ -296,13 +279,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  '🎮',
-                  style: TextStyle(
-                    fontSize: 80,
-                    color: _textColor,
-                  ),
-                ),
+                Text('🎮', style: TextStyle(fontSize: 80, color: _textColor)),
                 const SizedBox(height: 20),
                 Text(
                   'مرحبا بك في لعبة\nTic Tac Toe',
@@ -316,7 +293,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
                         blurRadius: 6,
                         color: Colors.black54,
                         offset: const Offset(2, 2),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -353,8 +330,10 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
                     icon: const Icon(Icons.people_alt_rounded, size: 26),
                     label: const Text(
                       'لاعب ضد لاعب',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _secondaryColor,
@@ -374,8 +353,11 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
     );
   }
 
-  void _showColorPicker(BuildContext context, Color currentColor,
-      Function(Color) onColorChanged) {
+  void _showColorPicker(
+    BuildContext context,
+    Color currentColor,
+    Function(Color) onColorChanged,
+  ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -540,9 +522,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
     // فتح معاينة كاملة للسمة
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => _buildFullPreview(),
-      ),
+      MaterialPageRoute(builder: (context) => _buildFullPreview()),
     );
   }
 
@@ -572,11 +552,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  _gradientStart,
-                  _gradientMiddle,
-                  _gradientEnd,
-                ],
+                colors: [_gradientStart, _gradientMiddle, _gradientEnd],
               ),
             ),
             child: SafeArea(
@@ -589,18 +565,13 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: _accentColor, width: 2),
                       ),
                       child: Column(
                         children: [
-                          Text(
-                            '🎮',
-                            style: TextStyle(
-                              fontSize: 60,
-                            ),
-                          ),
+                          Text('🎮', style: TextStyle(fontSize: 60)),
                           SizedBox(height: 10),
                           Text(
                             'Tic Tac Toe',
@@ -633,7 +604,9 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
                     _buildPreviewButton('🏪 المتجر', _primaryColor),
                     const SizedBox(height: 15),
                     _buildPreviewButton(
-                        '🎯 المهام', _accentColor.withOpacity(0.8)),
+                      '🎯 المهام',
+                      _accentColor.withOpacity(0.8),
+                    ),
 
                     const SizedBox(height: 40),
 
@@ -696,10 +669,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
         },
         child: Text(
           text,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -718,13 +688,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
           ),
         ),
         const SizedBox(height: 5),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: _textColor,
-          ),
-        ),
+        Text(label, style: TextStyle(fontSize: 12, color: _textColor)),
       ],
     );
   }

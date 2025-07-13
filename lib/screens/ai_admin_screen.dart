@@ -14,7 +14,7 @@ class _AIAdminScreenState extends State<AIAdminScreen>
     with SingleTickerProviderStateMixin {
   Map<String, dynamic> _aiStats = {};
   List<Mission> _currentMissions = [];
-  List<String> _logs = [];
+  final List<String> _logs = [];
   bool _isLoading = true;
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
@@ -163,7 +163,7 @@ class _AIAdminScreenState extends State<AIAdminScreen>
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.green.withOpacity(0.3),
+            color: Colors.green.withValues(alpha: 0.3),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -177,7 +177,7 @@ class _AIAdminScreenState extends State<AIAdminScreen>
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -202,7 +202,7 @@ class _AIAdminScreenState extends State<AIAdminScreen>
                     Text(
                       'الحالة: ${_aiStats['system_status'] ?? 'غير معروف'}',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                         fontSize: 16,
                       ),
                     ),
@@ -213,7 +213,7 @@ class _AIAdminScreenState extends State<AIAdminScreen>
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Text(
@@ -231,7 +231,7 @@ class _AIAdminScreenState extends State<AIAdminScreen>
           Text(
             'آخر تجديد: ${(_aiStats['last_renewal'] ?? 'غير معروف').toString().substring(0, 19)}',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha: 0.8),
               fontSize: 14,
             ),
           ),
@@ -286,7 +286,7 @@ class _AIAdminScreenState extends State<AIAdminScreen>
             color: Colors.grey[850],
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: (stat['color'] as Color).withOpacity(0.3),
+              color: (stat['color'] as Color).withValues(alpha: 0.3),
               width: 1,
             ),
           ),
@@ -522,7 +522,7 @@ class _AIAdminScreenState extends State<AIAdminScreen>
               color: Colors.black,
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: Colors.green.withOpacity(0.3),
+                color: Colors.green.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),

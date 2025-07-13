@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/complete_user_models.dart';
-import 'firebase_auth_service.dart';
+import 'unified_auth_services.dart';
 // import 'supabase_service.dart'; // معطل مؤقتاً
 import '../utils/logger.dart';
 
@@ -25,7 +26,7 @@ class GameStatsService {
   /// تحميل إحصائيات اللعبة من قاعدة البيانات أو التخزين المحلي
   Future<GameStats> loadGameStats() async {
     try {
-      final user = _authService.currentUser;
+      final user = _authService.currentUserModel;
 
       if (user != null && !user.isGuest) {
         // تحميل من قاعدة البيانات للمستخدمين المسجلين
@@ -36,13 +37,14 @@ class GameStatsService {
       }
 
       _currentStats ??= GameStats.empty(
-          user?.id ?? 'guest'); // إنشاء إحصائيات جديدة إذا لم توجد
+        user?.id ?? 'guest',
+      ); // إنشاء إحصائيات جديدة إذا لم توجد
       _statsController.add(_currentStats!);
 
       return _currentStats!;
     } catch (e) {
       Logger.logError('خطأ في تحميل إحصائيات اللعبة', e);
-      final currentUser = _authService.currentUser;
+      final currentUser = _authService.currentUserModel;
       _currentStats = GameStats.empty(currentUser?.id ?? 'guest');
       return _currentStats!;
     }
@@ -52,7 +54,7 @@ class GameStatsService {
   Future<void> saveGameStats(GameStats stats) async {
     try {
       _currentStats = stats;
-      final user = _authService.currentUser;
+      final user = _authService.currentUserModel;
 
       if (user != null && !user.isGuest) {
         // حفظ في قاعدة البيانات للمستخدمين المسجلين
@@ -97,7 +99,7 @@ class GameStatsService {
         opponentId: opponentId,
       );
     } catch (e) {
-      print('خطأ في تسجيل نتيجة اللعبة: $e');
+      debugPrint('خطأ في تسجيل نتيجة اللعبة: $e');
     }
   }
 
@@ -135,7 +137,7 @@ class GameStatsService {
     String? opponentId,
   }) async {
     try {
-      final user = _authService.currentUser;
+      final user = _authService.currentUserModel;
       if (user == null) return;
 
       final gameRecord = {
@@ -189,9 +191,9 @@ class GameStatsService {
       // await _supabaseService.client
       //     .from('user_profiles')
       //     .update({'game_stats': stats.toJson()}).eq('id', userId);
-      print('حفظ إحصائيات المستخدم: $userId');
+      debugPrint('حفظ إحصائيات المستخدم: $userId');
     } catch (e) {
-      print('خطأ في حفظ الإحصائيات في قاعدة البيانات: $e');
+      debugPrint('خطأ في حفظ الإحصائيات في قاعدة البيانات: $e');
     }
   }
 
@@ -206,7 +208,7 @@ class GameStatsService {
         return GameStats.fromJson(statsMap);
       }
     } catch (e) {
-      print('خطأ في تحميل الإحصائيات من التخزين المحلي: $e');
+      debugPrint('خطأ في تحميل الإحصائيات من التخزين المحلي: $e');
     }
     return null;
   }
@@ -218,7 +220,7 @@ class GameStatsService {
       final statsJson = jsonEncode(stats.toJson());
       await prefs.setString('game_stats', statsJson);
     } catch (e) {
-      print('خطأ في حفظ الإحصائيات في التخزين المحلي: $e');
+      debugPrint('خطأ في حفظ الإحصائيات في التخزين المحلي: $e');
     }
   }
 
@@ -238,14 +240,14 @@ class GameStatsService {
 
       await prefs.setString('game_history', jsonEncode(history));
     } catch (e) {
-      print('خطأ في حفظ تاريخ اللعبة محلياً: $e');
+      debugPrint('خطأ في حفظ تاريخ اللعبة محلياً: $e');
     }
   }
 
   /// الحصول على تاريخ الألعاب
   Future<List<Map<String, dynamic>>> getGameHistory({int limit = 50}) async {
     try {
-      final user = _authService.currentUser;
+      final user = _authService.currentUserModel;
       if (user == null) return [];
 
       if (!user.isGuest) {
@@ -265,15 +267,16 @@ class GameStatsService {
         // تحميل من التخزين المحلي
         final prefs = await SharedPreferences.getInstance();
         final historyJson = prefs.getString('game_history') ?? '[]';
-        final history =
-            List<Map<String, dynamic>>.from(jsonDecode(historyJson));
+        final history = List<Map<String, dynamic>>.from(
+          jsonDecode(historyJson),
+        );
 
         // ترتيب حسب التاريخ وإرجاع العدد المطلوب
         history.sort((a, b) => b['played_at'].compareTo(a['played_at']));
         return history.take(limit).toList();
       }
     } catch (e) {
-      print('خطأ في تحميل تاريخ الألعاب: $e');
+      debugPrint('خطأ في تحميل تاريخ الألعاب: $e');
       return [];
     }
   }
@@ -281,7 +284,7 @@ class GameStatsService {
   /// مسح جميع الإحصائيات
   Future<void> clearAllStats() async {
     try {
-      final user = _authService.currentUser;
+      final user = _authService.currentUserModel;
       _currentStats = GameStats.empty(user?.id ?? 'guest');
       await saveGameStats(_currentStats!);
 

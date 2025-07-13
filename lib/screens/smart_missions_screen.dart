@@ -94,7 +94,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
               end: Alignment.bottomRight,
               colors: [
                 AppColors.backgroundDark,
-                AppColors.primaryDark.withOpacity(0.3),
+                AppColors.primaryDark.withValues(alpha: 0.3),
               ],
             ),
           ),
@@ -144,7 +144,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
             Text(
               'جاري تحميل المهام الذكية...',
               style: AppTextStyles.bodyLarge.copyWith(
-                color: AppColors.textLight.withOpacity(0.8),
+                color: AppColors.textLight.withValues(alpha: 0.8),
               ),
             ),
           ],
@@ -227,13 +227,13 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                AppColors.accent.withOpacity(0.1),
-                AppColors.primary.withOpacity(0.05)
+                AppColors.accent.withValues(alpha: 0.1),
+                AppColors.primary.withValues(alpha: 0.05)
               ],
             ),
             borderRadius: BorderRadius.circular(isMobile ? 12 : 16),
             border: Border.all(
-              color: AppColors.accent.withOpacity(0.3),
+              color: AppColors.accent.withValues(alpha: 0.3),
               width: 1,
             ),
           ),
@@ -250,7 +250,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                         child: Container(
                           padding: EdgeInsets.all(isMobile ? 8 : 12),
                           decoration: BoxDecoration(
-                            color: AppColors.accent.withOpacity(0.2),
+                            color: AppColors.accent.withValues(alpha: 0.2),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
@@ -282,7 +282,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
               Text(
                 'يقوم الذكاء الاصطناعي بتحليل أدائك وتوليد مهام مخصصة لك كل 6 ساعات',
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.textLight.withOpacity(0.9),
+                  color: AppColors.textLight.withValues(alpha: 0.9),
                   fontSize: isMobile ? 13 : 14,
                   height: 1.4,
                 ),
@@ -361,18 +361,18 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.surfaceLight.withOpacity(0.15),
-                              AppColors.surfaceLight.withOpacity(0.05)
+                              AppColors.surfaceLight.withValues(alpha: 0.15),
+                              AppColors.surfaceLight.withValues(alpha: 0.05)
                             ],
                           ),
                           borderRadius: BorderRadius.circular(15),
                           border: Border.all(
-                            color: AppColors.accent.withOpacity(0.3),
+                            color: AppColors.accent.withValues(alpha: 0.3),
                             width: 1,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.accent.withOpacity(0.1),
+                              color: AppColors.accent.withValues(alpha: 0.1),
                               blurRadius: 8,
                               spreadRadius: 2,
                             ),
@@ -386,7 +386,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                                 Container(
                                   padding: EdgeInsets.all(isMobile ? 6 : 8),
                                   decoration: BoxDecoration(
-                                    color: AppColors.accent.withOpacity(0.2),
+                                    color: AppColors.accent.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Icon(
@@ -421,7 +421,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                               child: Text(
                                 _aiRecommendations[index],
                                 style: AppTextStyles.bodyMedium.copyWith(
-                                  color: AppColors.textLight.withOpacity(0.9),
+                                  color: AppColors.textLight.withValues(alpha: 0.9),
                                   height: 1.4,
                                   fontSize: isMobile ? 13 : 14,
                                 ),
@@ -465,18 +465,18 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            AppColors.surfaceLight.withOpacity(0.15),
-                            AppColors.surfaceLight.withOpacity(0.05)
+                            AppColors.surfaceLight.withValues(alpha: 0.15),
+                            AppColors.surfaceLight.withValues(alpha: 0.05)
                           ],
                         ),
                         borderRadius: BorderRadius.circular(15),
                         border: Border.all(
-                          color: AppColors.accent.withOpacity(0.3),
+                          color: AppColors.accent.withValues(alpha: 0.3),
                           width: 1,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.accent.withOpacity(0.1),
+                            color: AppColors.accent.withValues(alpha: 0.1),
                             blurRadius: 8,
                             spreadRadius: 2,
                           ),
@@ -520,7 +520,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                             child: Text(
                               _aiRecommendations[index],
                               style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.textLight.withOpacity(0.9),
+                                color: AppColors.textLight.withValues(alpha: 0.9),
                                 height: 1.4,
                                 fontSize: deviceType == DeviceType.largeDesktop
                                     ? 15
@@ -644,14 +644,14 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                     )
                   : LinearGradient(
                       colors: [
-                        AppColors.surfaceLight.withOpacity(0.1),
-                        AppColors.surfaceLight.withOpacity(0.05)
+                        AppColors.surfaceLight.withValues(alpha: 0.1),
+                        AppColors.surfaceLight.withValues(alpha: 0.05)
                       ],
                     ),
               border: Border.all(
                 color: isCompleted
-                    ? AppColors.accent.withOpacity(0.5)
-                    : AppColors.primary.withOpacity(0.3),
+                    ? AppColors.accent.withValues(alpha: 0.5)
+                    : AppColors.primary.withValues(alpha: 0.3),
               ),
             ),
             child: Row(
@@ -661,8 +661,8 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                   padding: EdgeInsets.all(isMobile ? 8 : 12),
                   decoration: BoxDecoration(
                     color: isCompleted
-                        ? AppColors.textLight.withOpacity(0.2)
-                        : AppColors.primary.withOpacity(0.1),
+                        ? AppColors.textLight.withValues(alpha: 0.2)
+                        : AppColors.primary.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
@@ -705,7 +705,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                             Icons.monetization_on,
                             size: isMobile ? 14 : 16,
                             color: isCompleted
-                                ? AppColors.textLight.withOpacity(0.7)
+                                ? AppColors.textLight.withValues(alpha: 0.7)
                                 : AppColors.accent,
                           ),
                           SizedBox(
@@ -716,7 +716,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                               '${mission.coinsReward} نقطة',
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: isCompleted
-                                    ? AppColors.textLight.withOpacity(0.7)
+                                    ? AppColors.textLight.withValues(alpha: 0.7)
                                     : AppColors.accent,
                                 fontWeight: FontWeight.w500,
                                 fontSize: isMobile ? 13 : 14,
@@ -736,7 +736,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                     child: Container(
                       padding: EdgeInsets.all(isMobile ? 6 : 8),
                       decoration: BoxDecoration(
-                        color: AppColors.textLight.withOpacity(0.2),
+                        color: AppColors.textLight.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -750,7 +750,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                 else
                   Icon(
                     Icons.arrow_forward_ios,
-                    color: AppColors.primary.withOpacity(0.5),
+                    color: AppColors.primary.withValues(alpha: 0.5),
                     size: ResponsiveHelper.getIconSize(context,
                         size: isMobile ? IconSize.small : IconSize.medium),
                   ),
@@ -776,10 +776,10 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
           padding: EdgeInsets.all(ResponsiveHelper.getPadding(context,
               size: isMobile ? PaddingSize.medium : PaddingSize.large)),
           decoration: BoxDecoration(
-            color: AppColors.surfaceLight.withOpacity(0.1),
+            color: AppColors.surfaceLight.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(isMobile ? 12 : 16),
             border: Border.all(
-              color: AppColors.primary.withOpacity(0.3),
+              color: AppColors.primary.withValues(alpha: 0.3),
               width: 1,
             ),
           ),
@@ -930,7 +930,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
               Text(
                 'يمكنك إعادة تولید المهام الذكية أو فحص حالة النظام في أي وقت',
                 style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textLight.withOpacity(0.7),
+                  color: AppColors.textLight.withValues(alpha: 0.7),
                   fontSize: isMobile ? 12 : 13,
                 ),
                 textAlign: TextAlign.center,
@@ -987,7 +987,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withOpacity(0.1),
+                  color: AppColors.accent.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -1009,7 +1009,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
               Text(
                 mission.title,
                 style: AppTextStyles.bodyLarge.copyWith(
-                  color: AppColors.textLight.withOpacity(0.8),
+                  color: AppColors.textLight.withValues(alpha: 0.8),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -1018,7 +1018,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withOpacity(0.2),
+                  color: AppColors.accent.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(

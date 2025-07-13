@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:http/http.dart' as http;
+// import 'package:flutter_stripe/flutter_stripe.dart'; // TODO: Add when stripe is needed
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/gems_models.dart';
-import 'firebase_auth_service.dart';
+import 'unified_auth_services.dart';
 
 class PaymentService {
   static final PaymentService _instance = PaymentService._internal();
@@ -12,10 +11,10 @@ class PaymentService {
   PaymentService._internal();
   final FirebaseAuthService _authService = FirebaseAuthService();
 
-  // Stripe configuration
-  static const String _stripePublishableKey =
-      'pk_test_your_publishable_key_here';
-  static const String _stripeSecretKey = 'sk_test_your_secret_key_here';
+  // Stripe configuration (TODO: Use when stripe package is added)
+  // static const String _stripePublishableKey =
+  //     'pk_test_your_publishable_key_here';
+  // static const String _stripeSecretKey = 'sk_test_your_secret_key_here';
 
   // Available gems packages
   final List<GemsPackage> _availablePackages = [
@@ -65,13 +64,13 @@ class PaymentService {
   // Initialize payment service
   Future<void> initialize() async {
     try {
-      // Initialize Stripe
-      Stripe.publishableKey = _stripePublishableKey;
-      await Stripe.instance.applySettings();
+      // TODO: Initialize Stripe when package is added
+      // Stripe.publishableKey = _stripePublishableKey;
+      // await Stripe.instance.applySettings();
 
-      print('Payment service initialized successfully');
+      debugPrint('Payment service initialized successfully');
     } catch (e) {
-      print('Failed to initialize payment service: $e');
+      debugPrint('Failed to initialize payment service: $e');
     }
   }
 
@@ -83,21 +82,24 @@ class PaymentService {
   // Get gems package by ID
   GemsPackage? getPackageById(String packageId) {
     try {
-      return _availablePackages
-          .firstWhere((package) => package.id == packageId);
+      return _availablePackages.firstWhere(
+        (package) => package.id == packageId,
+      );
     } catch (e) {
       return null;
     }
   }
 
   // Create payment intent on backend
+  // TODO: Use when stripe package is added
+  /*
   Future<String> _createPaymentIntent(GemsPackage package) async {
     try {
       final response = await http.post(
         Uri.parse('https://your-backend-url.com/create-payment-intent'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $_stripeSecretKey',
+          'Authorization': 'Bearer YOUR_STRIPE_SECRET_KEY', // TODO: Use when stripe is added
         },
         body: jsonEncode({
           'amount': (package.price * 100).round(), // Convert to cents
@@ -120,6 +122,7 @@ class PaymentService {
       throw Exception('Network error creating payment intent: $e');
     }
   }
+  */
 
   // Process credit card payment
   Future<PurchaseResult> purchaseWithCreditCard(String packageId) async {
@@ -141,9 +144,11 @@ class PaymentService {
       }
 
       // Create payment intent
-      final clientSecret = await _createPaymentIntent(package);
+      // TODO: Create payment intent when stripe package is added
+      // final clientSecret = await _createPaymentIntent(package);
 
-      // Initialize payment sheet
+      // TODO: Initialize payment sheet when stripe package is added
+      /*
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
@@ -155,22 +160,22 @@ class PaymentService {
 
       // Present payment sheet
       await Stripe.instance.presentPaymentSheet();
+      */
 
       // If we reach here, payment was successful
       await _processPurchase(
-          user.id, package, 'stripe_${DateTime.now().millisecondsSinceEpoch}');
+        user.id,
+        package,
+        'stripe_${DateTime.now().millisecondsSinceEpoch}',
+      );
 
       return PurchaseResult(
         success: true,
         gemsAwarded: package.gemsAmount,
         transactionId: 'stripe_${DateTime.now().millisecondsSinceEpoch}',
       );
-    } on StripeException catch (e) {
-      return PurchaseResult(
-        success: false,
-        errorMessage: 'Payment failed: ${e.error.localizedMessage}',
-      );
     } catch (e) {
+      // TODO: Handle StripeException when package is added
       return PurchaseResult(
         success: false,
         errorMessage: 'Purchase failed: $e',
@@ -202,7 +207,10 @@ class PaymentService {
 
       // Process simulated purchase
       await _processPurchase(
-          user.id, package, 'sim_${DateTime.now().millisecondsSinceEpoch}');
+        user.id,
+        package,
+        'sim_${DateTime.now().millisecondsSinceEpoch}',
+      );
 
       return PurchaseResult(
         success: true,
@@ -219,7 +227,10 @@ class PaymentService {
 
   // Process successful purchase
   Future<void> _processPurchase(
-      String userId, GemsPackage package, String transactionId) async {
+    String userId,
+    GemsPackage package,
+    String transactionId,
+  ) async {
     try {
       // Record payment in Supabase
       // TODO: Implement payment recording in Firestore
@@ -236,7 +247,7 @@ class PaymentService {
       // Store purchase locally
       await _storePurchaseLocally(userId, package, transactionId);
 
-      print('Purchase processed successfully: $transactionId');
+      debugPrint('Purchase processed successfully: $transactionId');
     } catch (e) {
       throw Exception('Failed to process purchase: $e');
     }
@@ -244,7 +255,10 @@ class PaymentService {
 
   // Store purchase locally
   Future<void> _storePurchaseLocally(
-      String userId, GemsPackage package, String transactionId) async {
+    String userId,
+    GemsPackage package,
+    String transactionId,
+  ) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final purchases = prefs.getStringList('user_purchases_$userId') ?? [];
@@ -261,7 +275,7 @@ class PaymentService {
       purchases.add(jsonEncode(purchase));
       await prefs.setStringList('user_purchases_$userId', purchases);
     } catch (e) {
-      print('Failed to store purchase locally: $e');
+      debugPrint('Failed to store purchase locally: $e');
     }
   }
 
@@ -280,14 +294,18 @@ class PaymentService {
         return SavedPaymentMethod.fromJson(data);
       }).toList();
     } catch (e) {
-      print('Failed to get saved payment methods: $e');
+      debugPrint('Failed to get saved payment methods: $e');
       return [];
     }
   }
 
   // Save payment method
   Future<bool> savePaymentMethod(
-      String last4, String brand, String expiryMonth, String expiryYear) async {
+    String last4,
+    String brand,
+    String expiryMonth,
+    String expiryYear,
+  ) async {
     try {
       final user = _authService.currentUser;
       if (user == null) return false;
@@ -308,11 +326,13 @@ class PaymentService {
 
       savedMethods.add(jsonEncode(paymentMethod.toJson()));
       await prefs.setStringList(
-          'saved_payment_methods_${user.id}', savedMethods);
+        'saved_payment_methods_${user.id}',
+        savedMethods,
+      );
 
       return true;
     } catch (e) {
-      print('Failed to save payment method: $e');
+      debugPrint('Failed to save payment method: $e');
       return false;
     }
   }
@@ -333,10 +353,12 @@ class PaymentService {
       });
 
       await prefs.setStringList(
-          'saved_payment_methods_${user.id}', savedMethods);
+        'saved_payment_methods_${user.id}',
+        savedMethods,
+      );
       return true;
     } catch (e) {
-      print('Failed to remove payment method: $e');
+      debugPrint('Failed to remove payment method: $e');
       return false;
     }
   }
@@ -362,7 +384,7 @@ class PaymentService {
         );
       }).toList();
     } catch (e) {
-      print('Failed to get purchase history: $e');
+      debugPrint('Failed to get purchase history: $e');
       return [];
     }
   }
@@ -389,7 +411,7 @@ class PaymentService {
       final currentGems = await getCurrentUserGems();
       // TODO: Implement updateUserGems in Firestore
       // await _firestoreService.updateUserGems(user.id, currentGems + amount);
-      print('Would add $amount gems. Current: $currentGems');
+      debugPrint('Would add $amount gems. Current: $currentGems');
 
       return true;
     } catch (e) {

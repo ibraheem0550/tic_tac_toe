@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import '../services/firebase_auth_service.dart';
+import '../services/unified_auth_services.dart';
 import '../models/complete_user_models.dart';
 import '../utils/app_theme_new.dart';
 import '../utils/app_localizations.dart';
@@ -53,7 +52,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     });
 
     try {
-      _currentUser = _authService.currentUser;
+      _currentUser = _authService.currentUserModel;
       if (_currentUser != null) {
         _displayNameController.text = _currentUser!.displayName;
         _emailController.text = _currentUser!.email;
@@ -75,8 +74,8 @@ class _SettingsScreenState extends State<SettingsScreen>
     final isDesktopOrTablet = screenWidth > 768;
 
     // التحقق من حالة المستخدم
-    final currentUser = _authService.currentUser;
-    final isGuest = currentUser?.isGuest == true;
+    final currentUser = _authService.currentUserModel;
+    final isGuest = currentUser.isGuest == true;
 
     // إذا كان ضيف، عرض شاشة تسجيل الدخول
     if (isGuest) {
@@ -86,11 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.person_outline,
-                size: 80,
-                color: AppColors.primary,
-              ),
+              Icon(Icons.person_outline, size: 80, color: AppColors.primary),
               const SizedBox(height: 24),
               Text(
                 'سجل دخولك للوصول للإعدادات',
@@ -120,8 +115,8 @@ class _SettingsScreenState extends State<SettingsScreen>
       body: _isLoading
           ? _buildLoadingWidget()
           : isDesktopOrTablet
-              ? _buildDesktopLayout()
-              : _buildMobileLayout(),
+          ? _buildDesktopLayout()
+          : _buildMobileLayout(),
     );
   }
 
@@ -145,9 +140,7 @@ class _SettingsScreenState extends State<SettingsScreen>
   }
 
   Widget _buildLoadingWidget() {
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
+    return const Center(child: CircularProgressIndicator());
   }
 
   Widget _buildDesktopLayout() {
@@ -261,14 +254,23 @@ class _SettingsScreenState extends State<SettingsScreen>
             const SizedBox(height: 24),
             Row(
               children: [
-                _buildStatsCard('المستوى', '${_currentUser?.level ?? 1}',
-                    Icons.trending_up),
+                _buildStatsCard(
+                  'المستوى',
+                  '${_currentUser?.level ?? 1}',
+                  Icons.trending_up,
+                ),
                 const SizedBox(width: 16),
                 _buildStatsCard(
-                    'الجواهر', '${_currentUser?.gems ?? 0}', Icons.diamond),
+                  'الجواهر',
+                  '${_currentUser?.gems ?? 0}',
+                  Icons.diamond,
+                ),
                 const SizedBox(width: 16),
                 _buildStatsCard(
-                    'الخبرة', '${_currentUser?.experience ?? 0}', Icons.star),
+                  'الخبرة',
+                  '${_currentUser?.experience ?? 0}',
+                  Icons.star,
+                ),
               ],
             ),
           ],
@@ -284,7 +286,7 @@ class _SettingsScreenState extends State<SettingsScreen>
         decoration: BoxDecoration(
           color: AppColors.surfaceLight,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
         ),
         child: Column(
           children: [
@@ -310,27 +312,23 @@ class _SettingsScreenState extends State<SettingsScreen>
   }
 
   Widget _buildAccountSection() {
-    return _buildSection(
-      'بيانات الحساب',
-      Icons.account_circle,
-      [
-        _buildTextField(
-          controller: _phoneController,
-          label: 'رقم الهاتف',
-          icon: Icons.phone,
-          keyboardType: TextInputType.phone,
-          onChanged: _updateProfile,
-        ),
-        const SizedBox(height: 16),
-        _buildTextField(
-          controller: _bioController,
-          label: 'نبذة شخصية',
-          icon: Icons.info,
-          maxLines: 3,
-          onChanged: _updateProfile,
-        ),
-      ],
-    );
+    return _buildSection('بيانات الحساب', Icons.account_circle, [
+      _buildTextField(
+        controller: _phoneController,
+        label: 'رقم الهاتف',
+        icon: Icons.phone,
+        keyboardType: TextInputType.phone,
+        onChanged: _updateProfile,
+      ),
+      const SizedBox(height: 16),
+      _buildTextField(
+        controller: _bioController,
+        label: 'نبذة شخصية',
+        icon: Icons.info,
+        maxLines: 3,
+        onChanged: _updateProfile,
+      ),
+    ]);
   }
 
   // دالة بناء محدد اللغة
@@ -344,7 +342,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       decoration: BoxDecoration(
         color: AppColors.surfaceLight,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -409,82 +407,70 @@ class _SettingsScreenState extends State<SettingsScreen>
     final preferences =
         _currentUser?.profile?.preferences ?? const UserPreferences();
 
-    return _buildSection(
-      'التفضيلات',
-      Icons.settings,
-      [
-        // خيار تغيير اللغة
-        _buildLanguageSelector(),
-        const SizedBox(height: 16),
-        _buildSwitchTile(
-          'الأصوات',
-          'تفعيل الأصوات في اللعبة',
-          Icons.volume_up,
-          preferences.soundEnabled,
-          (value) => _updatePreference('soundEnabled', value),
-        ),
-        _buildSwitchTile(
-          'الإشعارات',
-          'استقبال الإشعارات',
-          Icons.notifications,
-          preferences.notificationsEnabled,
-          (value) => _updatePreference('notificationsEnabled', value),
-        ),
-        _buildSwitchTile(
-          'الاهتزاز',
-          'تفعيل الاهتزاز',
-          Icons.vibration,
-          preferences.vibrationEnabled,
-          (value) => _updatePreference('vibrationEnabled', value),
-        ),
-      ],
-    );
+    return _buildSection('التفضيلات', Icons.settings, [
+      // خيار تغيير اللغة
+      _buildLanguageSelector(),
+      const SizedBox(height: 16),
+      _buildSwitchTile(
+        'الأصوات',
+        'تفعيل الأصوات في اللعبة',
+        Icons.volume_up,
+        preferences.soundEnabled,
+        (value) => _updatePreference('soundEnabled', value),
+      ),
+      _buildSwitchTile(
+        'الإشعارات',
+        'استقبال الإشعارات',
+        Icons.notifications,
+        preferences.notificationsEnabled,
+        (value) => _updatePreference('notificationsEnabled', value),
+      ),
+      _buildSwitchTile(
+        'الاهتزاز',
+        'تفعيل الاهتزاز',
+        Icons.vibration,
+        preferences.vibrationEnabled,
+        (value) => _updatePreference('vibrationEnabled', value),
+      ),
+    ]);
   }
 
   Widget _buildSocialSection() {
-    return _buildSection(
-      'إدارة طلبات الصداقة',
-      Icons.group,
-      [
-        _buildSwitchTile(
-          'قبول طلبات الصداقة تلقائياً',
-          'تفعيل لقبول طلبات الصداقة الجديدة تلقائياً',
-          Icons.person_add,
-          false, // يمكن إضافة هذه الخاصية للتفضيلات لاحقاً
-          (value) => _updatePreference('autoAcceptFriendRequests', value),
-        ),
-        _buildSwitchTile(
-          'إظهار الحالة الاونلاين',
-          'إظهار حالتك الاونلاين للأصدقاء',
-          Icons.circle,
-          true, // يمكن إضافة هذه الخاصية للتفضيلات لاحقاً
-          (value) => _updatePreference('showOnlineStatus', value),
-        ),
-      ],
-    );
+    return _buildSection('إدارة طلبات الصداقة', Icons.group, [
+      _buildSwitchTile(
+        'قبول طلبات الصداقة تلقائياً',
+        'تفعيل لقبول طلبات الصداقة الجديدة تلقائياً',
+        Icons.person_add,
+        false, // يمكن إضافة هذه الخاصية للتفضيلات لاحقاً
+        (value) => _updatePreference('autoAcceptFriendRequests', value),
+      ),
+      _buildSwitchTile(
+        'إظهار الحالة الاونلاين',
+        'إظهار حالتك الاونلاين للأصدقاء',
+        Icons.circle,
+        true, // يمكن إضافة هذه الخاصية للتفضيلات لاحقاً
+        (value) => _updatePreference('showOnlineStatus', value),
+      ),
+    ]);
   }
 
   Widget _buildPrivacySection() {
-    return _buildSection(
-      'الخصوصية والأمان',
-      Icons.security,
-      [
-        ListTile(
-          leading: Icon(Icons.person_remove, color: AppColors.primary),
-          title: Text('حظر المستخدمين'),
-          subtitle: Text('إدارة قائمة المستخدمين المحظورين'),
-          trailing: Icon(Icons.arrow_forward_ios),
-          onTap: () => _showBlockedUsers(),
-        ),
-        ListTile(
-          leading: Icon(Icons.report, color: AppColors.primary),
-          title: Text('الإبلاغ عن مشكلة'),
-          subtitle: Text('الإبلاغ عن محتوى غير مناسب أو مشكلة تقنية'),
-          trailing: Icon(Icons.arrow_forward_ios),
-          onTap: () => _reportProblem(),
-        ),
-      ],
-    );
+    return _buildSection('الخصوصية والأمان', Icons.security, [
+      ListTile(
+        leading: Icon(Icons.person_remove, color: AppColors.primary),
+        title: Text('حظر المستخدمين'),
+        subtitle: Text('إدارة قائمة المستخدمين المحظورين'),
+        trailing: Icon(Icons.arrow_forward_ios),
+        onTap: () => _showBlockedUsers(),
+      ),
+      ListTile(
+        leading: Icon(Icons.report, color: AppColors.primary),
+        title: Text('الإبلاغ عن مشكلة'),
+        subtitle: Text('الإبلاغ عن محتوى غير مناسب أو مشكلة تقنية'),
+        trailing: Icon(Icons.arrow_forward_ios),
+        onTap: () => _reportProblem(),
+      ),
+    ]);
   }
 
   Widget _buildSection(String title, IconData icon, List<Widget> children) {
@@ -534,12 +520,12 @@ class _SettingsScreenState extends State<SettingsScreen>
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon, color: AppColors.primary),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.primary.withOpacity(0.3)),
+          borderSide: BorderSide(
+            color: AppColors.primary.withValues(alpha: 0.3),
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -564,7 +550,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       decoration: BoxDecoration(
         color: AppColors.surfaceLight,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -629,28 +615,19 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.green,
-      ),
+      SnackBar(content: Text(message), backgroundColor: Colors.green),
     );
   }
 
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
     );
   }
 
   void _showInfoSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.blue,
-      ),
+      SnackBar(content: Text(message), backgroundColor: Colors.blue),
     );
   }
 

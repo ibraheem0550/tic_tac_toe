@@ -12,7 +12,8 @@ class StellarAILevelSelectionScreen extends StatefulWidget {
 }
 
 class _StellarAILevelSelectionScreenState
-    extends State<StellarAILevelSelectionScreen> with TickerProviderStateMixin {
+    extends State<StellarAILevelSelectionScreen>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
   late AnimationController _pulseController;
   late Animation<double> _fadeAnimation;
@@ -131,15 +132,14 @@ class _StellarAILevelSelectionScreenState
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
-              StellarGameScreenEnhanced(
-            gameMode: 'ai',
-            aiLevel: level,
-          ),
+              StellarGameScreenEnhanced(gameMode: 'ai', aiLevel: level),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position: animation.drive(
-                Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
-                    .chain(CurveTween(curve: Curves.easeInOut)),
+                Tween(
+                  begin: const Offset(1.0, 0.0),
+                  end: Offset.zero,
+                ).chain(CurveTween(curve: Curves.easeInOut)),
               ),
               child: child,
             );
@@ -150,7 +150,7 @@ class _StellarAILevelSelectionScreenState
       // إعادة تحميل المستويات بعد العودة من اللعبة
       await _loadAILevels();
     } catch (e) {
-      print('خطأ في بدء اللعبة: $e');
+      debugPrint('خطأ في بدء اللعبة: $e');
     }
   }
 
@@ -211,18 +211,13 @@ class _StellarAILevelSelectionScreenState
             gradient: AppColors.nebularGradient,
             boxShadow: AppShadows.card,
           ),
-          child: const Icon(
-            Icons.arrow_back,
-            color: AppColors.textPrimary,
-          ),
+          child: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
         ),
         onPressed: () => Navigator.pop(context),
       ),
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
-            gradient: AppColors.nebularGradient,
-          ),
+          decoration: const BoxDecoration(gradient: AppColors.nebularGradient),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -317,10 +312,7 @@ class _StellarAILevelSelectionScreenState
   Widget _buildTip(String emoji, String text) {
     return Row(
       children: [
-        Text(
-          emoji,
-          style: const TextStyle(fontSize: 20),
-        ),
+        Text(emoji, style: const TextStyle(fontSize: 20)),
         const SizedBox(width: AppDimensions.paddingMD),
         Expanded(
           child: Text(
@@ -428,9 +420,9 @@ class _StellarAILevelSelectionScreenState
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Colors.white.withValues(alpha: 0.3),
                           width: 2,
                         ),
                       ),
@@ -457,7 +449,9 @@ class _StellarAILevelSelectionScreenState
                           Text(
                             levelData['description'],
                             style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.textPrimary.withOpacity(0.9),
+                              color: AppColors.textPrimary.withValues(
+                                alpha: 0.9,
+                              ),
                             ),
                           ),
                           const SizedBox(height: AppDimensions.paddingMD),
@@ -469,7 +463,7 @@ class _StellarAILevelSelectionScreenState
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
+                                  color: Colors.white.withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
@@ -484,7 +478,9 @@ class _StellarAILevelSelectionScreenState
                               Text(
                                 'نسبة الفوز: ${levelData['winRate']}',
                                 style: AppTextStyles.bodySmall.copyWith(
-                                  color: AppColors.textPrimary.withOpacity(0.8),
+                                  color: AppColors.textPrimary.withValues(
+                                    alpha: 0.8,
+                                  ),
                                 ),
                               ),
                             ],

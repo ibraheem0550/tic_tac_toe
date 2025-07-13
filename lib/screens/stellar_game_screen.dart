@@ -37,7 +37,7 @@ class _StellarGameScreenState extends State<StellarGameScreen>
   late Animation<double> _pulseAnimation;
   late Animation<double> _rotationAnimation;
 
-  List<AnimationController> _cellAnimations = [];
+  final List<AnimationController> _cellAnimations = [];
   bool _gameStarted = false;
   int _playerScore = 0;
   int _aiScore = 0;
@@ -79,9 +79,10 @@ class _StellarGameScreenState extends State<StellarGameScreen>
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
-    _rotationAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      _rotationController,
-    );
+    _rotationAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(_rotationController);
 
     // إنشاء أنيميشن لكل خلية
     for (int i = 0; i < 9; i++) {
@@ -135,17 +136,18 @@ class _StellarGameScreenState extends State<StellarGameScreen>
         _drawCount = 0;
       });
     } catch (e) {
-      print('خطأ في تحميل البيانات: $e');
+      debugPrint('خطأ في تحميل البيانات: $e');
     }
   }
 
   Future<void> saveProgress() async {
     try {
       // حفظ البيانات (يمكن استبدالها بنظام تخزين آخر)
-      print(
-          'تم حفظ النتائج: اللاعب $_playerScore - الذكاء الاصطناعي $_aiScore - التعادل $_drawCount');
+      debugPrint(
+        'تم حفظ النتائج: اللاعب $_playerScore - الذكاء الاصطناعي $_aiScore - التعادل $_drawCount',
+      );
     } catch (e) {
-      print('خطأ في حفظ البيانات: $e');
+      debugPrint('خطأ في حفظ البيانات: $e');
     }
   }
 
@@ -230,7 +232,7 @@ class _StellarGameScreenState extends State<StellarGameScreen>
     const winPatterns = [
       [0, 1, 2], [3, 4, 5], [6, 7, 8], // صفوف
       [0, 3, 6], [1, 4, 7], [2, 5, 8], // أعمدة
-      [0, 4, 8], [2, 4, 6] // أقطار
+      [0, 4, 8], [2, 4, 6], // أقطار
     ];
 
     for (var pattern in winPatterns) {
@@ -271,8 +273,9 @@ class _StellarGameScreenState extends State<StellarGameScreen>
                         _buildAppBar(),
                         Expanded(
                           child: SingleChildScrollView(
-                            padding:
-                                const EdgeInsets.all(AppDimensions.paddingLG),
+                            padding: const EdgeInsets.all(
+                              AppDimensions.paddingLG,
+                            ),
                             child: Column(
                               children: [
                                 _buildScoreBoard(),
@@ -390,9 +393,7 @@ class _StellarGameScreenState extends State<StellarGameScreen>
           Container(
             width: 2,
             height: 60,
-            decoration: BoxDecoration(
-              gradient: AppColors.stellarGradient,
-            ),
+            decoration: BoxDecoration(gradient: AppColors.stellarGradient),
           ),
           Expanded(
             child: _buildPlayerScore(
@@ -406,9 +407,7 @@ class _StellarGameScreenState extends State<StellarGameScreen>
           Container(
             width: 2,
             height: 60,
-            decoration: BoxDecoration(
-              gradient: AppColors.stellarGradient,
-            ),
+            decoration: BoxDecoration(gradient: AppColors.stellarGradient),
           ),
           Expanded(
             child: _buildPlayerScore(
@@ -437,14 +436,10 @@ class _StellarGameScreenState extends State<StellarGameScreen>
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: color.withOpacity(0.2),
+            color: color.withValues(alpha: 0.2),
             border: Border.all(color: color, width: 2),
           ),
-          child: Icon(
-            icon,
-            color: color,
-            size: 20,
-          ),
+          child: Icon(icon, color: color, size: 20),
         ),
         const SizedBox(height: AppDimensions.paddingSM),
         Text(
@@ -474,7 +469,7 @@ class _StellarGameScreenState extends State<StellarGameScreen>
         borderRadius: BorderRadius.circular(AppDimensions.radiusXL),
         boxShadow: AppShadows.elevated,
         border: Border.all(
-          color: AppColors.starGold.withOpacity(0.3),
+          color: AppColors.starGold.withValues(alpha: 0.3),
           width: 2,
         ),
       ),
@@ -545,18 +540,18 @@ class _StellarGameScreenState extends State<StellarGameScreen>
                 gradient: board[index] == ''
                     ? AppColors.stellarGradient
                     : (board[index] == 'X'
-                        ? AppColors.cosmicButtonGradient
-                        : const LinearGradient(
-                            colors: [AppColors.error, AppColors.errorDark],
-                          )),
+                          ? AppColors.cosmicButtonGradient
+                          : const LinearGradient(
+                              colors: [AppColors.error, AppColors.errorDark],
+                            )),
                 borderRadius: BorderRadius.circular(AppDimensions.radiusMD),
                 boxShadow: AppShadows.card,
                 border: Border.all(
                   color: board[index] == ''
                       ? AppColors.borderPrimary
                       : (board[index] == 'X'
-                          ? AppColors.primary
-                          : AppColors.error),
+                            ? AppColors.primary
+                            : AppColors.error),
                   width: 2,
                 ),
               ),
@@ -565,7 +560,7 @@ class _StellarGameScreenState extends State<StellarGameScreen>
                     ? Icon(
                         Icons.add,
                         size: 32,
-                        color: AppColors.textPrimary.withOpacity(0.3),
+                        color: AppColors.textPrimary.withValues(alpha: 0.3),
                       )
                     : Text(
                         board[index],
@@ -593,12 +588,12 @@ class _StellarGameScreenState extends State<StellarGameScreen>
               gradient: winner == 'X'
                   ? AppColors.cosmicButtonGradient
                   : winner == 'O'
-                      ? const LinearGradient(
-                          colors: [AppColors.error, AppColors.errorDark],
-                        )
-                      : const LinearGradient(
-                          colors: [AppColors.warning, AppColors.warningDark],
-                        ),
+                  ? const LinearGradient(
+                      colors: [AppColors.error, AppColors.errorDark],
+                    )
+                  : const LinearGradient(
+                      colors: [AppColors.warning, AppColors.warningDark],
+                    ),
               borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
               boxShadow: AppShadows.elevated,
             ),
@@ -609,8 +604,8 @@ class _StellarGameScreenState extends State<StellarGameScreen>
                   winner == 'X'
                       ? Icons.emoji_events
                       : winner == 'O'
-                          ? Icons.sentiment_dissatisfied
-                          : Icons.handshake,
+                      ? Icons.sentiment_dissatisfied
+                      : Icons.handshake,
                   color: AppColors.textPrimary,
                   size: 32,
                 ),
@@ -619,8 +614,8 @@ class _StellarGameScreenState extends State<StellarGameScreen>
                   winner == 'X'
                       ? 'فزت! 🎉'
                       : winner == 'O'
-                          ? 'خسرت! 😞'
-                          : 'تعادل! 🤝',
+                      ? 'خسرت! 😞'
+                      : 'تعادل! 🤝',
                   style: AppTextStyles.headlineMedium.copyWith(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w800,
@@ -664,10 +659,7 @@ class _StellarGameScreenState extends State<StellarGameScreen>
             gradient: AppColors.starfieldGradient,
             borderRadius: BorderRadius.circular(AppDimensions.radiusXL),
             boxShadow: AppShadows.modal,
-            border: Border.all(
-              color: AppColors.borderPrimary,
-              width: 1,
-            ),
+            border: Border.all(color: AppColors.borderPrimary, width: 1),
           ),
           padding: const EdgeInsets.all(AppDimensions.paddingXL),
           child: Column(
@@ -680,23 +672,20 @@ class _StellarGameScreenState extends State<StellarGameScreen>
                   gradient: winner == 'X'
                       ? AppColors.cosmicButtonGradient
                       : winner == 'O'
-                          ? const LinearGradient(
-                              colors: [AppColors.error, AppColors.errorDark],
-                            )
-                          : const LinearGradient(
-                              colors: [
-                                AppColors.warning,
-                                AppColors.warningDark
-                              ],
-                            ),
+                      ? const LinearGradient(
+                          colors: [AppColors.error, AppColors.errorDark],
+                        )
+                      : const LinearGradient(
+                          colors: [AppColors.warning, AppColors.warningDark],
+                        ),
                   boxShadow: AppShadows.stellar,
                 ),
                 child: Icon(
                   winner == 'X'
                       ? Icons.emoji_events
                       : winner == 'O'
-                          ? Icons.sentiment_dissatisfied
-                          : Icons.handshake,
+                      ? Icons.sentiment_dissatisfied
+                      : Icons.handshake,
                   size: 40,
                   color: AppColors.textPrimary,
                 ),
@@ -706,8 +695,8 @@ class _StellarGameScreenState extends State<StellarGameScreen>
                 winner == 'X'
                     ? 'مبروك! لقد فزت!'
                     : winner == 'O'
-                        ? 'للأسف! لقد خسرت!'
-                        : 'تعادل!',
+                    ? 'للأسف! لقد خسرت!'
+                    : 'تعادل!',
                 style: AppTextStyles.headlineLarge.copyWith(
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.w800,
@@ -719,8 +708,8 @@ class _StellarGameScreenState extends State<StellarGameScreen>
                 winner == 'X'
                     ? 'أداء رائع! استمر في التقدم!'
                     : winner == 'O'
-                        ? 'لا تستسلم! جرب مرة أخرى!'
-                        : 'لعبة جيدة! كان أداؤكما متساوياً!',
+                    ? 'لا تستسلم! جرب مرة أخرى!'
+                    : 'لعبة جيدة! كان أداؤكما متساوياً!',
                 style: AppTextStyles.bodyLarge.copyWith(
                   color: AppColors.textSecondary,
                 ),

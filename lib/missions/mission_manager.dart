@@ -135,7 +135,7 @@ class MissionManager {
       ),
       Mission(
         id: 'win_three',
-        title: 'الفوز ${winCount}/3 مرات',
+        title: 'الفوز $winCount/3 مرات',
         icon: Icons.workspace_premium,
         coinsReward: 100,
         isCompleted: completedMissions.contains('win_three'),

@@ -11,7 +11,12 @@ class GameScreen extends StatefulWidget {
   final bool isAI;
   final bool isPvP;
 
-  GameScreen({required this.aiLevel, this.isAI = false, this.isPvP = false});
+  const GameScreen({
+    super.key,
+    required this.aiLevel,
+    this.isAI = false,
+    this.isPvP = false,
+  });
 
   @override
   _GameScreenState createState() => _GameScreenState();
@@ -328,7 +333,7 @@ class _GameScreenState extends State<GameScreen>
               end: Alignment.bottomRight,
               colors: [
                 AppColors.backgroundDark,
-                AppColors.primaryDark.withOpacity(0.3),
+                AppColors.primaryDark.withValues(alpha: 0.3),
               ],
             ),
           ),
@@ -441,9 +446,9 @@ class _GameScreenState extends State<GameScreen>
     return Container(
       padding: EdgeInsets.all(ResponsiveHelper.getPadding(context)),
       decoration: BoxDecoration(
-        color: AppColors.surfaceLight.withOpacity(0.1),
+        color: AppColors.surfaceLight.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -525,12 +530,12 @@ class _GameScreenState extends State<GameScreen>
       padding: EdgeInsets.all(
           ResponsiveHelper.getPadding(context, size: PaddingSize.small)),
       decoration: BoxDecoration(
-        color: AppColors.surfaceLight.withOpacity(0.1),
+        color: AppColors.surfaceLight.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.primary.withOpacity(0.3), width: 2),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 2),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryDark.withOpacity(0.3),
+            color: AppColors.primaryDark.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -558,21 +563,21 @@ class _GameScreenState extends State<GameScreen>
       child: Container(
         decoration: BoxDecoration(
           color: isEmpty
-              ? AppColors.surfaceLight.withOpacity(0.2)
+              ? AppColors.surfaceLight.withValues(alpha: 0.2)
               : isX
                   ? AppColors.primary
                   : AppColors.secondary,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isEmpty
-                ? AppColors.primary.withOpacity(0.3)
+                ? AppColors.primary.withValues(alpha: 0.3)
                 : Colors.transparent,
           ),
           boxShadow: [
             if (!isEmpty)
               BoxShadow(
                 color: (isX ? AppColors.primary : AppColors.secondary)
-                    .withOpacity(0.5),
+                    .withValues(alpha: 0.5),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -588,7 +593,7 @@ class _GameScreenState extends State<GameScreen>
               shadows: [
                 Shadow(
                   blurRadius: 4,
-                  color: Colors.black.withOpacity(0.3),
+                  color: Colors.black.withValues(alpha: 0.3),
                   offset: const Offset(2, 2),
                 ),
               ],
@@ -603,9 +608,9 @@ class _GameScreenState extends State<GameScreen>
     return Container(
       padding: EdgeInsets.all(ResponsiveHelper.getPadding(context)),
       decoration: BoxDecoration(
-        color: AppColors.surfaceLight.withOpacity(0.1),
+        color: AppColors.surfaceLight.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -641,7 +646,7 @@ class _GameScreenState extends State<GameScreen>
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: color.withOpacity(0.5),
+                color: color.withValues(alpha: 0.5),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -661,7 +666,7 @@ class _GameScreenState extends State<GameScreen>
         Text(
           '$moves حركات',
           style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.textLight.withOpacity(0.8),
+            color: AppColors.textLight.withValues(alpha: 0.8),
           ),
         ),
       ],
@@ -676,8 +681,8 @@ class _GameScreenState extends State<GameScreen>
       padding: EdgeInsets.all(ResponsiveHelper.getPadding(context)),
       decoration: BoxDecoration(
         color: isWin
-            ? AppColors.accent.withOpacity(0.2)
-            : AppColors.secondary.withOpacity(0.2),
+            ? AppColors.accent.withValues(alpha: 0.2)
+            : AppColors.secondary.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isWin ? AppColors.accent : AppColors.secondary,
@@ -712,7 +717,7 @@ class _GameScreenState extends State<GameScreen>
                 borderRadius: BorderRadius.circular(12),
               ),
               elevation: 8,
-              shadowColor: AppColors.primary.withOpacity(0.5),
+              shadowColor: AppColors.primary.withValues(alpha: 0.5),
             ),
           ),
         ],

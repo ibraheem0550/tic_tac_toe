@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../models/product_model.dart';
 import 'products_local_service.dart';
@@ -33,7 +34,7 @@ class ProductsApiService {
         throw Exception('فشل في جلب المنتجات: ${response.statusCode}');
       }
     } catch (e) {
-      print('خطأ في جلب المنتجات: $e');
+      debugPrint('خطأ في جلب المنتجات: $e');
       return [];
     }
   }
@@ -56,7 +57,7 @@ class ProductsApiService {
       }
       return [];
     } catch (e) {
-      print('خطأ في جلب المنتجات الجديدة: $e');
+      debugPrint('خطأ في جلب المنتجات الجديدة: $e');
       return [];
     }
   }
@@ -83,7 +84,7 @@ class ProductsApiService {
       }
       return false;
     } catch (e) {
-      print('خطأ في التحقق من التحديثات: $e');
+      debugPrint('خطأ في التحقق من التحديثات: $e');
       return false;
     }
   }
@@ -106,7 +107,7 @@ class ProductsApiService {
 
       return response.statusCode == 201;
     } catch (e) {
-      print('خطأ في إضافة المنتج: $e');
+      debugPrint('خطأ في إضافة المنتج: $e');
       return false;
     }
   }
@@ -127,7 +128,7 @@ class ProductsApiService {
 
       return response.statusCode == 200;
     } catch (e) {
-      print('خطأ في حذف المنتج: $e');
+      debugPrint('خطأ في حذف المنتج: $e');
       return false;
     }
   }
@@ -150,7 +151,7 @@ class ProductsApiService {
 
       return response.statusCode == 200;
     } catch (e) {
-      print('خطأ في تحديث المنتج: $e');
+      debugPrint('خطأ في تحديث المنتج: $e');
       return false;
     }
   }
@@ -174,7 +175,7 @@ class ProductsApiService {
 
       return response.statusCode == 200;
     } catch (e) {
-      print('خطأ في تبديل حالة المنتج: $e');
+      debugPrint('خطأ في تبديل حالة المنتج: $e');
       return false;
     }
   }

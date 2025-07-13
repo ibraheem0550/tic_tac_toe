@@ -39,9 +39,10 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
       vsync: this,
     )..repeat(reverse: true);
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _pulseAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.elasticInOut),
@@ -94,7 +95,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
               end: Alignment.bottomRight,
               colors: [
                 AppColors.backgroundDark,
-                AppColors.primaryDark.withOpacity(0.3),
+                AppColors.primaryDark.withValues(alpha: 0.3),
               ],
             ),
           ),
@@ -113,10 +114,12 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                       // إضافة مساحة أسفل للشاشات الصغيرة
                       SliverToBoxAdapter(
                         child: SizedBox(
-                          height: ResponsiveHelper.getPadding(context,
-                              size: deviceType == DeviceType.mobile
-                                  ? PaddingSize.large
-                                  : PaddingSize.medium),
+                          height: ResponsiveHelper.getPadding(
+                            context,
+                            size: deviceType == DeviceType.mobile
+                                ? PaddingSize.large
+                                : PaddingSize.medium,
+                          ),
                         ),
                       ),
                     ],
@@ -136,15 +139,12 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(
-              color: AppColors.accent,
-              strokeWidth: 3,
-            ),
+            CircularProgressIndicator(color: AppColors.accent, strokeWidth: 3),
             const SizedBox(height: 20),
             Text(
               'جاري تحميل المهام الذكية...',
               style: AppTextStyles.bodyLarge.copyWith(
-                color: AppColors.textLight.withOpacity(0.8),
+                color: AppColors.textLight.withValues(alpha: 0.8),
               ),
             ),
           ],
@@ -175,8 +175,10 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                   child: Icon(
                     Icons.psychology,
                     color: AppColors.textLight,
-                    size: ResponsiveHelper.getIconSize(context,
-                        size: isMobile ? IconSize.medium : IconSize.large),
+                    size: ResponsiveHelper.getIconSize(
+                      context,
+                      size: isMobile ? IconSize.medium : IconSize.large,
+                    ),
                   ),
                 );
               },
@@ -200,10 +202,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                AppColors.primary,
-                AppColors.primaryDark,
-              ],
+              colors: [AppColors.primary, AppColors.primaryDark],
             ),
           ),
         ),
@@ -220,20 +219,28 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
       child: FadeTransition(
         opacity: _fadeAnimation,
         child: Container(
-          margin: EdgeInsets.all(ResponsiveHelper.getPadding(context,
-              size: isMobile ? PaddingSize.medium : PaddingSize.large)),
-          padding: EdgeInsets.all(ResponsiveHelper.getPadding(context,
-              size: isMobile ? PaddingSize.medium : PaddingSize.large)),
+          margin: EdgeInsets.all(
+            ResponsiveHelper.getPadding(
+              context,
+              size: isMobile ? PaddingSize.medium : PaddingSize.large,
+            ),
+          ),
+          padding: EdgeInsets.all(
+            ResponsiveHelper.getPadding(
+              context,
+              size: isMobile ? PaddingSize.medium : PaddingSize.large,
+            ),
+          ),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                AppColors.accent.withOpacity(0.1),
-                AppColors.primary.withOpacity(0.05)
+                AppColors.accent.withValues(alpha: 0.1),
+                AppColors.primary.withValues(alpha: 0.05),
               ],
             ),
             borderRadius: BorderRadius.circular(isMobile ? 12 : 16),
             border: Border.all(
-              color: AppColors.accent.withOpacity(0.3),
+              color: AppColors.accent.withValues(alpha: 0.3),
               width: 1,
             ),
           ),
@@ -250,16 +257,16 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                         child: Container(
                           padding: EdgeInsets.all(isMobile ? 8 : 12),
                           decoration: BoxDecoration(
-                            color: AppColors.accent.withOpacity(0.2),
+                            color: AppColors.accent.withValues(alpha: 0.2),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
                             Icons.smart_toy,
                             color: AppColors.accent,
-                            size: ResponsiveHelper.getIconSize(context,
-                                size: isMobile
-                                    ? IconSize.medium
-                                    : IconSize.large),
+                            size: ResponsiveHelper.getIconSize(
+                              context,
+                              size: isMobile ? IconSize.medium : IconSize.large,
+                            ),
                           ),
                         ),
                       );
@@ -282,7 +289,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
               Text(
                 'يقوم الذكاء الاصطناعي بتحليل أدائك وتوليد مهام مخصصة لك كل 6 ساعات',
                 style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.textLight.withOpacity(0.9),
+                  color: AppColors.textLight.withValues(alpha: 0.9),
                   fontSize: isMobile ? 13 : 14,
                   height: 1.4,
                 ),
@@ -308,24 +315,34 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
         opacity: _fadeAnimation,
         child: Container(
           margin: EdgeInsets.symmetric(
-              horizontal: ResponsiveHelper.getPadding(context,
-                  size: isMobile ? PaddingSize.medium : PaddingSize.large)),
+            horizontal: ResponsiveHelper.getPadding(
+              context,
+              size: isMobile ? PaddingSize.medium : PaddingSize.large,
+            ),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.all(ResponsiveHelper.getPadding(context,
-                    size: isMobile ? PaddingSize.medium : PaddingSize.large)),
+                padding: EdgeInsets.all(
+                  ResponsiveHelper.getPadding(
+                    context,
+                    size: isMobile ? PaddingSize.medium : PaddingSize.large,
+                  ),
+                ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.lightbulb,
                       color: AppColors.accent,
-                      size: ResponsiveHelper.getIconSize(context,
-                          size: isMobile ? IconSize.medium : IconSize.large),
+                      size: ResponsiveHelper.getIconSize(
+                        context,
+                        size: isMobile ? IconSize.medium : IconSize.large,
+                      ),
                     ),
                     SizedBox(
-                        width: ResponsiveHelper.getPadding(context) * 0.25),
+                      width: ResponsiveHelper.getPadding(context) * 0.25,
+                    ),
                     Flexible(
                       child: Text(
                         'توصيات ذكية لك',
@@ -347,34 +364,40 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     padding: EdgeInsets.symmetric(
-                        horizontal: ResponsiveHelper.getPadding(context)),
+                      horizontal: ResponsiveHelper.getPadding(context),
+                    ),
                     itemCount: _aiRecommendations.length,
                     itemBuilder: (context, index) {
                       return Container(
-                        width:
-                            isMobile ? screenWidth * 0.85 : screenWidth * 0.75,
+                        width: isMobile
+                            ? screenWidth * 0.85
+                            : screenWidth * 0.75,
                         margin: EdgeInsets.only(
-                            right: ResponsiveHelper.getPadding(context) * 0.5),
-                        padding: EdgeInsets.all(ResponsiveHelper.getPadding(
+                          right: ResponsiveHelper.getPadding(context) * 0.5,
+                        ),
+                        padding: EdgeInsets.all(
+                          ResponsiveHelper.getPadding(
                             context,
                             size: isMobile
                                 ? PaddingSize.medium
-                                : PaddingSize.large)),
+                                : PaddingSize.large,
+                          ),
+                        ),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.surfaceLight.withOpacity(0.15),
-                              AppColors.surfaceLight.withOpacity(0.05)
+                              AppColors.surfaceLight.withValues(alpha: 0.15),
+                              AppColors.surfaceLight.withValues(alpha: 0.05),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(15),
                           border: Border.all(
-                            color: AppColors.accent.withOpacity(0.3),
+                            color: AppColors.accent.withValues(alpha: 0.3),
                             width: 1,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.accent.withOpacity(0.1),
+                              color: AppColors.accent.withValues(alpha: 0.1),
                               blurRadius: 8,
                               spreadRadius: 2,
                             ),
@@ -388,22 +411,27 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                                 Container(
                                   padding: EdgeInsets.all(isMobile ? 6 : 8),
                                   decoration: BoxDecoration(
-                                    color: AppColors.accent.withOpacity(0.2),
+                                    color: AppColors.accent.withValues(
+                                      alpha: 0.2,
+                                    ),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Icon(
                                     Icons.tips_and_updates,
                                     color: AppColors.accent,
-                                    size: ResponsiveHelper.getIconSize(context,
-                                        size: isMobile
-                                            ? IconSize.small
-                                            : IconSize.medium),
+                                    size: ResponsiveHelper.getIconSize(
+                                      context,
+                                      size: isMobile
+                                          ? IconSize.small
+                                          : IconSize.medium,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
-                                    width:
-                                        ResponsiveHelper.getPadding(context) *
-                                            0.5),
+                                  width:
+                                      ResponsiveHelper.getPadding(context) *
+                                      0.5,
+                                ),
                                 Expanded(
                                   child: Text(
                                     'توصية ${index + 1}',
@@ -417,13 +445,16 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                               ],
                             ),
                             SizedBox(
-                                height:
-                                    ResponsiveHelper.getPadding(context) * 0.5),
+                              height:
+                                  ResponsiveHelper.getPadding(context) * 0.5,
+                            ),
                             Expanded(
                               child: Text(
                                 _aiRecommendations[index],
                                 style: AppTextStyles.bodyMedium.copyWith(
-                                  color: AppColors.textLight.withOpacity(0.9),
+                                  color: AppColors.textLight.withValues(
+                                    alpha: 0.9,
+                                  ),
                                   height: 1.4,
                                   fontSize: isMobile ? 13 : 14,
                                 ),
@@ -443,40 +474,46 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.symmetric(
-                      horizontal: ResponsiveHelper.getPadding(context)),
+                    horizontal: ResponsiveHelper.getPadding(context),
+                  ),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: ResponsiveHelper.getColumnsCount(context,
-                        maxColumns:
-                            deviceType == DeviceType.largeDesktop ? 4 : 3,
-                        minColumns: isTablet ? 2 : 2),
+                    crossAxisCount: ResponsiveHelper.getColumnsCount(
+                      context,
+                      maxColumns: deviceType == DeviceType.largeDesktop ? 4 : 3,
+                      minColumns: isTablet ? 2 : 2,
+                    ),
                     crossAxisSpacing: ResponsiveHelper.getPadding(context),
                     mainAxisSpacing: ResponsiveHelper.getPadding(context),
-                    childAspectRatio:
-                        deviceType == DeviceType.largeDesktop ? 1.8 : 1.5,
+                    childAspectRatio: deviceType == DeviceType.largeDesktop
+                        ? 1.8
+                        : 1.5,
                   ),
                   itemCount: _aiRecommendations.length,
                   itemBuilder: (context, index) {
                     return Container(
-                      padding: EdgeInsets.all(ResponsiveHelper.getPadding(
+                      padding: EdgeInsets.all(
+                        ResponsiveHelper.getPadding(
                           context,
                           size: deviceType == DeviceType.largeDesktop
                               ? PaddingSize.large
-                              : PaddingSize.medium)),
+                              : PaddingSize.medium,
+                        ),
+                      ),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            AppColors.surfaceLight.withOpacity(0.15),
-                            AppColors.surfaceLight.withOpacity(0.05)
+                            AppColors.surfaceLight.withValues(alpha: 0.15),
+                            AppColors.surfaceLight.withValues(alpha: 0.05),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(15),
                         border: Border.all(
-                          color: AppColors.accent.withOpacity(0.3),
+                          color: AppColors.accent.withValues(alpha: 0.3),
                           width: 1,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.accent.withOpacity(0.1),
+                            color: AppColors.accent.withValues(alpha: 0.1),
                             blurRadius: 8,
                             spreadRadius: 2,
                           ),
@@ -490,14 +527,17 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                               Icon(
                                 Icons.tips_and_updates,
                                 color: AppColors.accent,
-                                size: ResponsiveHelper.getIconSize(context,
-                                    size: deviceType == DeviceType.largeDesktop
-                                        ? IconSize.large
-                                        : IconSize.medium),
+                                size: ResponsiveHelper.getIconSize(
+                                  context,
+                                  size: deviceType == DeviceType.largeDesktop
+                                      ? IconSize.large
+                                      : IconSize.medium,
+                                ),
                               ),
                               SizedBox(
-                                  width: ResponsiveHelper.getPadding(context) *
-                                      0.5),
+                                width:
+                                    ResponsiveHelper.getPadding(context) * 0.5,
+                              ),
                               Expanded(
                                 child: Text(
                                   'توصية ${index + 1}',
@@ -506,28 +546,31 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                                     fontWeight: FontWeight.bold,
                                     fontSize:
                                         deviceType == DeviceType.largeDesktop
-                                            ? 14
-                                            : 12,
+                                        ? 14
+                                        : 12,
                                   ),
                                 ),
                               ),
                             ],
                           ),
                           SizedBox(
-                              height:
-                                  ResponsiveHelper.getPadding(context) * 0.25),
+                            height: ResponsiveHelper.getPadding(context) * 0.25,
+                          ),
                           Expanded(
                             child: Text(
                               _aiRecommendations[index],
                               style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.textLight.withOpacity(0.9),
+                                color: AppColors.textLight.withValues(
+                                  alpha: 0.9,
+                                ),
                                 height: 1.4,
                                 fontSize: deviceType == DeviceType.largeDesktop
                                     ? 15
                                     : 14,
                               ),
-                              maxLines:
-                                  deviceType == DeviceType.largeDesktop ? 5 : 4,
+                              maxLines: deviceType == DeviceType.largeDesktop
+                                  ? 5
+                                  : 4,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -547,8 +590,9 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
     final dailyMissions = _allMissions
         .where((m) => m.id.startsWith('win_') || m.id.startsWith('play_'))
         .toList();
-    final aiMissions =
-        _allMissions.where((m) => m.id.startsWith('ai_')).toList();
+    final aiMissions = _allMissions
+        .where((m) => m.id.startsWith('ai_'))
+        .toList();
 
     return SliverToBoxAdapter(
       child: FadeTransition(
@@ -569,27 +613,41 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
   }
 
   Widget _buildMissionGroup(
-      String title, List<Mission> missions, IconData icon) {
+    String title,
+    List<Mission> missions,
+    IconData icon,
+  ) {
     final screenWidth = MediaQuery.of(context).size.width;
     final deviceType = ResponsiveHelper.getDeviceType(screenWidth);
     final isMobile = deviceType == DeviceType.mobile;
 
     return Container(
       margin: EdgeInsets.symmetric(
-          horizontal: ResponsiveHelper.getPadding(context,
-              size: isMobile ? PaddingSize.medium : PaddingSize.large)),
+        horizontal: ResponsiveHelper.getPadding(
+          context,
+          size: isMobile ? PaddingSize.medium : PaddingSize.large,
+        ),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.all(ResponsiveHelper.getPadding(context,
-                size: isMobile ? PaddingSize.medium : PaddingSize.large)),
+            padding: EdgeInsets.all(
+              ResponsiveHelper.getPadding(
+                context,
+                size: isMobile ? PaddingSize.medium : PaddingSize.large,
+              ),
+            ),
             child: Row(
               children: [
-                Icon(icon,
-                    color: AppColors.primary,
-                    size: ResponsiveHelper.getIconSize(context,
-                        size: isMobile ? IconSize.medium : IconSize.large)),
+                Icon(
+                  icon,
+                  color: AppColors.primary,
+                  size: ResponsiveHelper.getIconSize(
+                    context,
+                    size: isMobile ? IconSize.medium : IconSize.large,
+                  ),
+                ),
                 SizedBox(width: ResponsiveHelper.getPadding(context) * 0.25),
                 Flexible(
                   child: Text(
@@ -621,21 +679,32 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
       onTap: isCompleted ? null : () => _attemptMissionCompletion(mission),
       child: Container(
         margin: EdgeInsets.only(
-          bottom: ResponsiveHelper.getPadding(context,
-                  size: isMobile ? PaddingSize.medium : PaddingSize.large) *
+          bottom:
+              ResponsiveHelper.getPadding(
+                context,
+                size: isMobile ? PaddingSize.medium : PaddingSize.large,
+              ) *
               0.5,
-          left: ResponsiveHelper.getPadding(context,
-              size: isMobile ? PaddingSize.medium : PaddingSize.large),
-          right: ResponsiveHelper.getPadding(context,
-              size: isMobile ? PaddingSize.medium : PaddingSize.large),
+          left: ResponsiveHelper.getPadding(
+            context,
+            size: isMobile ? PaddingSize.medium : PaddingSize.large,
+          ),
+          right: ResponsiveHelper.getPadding(
+            context,
+            size: isMobile ? PaddingSize.medium : PaddingSize.large,
+          ),
         ),
         child: Material(
           elevation: isCompleted ? 2 : 4,
           borderRadius: BorderRadius.circular(isMobile ? 10 : 12),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            padding: EdgeInsets.all(ResponsiveHelper.getPadding(context,
-                size: isMobile ? PaddingSize.medium : PaddingSize.large)),
+            padding: EdgeInsets.all(
+              ResponsiveHelper.getPadding(
+                context,
+                size: isMobile ? PaddingSize.medium : PaddingSize.large,
+              ),
+            ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(isMobile ? 10 : 12),
               gradient: isCompleted
@@ -644,14 +713,14 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                     )
                   : LinearGradient(
                       colors: [
-                        AppColors.surfaceLight.withOpacity(0.1),
-                        AppColors.surfaceLight.withOpacity(0.05)
+                        AppColors.surfaceLight.withValues(alpha: 0.1),
+                        AppColors.surfaceLight.withValues(alpha: 0.05),
                       ],
                     ),
               border: Border.all(
                 color: isCompleted
-                    ? AppColors.accent.withOpacity(0.5)
-                    : AppColors.primary.withOpacity(0.3),
+                    ? AppColors.accent.withValues(alpha: 0.5)
+                    : AppColors.primary.withValues(alpha: 0.3),
               ),
             ),
             child: Row(
@@ -661,22 +730,27 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                   padding: EdgeInsets.all(isMobile ? 8 : 12),
                   decoration: BoxDecoration(
                     color: isCompleted
-                        ? AppColors.textLight.withOpacity(0.2)
-                        : AppColors.primary.withOpacity(0.1),
+                        ? AppColors.textLight.withValues(alpha: 0.2)
+                        : AppColors.primary.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     mission.icon,
-                    color:
-                        isCompleted ? AppColors.textLight : AppColors.primary,
-                    size: ResponsiveHelper.getIconSize(context,
-                        size: isMobile ? IconSize.medium : IconSize.large),
+                    color: isCompleted
+                        ? AppColors.textLight
+                        : AppColors.primary,
+                    size: ResponsiveHelper.getIconSize(
+                      context,
+                      size: isMobile ? IconSize.medium : IconSize.large,
+                    ),
                   ),
                 ),
                 SizedBox(
-                    width: ResponsiveHelper.getPadding(context,
-                        size:
-                            isMobile ? PaddingSize.medium : PaddingSize.large)),
+                  width: ResponsiveHelper.getPadding(
+                    context,
+                    size: isMobile ? PaddingSize.medium : PaddingSize.large,
+                  ),
+                ),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -694,29 +768,33 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                         overflow: TextOverflow.ellipsis,
                       ),
                       SizedBox(
-                          height: ResponsiveHelper.getPadding(context,
-                                  size: isMobile
-                                      ? PaddingSize.small
-                                      : PaddingSize.medium) *
-                              0.25),
+                        height:
+                            ResponsiveHelper.getPadding(
+                              context,
+                              size: isMobile
+                                  ? PaddingSize.small
+                                  : PaddingSize.medium,
+                            ) *
+                            0.25,
+                      ),
                       Row(
                         children: [
                           Icon(
                             Icons.monetization_on,
                             size: isMobile ? 14 : 16,
                             color: isCompleted
-                                ? AppColors.textLight.withOpacity(0.7)
+                                ? AppColors.textLight.withValues(alpha: 0.7)
                                 : AppColors.accent,
                           ),
                           SizedBox(
-                              width:
-                                  ResponsiveHelper.getPadding(context) * 0.25),
+                            width: ResponsiveHelper.getPadding(context) * 0.25,
+                          ),
                           Flexible(
                             child: Text(
                               '${mission.coinsReward} نقطة',
                               style: AppTextStyles.bodyMedium.copyWith(
                                 color: isCompleted
-                                    ? AppColors.textLight.withOpacity(0.7)
+                                    ? AppColors.textLight.withValues(alpha: 0.7)
                                     : AppColors.accent,
                                 fontWeight: FontWeight.w500,
                                 fontSize: isMobile ? 13 : 14,
@@ -736,23 +814,27 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                     child: Container(
                       padding: EdgeInsets.all(isMobile ? 6 : 8),
                       decoration: BoxDecoration(
-                        color: AppColors.textLight.withOpacity(0.2),
+                        color: AppColors.textLight.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         Icons.check,
                         color: AppColors.textLight,
-                        size: ResponsiveHelper.getIconSize(context,
-                            size: isMobile ? IconSize.small : IconSize.medium),
+                        size: ResponsiveHelper.getIconSize(
+                          context,
+                          size: isMobile ? IconSize.small : IconSize.medium,
+                        ),
                       ),
                     ),
                   )
                 else
                   Icon(
                     Icons.arrow_forward_ios,
-                    color: AppColors.primary.withOpacity(0.5),
-                    size: ResponsiveHelper.getIconSize(context,
-                        size: isMobile ? IconSize.small : IconSize.medium),
+                    color: AppColors.primary.withValues(alpha: 0.5),
+                    size: ResponsiveHelper.getIconSize(
+                      context,
+                      size: isMobile ? IconSize.small : IconSize.medium,
+                    ),
                   ),
               ],
             ),
@@ -771,15 +853,23 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
       child: FadeTransition(
         opacity: _fadeAnimation,
         child: Container(
-          margin: EdgeInsets.all(ResponsiveHelper.getPadding(context,
-              size: isMobile ? PaddingSize.medium : PaddingSize.large)),
-          padding: EdgeInsets.all(ResponsiveHelper.getPadding(context,
-              size: isMobile ? PaddingSize.medium : PaddingSize.large)),
+          margin: EdgeInsets.all(
+            ResponsiveHelper.getPadding(
+              context,
+              size: isMobile ? PaddingSize.medium : PaddingSize.large,
+            ),
+          ),
+          padding: EdgeInsets.all(
+            ResponsiveHelper.getPadding(
+              context,
+              size: isMobile ? PaddingSize.medium : PaddingSize.large,
+            ),
+          ),
           decoration: BoxDecoration(
-            color: AppColors.surfaceLight.withOpacity(0.1),
+            color: AppColors.surfaceLight.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(isMobile ? 12 : 16),
             border: Border.all(
-              color: AppColors.primary.withOpacity(0.3),
+              color: AppColors.primary.withValues(alpha: 0.3),
               width: 1,
             ),
           ),
@@ -795,8 +885,11 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                 ),
               ),
               SizedBox(
-                  height: ResponsiveHelper.getPadding(context,
-                      size: isMobile ? PaddingSize.medium : PaddingSize.large)),
+                height: ResponsiveHelper.getPadding(
+                  context,
+                  size: isMobile ? PaddingSize.medium : PaddingSize.large,
+                ),
+              ),
               if (isMobile)
                 // عرض عمودي للأزرار في الموبايل
                 Column(
@@ -810,15 +903,18 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: const Text(
-                                  'تم إعادة تعيين نظام AI وتوليد مهام جديدة'),
+                                'تم إعادة تعيين نظام AI وتوليد مهام جديدة',
+                              ),
                               backgroundColor: AppColors.accent,
                             ),
                           );
                         },
                         icon: Icon(
                           Icons.refresh,
-                          size: ResponsiveHelper.getIconSize(context,
-                              size: IconSize.medium),
+                          size: ResponsiveHelper.getIconSize(
+                            context,
+                            size: IconSize.medium,
+                          ),
                         ),
                         label: const Text('إعادة تولید المهام'),
                         style: ElevatedButton.styleFrom(
@@ -833,7 +929,8 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                       ),
                     ),
                     SizedBox(
-                        height: ResponsiveHelper.getPadding(context) * 0.5),
+                      height: ResponsiveHelper.getPadding(context) * 0.5,
+                    ),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
@@ -847,8 +944,10 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                         },
                         icon: Icon(
                           Icons.psychology,
-                          size: ResponsiveHelper.getIconSize(context,
-                              size: IconSize.medium),
+                          size: ResponsiveHelper.getIconSize(
+                            context,
+                            size: IconSize.medium,
+                          ),
                         ),
                         label: const Text('فحص حالة النظام'),
                         style: ElevatedButton.styleFrom(
@@ -876,15 +975,18 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: const Text(
-                                  'تم إعادة تعيين نظام AI وتوليد مهام جديدة'),
+                                'تم إعادة تعيين نظام AI وتوليد مهام جديدة',
+                              ),
                               backgroundColor: AppColors.accent,
                             ),
                           );
                         },
                         icon: Icon(
                           Icons.refresh,
-                          size: ResponsiveHelper.getIconSize(context,
-                              size: IconSize.large),
+                          size: ResponsiveHelper.getIconSize(
+                            context,
+                            size: IconSize.large,
+                          ),
                         ),
                         label: const Text('إعادة تولید المهام'),
                         style: ElevatedButton.styleFrom(
@@ -910,8 +1012,10 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
                         },
                         icon: Icon(
                           Icons.psychology,
-                          size: ResponsiveHelper.getIconSize(context,
-                              size: IconSize.large),
+                          size: ResponsiveHelper.getIconSize(
+                            context,
+                            size: IconSize.large,
+                          ),
                         ),
                         label: const Text('فحص حالة النظام'),
                         style: ElevatedButton.styleFrom(
@@ -930,7 +1034,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
               Text(
                 'يمكنك إعادة تولید المهام الذكية أو فحص حالة النظام في أي وقت',
                 style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textLight.withOpacity(0.7),
+                  color: AppColors.textLight.withValues(alpha: 0.7),
                   fontSize: isMobile ? 12 : 13,
                 ),
                 textAlign: TextAlign.center,
@@ -949,7 +1053,9 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
       if (mission.id.startsWith('ai_')) {
         // للمهام الذكية
         success = await MissionManager.completeAIMission(
-            mission.id, mission.coinsReward);
+          mission.id,
+          mission.coinsReward,
+        );
       } else {
         // للمهام التقليدية
         await MissionManager.completeMission(mission.id);
@@ -958,14 +1064,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
 
       if (success) {
         setState(() {
-          // تحديث حالة المهمة - بدلاً من تعديل final field نستخدم المُنشئ
-          final updatedMission = Mission(
-            id: mission.id,
-            title: mission.title,
-            icon: mission.icon,
-            coinsReward: mission.coinsReward,
-            isCompleted: true,
-          );
+          // المهمة تمت بنجاح - سيتم تحديث البيانات عبر _loadAllData()
         });
 
         // إظهار نافذة حوارية جميلة
@@ -999,7 +1098,7 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withOpacity(0.1),
+                  color: AppColors.accent.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -1021,16 +1120,18 @@ class _SmartMissionsScreenState extends State<SmartMissionsScreen>
               Text(
                 mission.title,
                 style: AppTextStyles.bodyLarge.copyWith(
-                  color: AppColors.textLight.withOpacity(0.8),
+                  color: AppColors.textLight.withValues(alpha: 0.8),
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 15),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withOpacity(0.2),
+                  color: AppColors.accent.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(

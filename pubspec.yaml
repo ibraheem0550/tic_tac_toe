@@ -1,57 +1,78 @@
 name: tic_tac_toe
-description: A new Flutter project.
+description: "🎮 Advanced Tic Tac Toe Game - Professional Edition"
+
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 1.0.0
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '^3.8.0'
+  flutter: '>=3.8.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
-  audioplayers: ^5.2.1
-  shared_preferences: ^2.0.15
-  path_provider: ^2.0.11
-  share_plus: ^11.0.0
-  url_launcher: ^6.1.14
-  intl: ^0.20.2
-  http: ^1.1.0
-  fl_chart: ^0.68.0
-    # Firebase Services
-  firebase_core: ^2.24.2
-  firebase_auth: ^4.15.3
-  cloud_firestore: ^4.13.6
-  firebase_storage: ^11.5.6
-  firebase_analytics: ^10.7.4
+
+  flutter_localizations:
+    sdk: flutter
+   
+  # 🎨 UI & Design
+  cupertino_icons: ^1.0.8
+  flutter_svg: ^2.0.10+1
   
-  # Payment & Stripe
-  flutter_stripe: ^10.1.1  # Authentication & Social Login
-  google_sign_in: ^6.1.6
-  sign_in_with_apple: ^5.0.0
-  games_services: ^4.0.1
+  # 🎭 Animations & Effects
+  flutter_animate: ^4.5.0
+  lottie: ^3.1.2
+  animated_text_kit: ^4.2.2
+  confetti: ^0.7.0
   
-  # Payment Processing
-  pay: ^1.1.2
-  # Security & Encryption
-  crypto: ^3.0.3
-  encrypt: ^5.0.1
-  # Online Gaming & Networking
+  # 🔊 Audio & Sound
+  audioplayers: ^6.0.0
+  
+  # 📊 Charts & Visualization
+  fl_chart: ^0.66.2
+  
+  # 💾 Storage & Data
+  shared_preferences: ^2.2.2
+  path_provider: ^2.1.2
+  
+  # 🌐 Network & Communication
+  http: ^1.2.0
   socket_io_client: ^2.0.3+1
-  # Additional UI & UX
-  cached_network_image: ^3.3.0
-  image_picker: ^1.0.4
-  connectivity_plus: ^5.0.2
+  
+  # 🔥 Firebase Services - معطل مؤقتاً للتشغيل على Windows
+  # firebase_core: ^2.24.2
+  # firebase_auth: ^4.15.3
+  # cloud_firestore: ^4.13.6
+  # firebase_storage: ^11.5.6
+  
+  # 🔐 Authentication - معطل مؤقتاً
+  # google_sign_in: ^6.2.1
+  
+  # 💳 Payments
+  in_app_purchase: ^3.1.11
+  
+  # 🔧 Utilities
+  logger: ^2.0.2+1
+  url_launcher: ^6.2.5
+  package_info_plus: ^7.0.0
+  
+  # 🌍 Internationalization
+  intl: ^0.20.2
+  
+  # 🔄 State Management
+  provider: ^6.1.1
+  uuid: ^4.3.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.0
 
 flutter:
   uses-material-design: true
   
   assets:
-    - assets/sounds/
     - assets/images/
+    - assets/sounds/
+    - assets/animations/

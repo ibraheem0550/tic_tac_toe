@@ -1,8 +1,7 @@
-﻿import 'package:flutter/material.dart';
-import '../models/payment_models.dart' hide SavedPaymentMethod;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/payment_service_new.dart';
-import '../services/firebase_auth_service.dart';
+import '../services/unified_auth_services.dart';
 import '../models/gems_models.dart';
 import '../utils/app_theme_new.dart';
 import '../utils/logger.dart';
@@ -81,17 +80,15 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
 
   Future<void> _loadUserGems() async {
     try {
-      // في التطبيق الحقيقي، ستحمل من AuthService أو قاعدة البيانات
-      final user = FirebaseAuthService().currentUser;
-      if (user != null) {
-        setState(() {
-          _userGems = UserGems(
-            userId: user.id,
-            currentGems: user.gems,
-            totalEarned: user.gems,
-          );
-        });
-      }
+      // الحصول على بيانات المستخدم الحالي من AuthService
+      final user = FirebaseAuthService().currentUserModel;
+      setState(() {
+        _userGems = UserGems(
+          userId: user.id,
+          currentGems: user.gems,
+          totalEarned: user.gems,
+        );
+      });
     } catch (e) {
       Logger.logError('خطأ في تحميل الجواهر', e);
     }
@@ -99,20 +96,20 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
 
   Future<void> _loadGemsPackages() async {
     try {
-      // حزم الجواهر المتاحة
+      // ??? ??????? ???????
       setState(() {
         _packages = [
           const GemsPackage(
             id: 'starter',
-            name: 'حزمة المبتدئين',
-            description: 'حزمة مثالية للبداية',
+            name: '???? ?????????',
+            description: '???? ?????? ???????',
             gemsAmount: 100,
             price: 0.99,
           ),
           const GemsPackage(
             id: 'popular',
-            name: 'حزمة شائعة',
-            description: 'الأكثر مبيعاً - قيمة ممتازة',
+            name: '???? ?????',
+            description: '?????? ?????? - ???? ??????',
             gemsAmount: 500,
             price: 4.99,
             isPopular: true,
@@ -120,16 +117,16 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
           ),
           const GemsPackage(
             id: 'premium',
-            name: 'حزمة مميزة',
-            description: 'جواهر إضافية مجانية',
+            name: '???? ?????',
+            description: '????? ?????? ??????',
             gemsAmount: 1000,
             price: 9.99,
             discount: 30,
           ),
           const GemsPackage(
             id: 'mega',
-            name: 'حزمة عملاقة',
-            description: 'أفضل صفقة للاعبين النشطين',
+            name: '???? ??????',
+            description: '???? ???? ??????? ???????',
             gemsAmount: 2500,
             price: 19.99,
             discount: 50,
@@ -137,7 +134,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
         ];
       });
     } catch (e) {
-      Logger.logError('خطأ في تحميل باقات الجواهر', e);
+      Logger.logError('??? ?? ????? ????? ???????', e);
     }
   }
 
@@ -145,7 +142,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
     try {
       _savedPaymentMethods = await _paymentService.getSavedPaymentMethods();
     } catch (e) {
-      Logger.logError('خطأ في تحميل طرق الدفع', e);
+      Logger.logError('??? ?? ????? ??? ?????', e);
     }
   }
 
@@ -176,19 +173,23 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
                           slivers: [
                             _buildStellarAppBar(),
                             SliverPadding(
-                              padding:
-                                  const EdgeInsets.all(AppDimensions.paddingLG),
+                              padding: const EdgeInsets.all(
+                                AppDimensions.paddingLG,
+                              ),
                               sliver: SliverList(
                                 delegate: SliverChildListDelegate([
                                   _buildUserGemsHeader(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingXL),
+                                    height: AppDimensions.paddingXL,
+                                  ),
                                   _buildGemsPackagesGrid(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingXL),
+                                    height: AppDimensions.paddingXL,
+                                  ),
                                   _buildPaymentMethodsSection(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingXXL),
+                                    height: AppDimensions.paddingXXL,
+                                  ),
                                 ]),
                               ),
                             ),
@@ -218,18 +219,13 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
             gradient: AppColors.nebularGradient,
             boxShadow: AppShadows.card,
           ),
-          child: const Icon(
-            Icons.arrow_back,
-            color: AppColors.textPrimary,
-          ),
+          child: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
         ),
         onPressed: () => Navigator.pop(context),
       ),
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
-            gradient: AppColors.nebularGradient,
-          ),
+          decoration: const BoxDecoration(gradient: AppColors.nebularGradient),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -257,7 +253,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
               ),
               const SizedBox(height: AppDimensions.paddingLG),
               Text(
-                'متجر الجواهر النجمي',
+                '???? ??????? ??????',
                 style: AppTextStyles.displayMedium.copyWith(
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.w900,
@@ -265,7 +261,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
               ),
               const SizedBox(height: AppDimensions.paddingSM),
               Text(
-                'اجمع الجواهر واستمتع بالمزايا الحصرية',
+                '???? ??????? ??????? ???????? ???????',
                 style: AppTextStyles.bodyLarge.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -303,14 +299,14 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'رصيدك الحالي',
+                  '????? ??????',
                   style: AppTextStyles.titleMedium.copyWith(
                     color: AppColors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${_userGems!.currentGems} جوهرة',
+                  '${_userGems!.currentGems} ?????',
                   style: AppTextStyles.headlineLarge.copyWith(
                     color: AppColors.starGold,
                     fontWeight: FontWeight.w900,
@@ -320,10 +316,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
               gradient: AppColors.cosmicButtonGradient,
               borderRadius: BorderRadius.circular(20),
@@ -347,7 +340,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'باقات الجواهر المميزة',
+          '????? ??????? ???????',
           style: AppTextStyles.headlineMedium.copyWith(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.w700,
@@ -384,12 +377,14 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
 
     return Container(
       decoration: BoxDecoration(
-        gradient:
-            isPopular ? AppColors.stellarGradient : AppColors.nebularGradient,
+        gradient: isPopular
+            ? AppColors.stellarGradient
+            : AppColors.nebularGradient,
         borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
         boxShadow: isPopular ? AppShadows.stellar : AppShadows.card,
-        border:
-            isPopular ? Border.all(color: AppColors.starGold, width: 2) : null,
+        border: isPopular
+            ? Border.all(color: AppColors.starGold, width: 2)
+            : null,
       ),
       child: Stack(
         children: [
@@ -398,16 +393,13 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
               top: 12,
               right: 12,
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.starGold,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  'الأكثر شعبية',
+                  '?????? ?????',
                   style: AppTextStyles.labelSmall.copyWith(
                     color: AppColors.backgroundPrimary,
                     fontWeight: FontWeight.bold,
@@ -445,7 +437,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
                   ),
                 ),
                 Text(
-                  'جوهرة',
+                  '?????',
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -460,13 +452,10 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
                     decoration: BoxDecoration(
                       color: AppColors.success.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: AppColors.success,
-                        width: 1,
-                      ),
+                      border: Border.all(color: AppColors.success, width: 1),
                     ),
                     child: Text(
-                      '+${package.discount!.toInt()}% خصم',
+                      '+${package.discount!.toInt()}% ???',
                       style: AppTextStyles.labelSmall.copyWith(
                         color: AppColors.success,
                         fontWeight: FontWeight.bold,
@@ -483,7 +472,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
                 ),
                 const SizedBox(height: AppDimensions.paddingMD),
                 AppComponents.stellarButton(
-                  text: 'شراء الآن',
+                  text: '???? ????',
                   onPressed: () => _handlePurchase(package),
                   icon: Icons.shopping_cart,
                 ),
@@ -500,7 +489,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'طرق الدفع المحفوظة',
+          '??? ????? ????????',
           style: AppTextStyles.headlineMedium.copyWith(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.w700,
@@ -511,21 +500,17 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
           AppComponents.stellarCard(
             child: Column(
               children: [
-                Icon(
-                  Icons.payment,
-                  size: 48,
-                  color: AppColors.textTertiary,
-                ),
+                Icon(Icons.payment, size: 48, color: AppColors.textTertiary),
                 const SizedBox(height: AppDimensions.paddingMD),
                 Text(
-                  'لا توجد طرق دفع محفوظة',
+                  '?? ???? ??? ??? ??????',
                   style: AppTextStyles.bodyLarge.copyWith(
                     color: AppColors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: AppDimensions.paddingMD),
                 AppComponents.stellarButton(
-                  text: 'إضافة طريقة دفع',
+                  text: '????? ????? ???',
                   onPressed: _addPaymentMethod,
                   icon: Icons.add,
                 ),
@@ -533,8 +518,9 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
             ),
           )
         else
-          ...(_savedPaymentMethods
-              .map((method) => _buildPaymentMethodCard(method))),
+          ...(_savedPaymentMethods.map(
+            (method) => _buildPaymentMethodCard(method),
+          )),
       ],
     );
   }
@@ -552,7 +538,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
                 gradient: AppColors.cosmicButtonGradient,
               ),
               child: Icon(
-                // استخدام أيقونة افتراضية لبطاقة الائتمان
+                // ??????? ?????? ???????? ?????? ????????
                 Icons.credit_card,
                 color: AppColors.textPrimary,
                 size: 24,
@@ -571,7 +557,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'طريقة دفع محفوظة',
+                    '????? ??? ??????',
                     style: AppTextStyles.bodySmall.copyWith(
                       color: AppColors.textTertiary,
                     ),
@@ -580,10 +566,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
               ),
             ),
             IconButton(
-              icon: const Icon(
-                Icons.more_vert,
-                color: AppColors.textTertiary,
-              ),
+              icon: const Icon(Icons.more_vert, color: AppColors.textTertiary),
               onPressed: () => _showPaymentMethodOptions(method),
             ),
           ],
@@ -601,7 +584,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
         builder: (context) => _buildPurchaseDialog(package),
       );
     } catch (e) {
-      _showErrorDialog('خطأ في الشراء: $e');
+      _showErrorDialog('??? ?? ??????: $e');
     }
   }
 
@@ -613,10 +596,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
           gradient: AppColors.starfieldGradient,
           borderRadius: BorderRadius.circular(AppDimensions.radiusXL),
           boxShadow: AppShadows.modal,
-          border: Border.all(
-            color: AppColors.borderPrimary,
-            width: 1,
-          ),
+          border: Border.all(color: AppColors.borderPrimary, width: 1),
         ),
         padding: const EdgeInsets.all(AppDimensions.paddingXL),
         child: Column(
@@ -637,14 +617,14 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
             ),
             const SizedBox(height: AppDimensions.paddingLG),
             Text(
-              'تأكيد الشراء',
+              '????? ??????',
               style: AppTextStyles.headlineMedium.copyWith(
                 color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: AppDimensions.paddingMD),
             Text(
-              'هل تريد شراء ${package.gemsAmount} جوهرة بسعر \$${package.price}؟',
+              '?? ???? ???? ${package.gemsAmount} ????? ???? \$${package.price}?',
               style: AppTextStyles.bodyLarge.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -655,7 +635,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
               children: [
                 Expanded(
                   child: AppComponents.stellarButton(
-                    text: 'إلغاء',
+                    text: '?????',
                     onPressed: () => Navigator.pop(context),
                     isPrimary: false,
                   ),
@@ -663,7 +643,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
                 const SizedBox(width: AppDimensions.paddingMD),
                 Expanded(
                   child: AppComponents.stellarButton(
-                    text: 'تأكيد',
+                    text: '?????',
                     onPressed: () => _confirmPurchase(package),
                     icon: Icons.check,
                   ),
@@ -680,19 +660,19 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
     Navigator.pop(context);
     setState(() => _isLoading = true);
     try {
-      // محاكاة عملية الشراء
+      // ?????? ????? ??????
       await Future.delayed(const Duration(seconds: 2));
 
-      // تحديث الجواهر للمستخدم
+      // ????? ??????? ????????
       final user = FirebaseAuthService().currentUser;
       if (user != null && _userGems != null) {
         _userGems!.addGems(package.gemsAmount);
         await _loadUserGems();
       }
 
-      _showSuccessDialog('تم شراء ${package.gemsAmount} جوهرة بنجاح!');
+      _showSuccessDialog('?? ???? ${package.gemsAmount} ????? ?????!');
     } catch (e) {
-      _showErrorDialog('فشل في إتمام الشراء: $e');
+      _showErrorDialog('??? ?? ????? ??????: $e');
     } finally {
       setState(() => _isLoading = false);
     }
@@ -720,21 +700,21 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'إضافة طريقة دفع',
+              '????? ????? ???',
               style: AppTextStyles.headlineMedium.copyWith(
                 color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: AppDimensions.paddingXL),
             Text(
-              'هذه الميزة ستكون متاحة قريباً',
+              '??? ?????? ????? ????? ??????',
               style: AppTextStyles.bodyLarge.copyWith(
                 color: AppColors.textSecondary,
               ),
             ),
             const SizedBox(height: AppDimensions.paddingXL),
             AppComponents.stellarButton(
-              text: 'موافق',
+              text: '?????',
               onPressed: () => Navigator.pop(context),
             ),
           ],
@@ -777,7 +757,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
               ),
               const SizedBox(height: AppDimensions.paddingLG),
               Text(
-                'نجح!',
+                '???!',
                 style: AppTextStyles.headlineMedium.copyWith(
                   color: AppColors.success,
                 ),
@@ -792,7 +772,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
               ),
               const SizedBox(height: AppDimensions.paddingXL),
               AppComponents.stellarButton(
-                text: 'رائع!',
+                text: '????!',
                 onPressed: () => Navigator.pop(context),
               ),
             ],
@@ -832,7 +812,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
               ),
               const SizedBox(height: AppDimensions.paddingLG),
               Text(
-                'خطأ',
+                '???',
                 style: AppTextStyles.headlineMedium.copyWith(
                   color: AppColors.error,
                 ),
@@ -847,7 +827,7 @@ class _StellarGemsStoreScreenState extends State<StellarGemsStoreScreen>
               ),
               const SizedBox(height: AppDimensions.paddingXL),
               AppComponents.stellarButton(
-                text: 'موافق',
+                text: '?????',
                 onPressed: () => Navigator.pop(context),
               ),
             ],

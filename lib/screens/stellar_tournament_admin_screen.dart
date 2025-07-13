@@ -1,8 +1,7 @@
-﻿import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import '../models/tournament_models.dart';
 import '../services/tournament_service.dart';
-import '../services/firebase_auth_service.dart';
+import '../services/unified_auth_services.dart';
 import '../utils/app_theme_new.dart';
 
 class StellarTournamentAdminScreen extends StatefulWidget {
@@ -14,7 +13,8 @@ class StellarTournamentAdminScreen extends StatefulWidget {
 }
 
 class _StellarTournamentAdminScreenState
-    extends State<StellarTournamentAdminScreen> with TickerProviderStateMixin {
+    extends State<StellarTournamentAdminScreen>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
   late AnimationController _pulseController;
   late Animation<double> _fadeAnimation;
@@ -27,7 +27,7 @@ class _StellarTournamentAdminScreenState
   List<Tournament> _tournaments = [];
   bool _isLoading = false;
   String _selectedFilter = 'all';
-  String _searchQuery = '';
+  final String _searchQuery = '';
 
   final TextEditingController _searchController = TextEditingController();
 
@@ -78,7 +78,7 @@ class _StellarTournamentAdminScreenState
       await _tournamentService.initialize();
       _refreshTournaments();
     } catch (e) {
-      _showErrorSnackBar('خطأ في تحميل البيانات: $e');
+      _showErrorSnackBar('??? ?? ????? ????????: $e');
     } finally {
       setState(() => _isLoading = false);
     }
@@ -104,15 +104,17 @@ class _StellarTournamentAdminScreenState
 
       if (_searchQuery.isNotEmpty) {
         _tournaments = _tournaments
-            .where((t) =>
-                t.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-                t.description
-                    .toLowerCase()
-                    .contains(_searchQuery.toLowerCase()))
+            .where(
+              (t) =>
+                  t.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                  t.description.toLowerCase().contains(
+                    _searchQuery.toLowerCase(),
+                  ),
+            )
             .toList();
       }
 
-      // ترتيب المسابقات حسب التاريخ
+      // ????? ????????? ??? ???????
       _tournaments.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     });
   }
@@ -144,19 +146,23 @@ class _StellarTournamentAdminScreenState
                           slivers: [
                             _buildStellarAppBar(),
                             SliverPadding(
-                              padding:
-                                  const EdgeInsets.all(AppDimensions.paddingLG),
+                              padding: const EdgeInsets.all(
+                                AppDimensions.paddingLG,
+                              ),
                               sliver: SliverList(
                                 delegate: SliverChildListDelegate([
                                   _buildStatsCards(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingXL),
+                                    height: AppDimensions.paddingXL,
+                                  ),
                                   _buildFilterAndSearch(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingLG),
+                                    height: AppDimensions.paddingLG,
+                                  ),
                                   _buildTournamentsList(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingXXL),
+                                    height: AppDimensions.paddingXXL,
+                                  ),
                                 ]),
                               ),
                             ),
@@ -184,7 +190,7 @@ class _StellarTournamentAdminScreenState
           shaderCallback: (bounds) =>
               AppColors.stellarGradient.createShader(bounds),
           child: const Text(
-            'إدارة المسابقات النجمية',
+            '????? ????????? ???????',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -195,9 +201,7 @@ class _StellarTournamentAdminScreenState
         background: Stack(
           children: [
             Container(
-              decoration: BoxDecoration(
-                gradient: AppColors.starfieldGradient,
-              ),
+              decoration: BoxDecoration(gradient: AppColors.starfieldGradient),
             ),
             AnimatedBuilder(
               animation: _pulseController,
@@ -234,7 +238,7 @@ class _StellarTournamentAdminScreenState
       children: [
         Expanded(
           child: _buildStatCard(
-            'إجمالي المسابقات',
+            '?????? ?????????',
             '${stats['totalTournaments']}',
             Icons.emoji_events,
             AppColors.primary,
@@ -243,7 +247,7 @@ class _StellarTournamentAdminScreenState
         const SizedBox(width: AppDimensions.paddingMD),
         Expanded(
           child: _buildStatCard(
-            'المسابقات النشطة',
+            '????????? ??????',
             '${stats['activeTournaments']}',
             Icons.play_circle,
             AppColors.success,
@@ -252,7 +256,7 @@ class _StellarTournamentAdminScreenState
         const SizedBox(width: AppDimensions.paddingMD),
         Expanded(
           child: _buildStatCard(
-            'إجمالي المشاركين',
+            '?????? ?????????',
             '${stats['totalParticipants']}',
             Icons.people,
             AppColors.accent,
@@ -263,7 +267,11 @@ class _StellarTournamentAdminScreenState
   }
 
   Widget _buildStatCard(
-      String title, String value, IconData icon, Color color) {
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return AppComponents.stellarCard(
       child: Column(
         children: [
@@ -292,23 +300,23 @@ class _StellarTournamentAdminScreenState
   Widget _buildFilterAndSearch() {
     return Column(
       children: [
-        // شريط البحث
+        // ???? ?????
         AppComponents.stellarTextField(
           controller: _searchController,
-          hintText: 'ابحث في المسابقات...',
+          hintText: '???? ?? ?????????...',
           prefixIcon: Icons.search,
         ),
         const SizedBox(height: AppDimensions.paddingMD),
 
-        // فلاتر الحالة
+        // ????? ??????
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              _buildFilterChip('all', 'الجميع'),
-              _buildFilterChip('active', 'النشطة'),
-              _buildFilterChip('upcoming', 'القادمة'),
-              _buildFilterChip('completed', 'المكتملة'),
+              _buildFilterChip('all', '??????'),
+              _buildFilterChip('active', '??????'),
+              _buildFilterChip('upcoming', '???????'),
+              _buildFilterChip('completed', '????????'),
             ],
           ),
         ),
@@ -367,7 +375,7 @@ class _StellarTournamentAdminScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // رأس البطاقة
+          // ??? ???????
           Row(
             children: [
               Container(
@@ -407,26 +415,33 @@ class _StellarTournamentAdminScreenState
                 ),
               ),
               PopupMenuButton<String>(
-                icon:
-                    const Icon(Icons.more_vert, color: AppColors.textTertiary),
+                icon: const Icon(
+                  Icons.more_vert,
+                  color: AppColors.textTertiary,
+                ),
                 onSelected: (action) =>
                     _handleTournamentAction(tournament, action),
                 itemBuilder: (context) => [
-                  const PopupMenuItem(value: 'edit', child: Text('تعديل')),
+                  const PopupMenuItem(value: 'edit', child: Text('?????')),
                   const PopupMenuItem(
-                      value: 'participants', child: Text('المشاركون')),
+                    value: 'participants',
+                    child: Text('?????????'),
+                  ),
                   const PopupMenuItem(
-                      value: 'matches', child: Text('المباريات')),
+                    value: 'matches',
+                    child: Text('?????????'),
+                  ),
                   PopupMenuItem(
                     value: tournament.status == TournamentStatus.registration
                         ? 'start'
                         : 'status',
                     child: Text(
-                        tournament.status == TournamentStatus.registration
-                            ? 'بدء المسابقة'
-                            : 'تغيير الحالة'),
+                      tournament.status == TournamentStatus.registration
+                          ? '??? ????????'
+                          : '????? ??????',
+                    ),
                   ),
-                  const PopupMenuItem(value: 'delete', child: Text('حذف')),
+                  const PopupMenuItem(value: 'delete', child: Text('???')),
                 ],
               ),
             ],
@@ -434,7 +449,7 @@ class _StellarTournamentAdminScreenState
 
           const SizedBox(height: AppDimensions.paddingMD),
 
-          // معلومات المسابقة
+          // ??????? ????????
           Text(
             tournament.description,
             style: AppTextStyles.bodyMedium.copyWith(
@@ -446,19 +461,19 @@ class _StellarTournamentAdminScreenState
 
           const SizedBox(height: AppDimensions.paddingMD),
 
-          // إحصائيات سريعة
+          // ???????? ?????
           Row(
             children: [
               _buildQuickStat(
                 Icons.people,
                 '${tournament.currentParticipants}/${tournament.maxParticipants}',
-                'مشارك',
+                '?????',
               ),
               const SizedBox(width: AppDimensions.paddingLG),
               _buildQuickStat(
                 Icons.schedule,
                 _formatDate(tournament.startDate),
-                'تاريخ البدء',
+                '????? ?????',
               ),
               const Spacer(),
               if (tournament.entryFee > 0)
@@ -472,7 +487,7 @@ class _StellarTournamentAdminScreenState
                     borderRadius: BorderRadius.circular(AppDimensions.radiusSM),
                   ),
                   child: Text(
-                    '${tournament.entryFee.toInt()} 💎',
+                    '${tournament.entryFee.toInt()} ??',
                     style: AppTextStyles.bodySmall.copyWith(
                       color: AppColors.accent,
                       fontWeight: FontWeight.w600,
@@ -493,7 +508,7 @@ class _StellarTournamentAdminScreenState
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${tournament.progressPercentage.toInt()}% ممتلئة',
+                  '${tournament.progressPercentage.toInt()}% ??????',
                   style: AppTextStyles.bodySmall.copyWith(
                     color: AppColors.textTertiary,
                   ),
@@ -513,7 +528,7 @@ class _StellarTournamentAdminScreenState
         vertical: 2,
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.2),
+        color: color.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(AppDimensions.radiusSM),
         border: Border.all(color: color),
       ),
@@ -561,18 +576,18 @@ class _StellarTournamentAdminScreenState
           Icon(
             Icons.emoji_events_outlined,
             size: 64,
-            color: AppColors.textTertiary.withOpacity(0.5),
+            color: AppColors.textTertiary.withValues(alpha: 0.5),
           ),
           const SizedBox(height: AppDimensions.paddingMD),
           Text(
-            'لا توجد مسابقات',
+            '?? ???? ???????',
             style: AppTextStyles.titleMedium.copyWith(
               color: AppColors.textSecondary,
             ),
           ),
           const SizedBox(height: AppDimensions.paddingSM),
           Text(
-            'ابدأ بإنشاء مسابقة جديدة لجذب اللاعبين',
+            '???? ?????? ?????? ????? ???? ????????',
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textTertiary,
             ),
@@ -580,7 +595,7 @@ class _StellarTournamentAdminScreenState
           ),
           const SizedBox(height: AppDimensions.paddingLG),
           AppComponents.stellarButton(
-            text: 'إنشاء مسابقة جديدة',
+            text: '????? ?????? ?????',
             onPressed: _showCreateTournamentDialog,
             icon: Icons.add,
           ),
@@ -599,7 +614,7 @@ class _StellarTournamentAdminScreenState
             onPressed: _showCreateTournamentDialog,
             backgroundColor: AppColors.primary,
             foregroundColor: AppColors.textPrimary,
-            label: const Text('مسابقة جديدة'),
+            label: const Text('?????? ?????'),
             icon: const Icon(Icons.add),
           ),
         );
@@ -607,7 +622,7 @@ class _StellarTournamentAdminScreenState
     );
   }
 
-  // دوال مساعدة للألوان والأيقونات
+  // ???? ?????? ??????? ??????????
   Color _getStatusColor(TournamentStatus status) {
     switch (status) {
       case TournamentStatus.upcoming:
@@ -639,15 +654,15 @@ class _StellarTournamentAdminScreenState
   String _getStatusDisplayName(TournamentStatus status) {
     switch (status) {
       case TournamentStatus.upcoming:
-        return 'قادمة';
+        return '?????';
       case TournamentStatus.registration:
-        return 'التسجيل مفتوح';
+        return '??????? ?????';
       case TournamentStatus.inProgress:
-        return 'جارية';
+        return '?????';
       case TournamentStatus.completed:
-        return 'مكتملة';
+        return '??????';
       case TournamentStatus.cancelled:
-        return 'ملغية';
+        return '?????';
     }
   }
 
@@ -655,7 +670,7 @@ class _StellarTournamentAdminScreenState
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  // دوال التفاعل
+  // ???? ???????
   void _handleTournamentAction(Tournament tournament, String action) {
     switch (action) {
       case 'edit':
@@ -685,7 +700,7 @@ class _StellarTournamentAdminScreenState
       builder: (context) => _TournamentFormDialog(
         onSave: (tournament) async {
           try {
-            final currentUser = _authService.currentUser;
+            final currentUser = _authService.currentUserModel;
             if (currentUser == null) return;
 
             await _tournamentService.createTournament(
@@ -702,9 +717,9 @@ class _StellarTournamentAdminScreenState
             );
 
             _refreshTournaments();
-            _showSuccessSnackBar('تم إنشاء المسابقة بنجاح');
+            _showSuccessSnackBar('?? ????? ???????? ?????');
           } catch (e) {
-            _showErrorSnackBar('خطأ في إنشاء المسابقة: $e');
+            _showErrorSnackBar('??? ?? ????? ????????: $e');
           }
         },
       ),
@@ -731,11 +746,13 @@ class _StellarTournamentAdminScreenState
             );
 
             await _tournamentService.updateTournament(
-                tournament.id, updatedTournament);
+              tournament.id,
+              updatedTournament,
+            );
             _refreshTournaments();
-            _showSuccessSnackBar('تم تحديث المسابقة بنجاح');
+            _showSuccessSnackBar('?? ????? ???????? ?????');
           } catch (e) {
-            _showErrorSnackBar('خطأ في تحديث المسابقة: $e');
+            _showErrorSnackBar('??? ?? ????? ????????: $e');
           }
         },
       ),
@@ -743,29 +760,29 @@ class _StellarTournamentAdminScreenState
   }
 
   void _showParticipantsDialog(Tournament tournament) {
-    final participants =
-        _tournamentService.getTournamentParticipants(tournament.id);
+    final participants = _tournamentService.getTournamentParticipants(
+      tournament.id,
+    );
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('مشاركو ${tournament.name}'),
+        title: Text('?????? ${tournament.name}'),
         content: SizedBox(
           width: double.maxFinite,
           height: 300,
           child: participants.isEmpty
-              ? const Center(child: Text('لا يوجد مشاركون بعد'))
+              ? const Center(child: Text('?? ???? ??????? ???'))
               : ListView.builder(
                   itemCount: participants.length,
                   itemBuilder: (context, index) {
                     final participant = participants[index];
                     return ListTile(
-                      leading: CircleAvatar(
-                        child: Text('${index + 1}'),
-                      ),
-                      title: Text('مشارك ${participant.userId}'),
+                      leading: CircleAvatar(child: Text('${index + 1}')),
+                      title: Text('????? ${participant.userId}'),
                       subtitle: Text(
-                          'تسجل في: ${_formatDate(participant.registrationTime)}'),
+                        '???? ??: ${_formatDate(participant.registrationTime)}',
+                      ),
                     );
                   },
                 ),
@@ -773,7 +790,7 @@ class _StellarTournamentAdminScreenState
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('إغلاق'),
+            child: const Text('?????'),
           ),
         ],
       ),
@@ -784,19 +801,19 @@ class _StellarTournamentAdminScreenState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('مباريات ${tournament.name}'),
+        title: Text('??????? ${tournament.name}'),
         content: SizedBox(
           width: double.maxFinite,
           height: 300,
           child: tournament.matches.isEmpty
-              ? const Center(child: Text('لم يتم إنشاء المباريات بعد'))
+              ? const Center(child: Text('?? ??? ????? ????????? ???'))
               : ListView.builder(
                   itemCount: tournament.matches.length,
                   itemBuilder: (context, index) {
                     final match = tournament.matches[index];
                     return ListTile(
-                      title: Text('مباراة ${index + 1}'),
-                      subtitle: Text('الجولة ${match.round}'),
+                      title: Text('?????? ${index + 1}'),
+                      subtitle: Text('?????? ${match.round}'),
                       trailing: Text(match.status.name),
                     );
                   },
@@ -805,7 +822,7 @@ class _StellarTournamentAdminScreenState
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('إغلاق'),
+            child: const Text('?????'),
           ),
         ],
       ),
@@ -816,9 +833,9 @@ class _StellarTournamentAdminScreenState
     try {
       await _tournamentService.startTournament(tournament.id);
       _refreshTournaments();
-      _showSuccessSnackBar('تم بدء المسابقة بنجاح');
+      _showSuccessSnackBar('?? ??? ???????? ?????');
     } catch (e) {
-      _showErrorSnackBar('خطأ في بدء المسابقة: $e');
+      _showErrorSnackBar('??? ?? ??? ????????: $e');
     }
   }
 
@@ -826,7 +843,7 @@ class _StellarTournamentAdminScreenState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('تغيير حالة المسابقة'),
+        title: const Text('????? ???? ????????'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: TournamentStatus.values
@@ -837,11 +854,13 @@ class _StellarTournamentAdminScreenState
                     Navigator.pop(context);
                     try {
                       await _tournamentService.updateTournamentStatus(
-                          tournament.id, status);
+                        tournament.id,
+                        status,
+                      );
                       _refreshTournaments();
-                      _showSuccessSnackBar('تم تغيير حالة المسابقة بنجاح');
+                      _showSuccessSnackBar('?? ????? ???? ???????? ?????');
                     } catch (e) {
-                      _showErrorSnackBar('خطأ في تغيير الحالة: $e');
+                      _showErrorSnackBar('??? ?? ????? ??????: $e');
                     }
                   },
                 ),
@@ -856,12 +875,12 @@ class _StellarTournamentAdminScreenState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('تأكيد الحذف'),
-        content: Text('هل أنت متأكد من حذف مسابقة "${tournament.name}"؟'),
+        title: const Text('????? ?????'),
+        content: Text('?? ??? ????? ?? ??? ?????? "${tournament.name}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('إلغاء'),
+            child: const Text('?????'),
           ),
           TextButton(
             onPressed: () async {
@@ -869,13 +888,13 @@ class _StellarTournamentAdminScreenState
               try {
                 await _tournamentService.deleteTournament(tournament.id);
                 _refreshTournaments();
-                _showSuccessSnackBar('تم حذف المسابقة بنجاح');
+                _showSuccessSnackBar('?? ??? ???????? ?????');
               } catch (e) {
-                _showErrorSnackBar('خطأ في حذف المسابقة: $e');
+                _showErrorSnackBar('??? ?? ??? ????????: $e');
               }
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: const Text('حذف'),
+            child: const Text('???'),
           ),
         ],
       ),
@@ -884,32 +903,23 @@ class _StellarTournamentAdminScreenState
 
   void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.success,
-      ),
+      SnackBar(content: Text(message), backgroundColor: AppColors.success),
     );
   }
 
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.error,
-      ),
+      SnackBar(content: Text(message), backgroundColor: AppColors.error),
     );
   }
 }
 
-// نموذج إنشاء/تعديل المسابقة
+// ????? ?????/????? ????????
 class _TournamentFormDialog extends StatefulWidget {
   final Tournament? tournament;
   final Function(Map<String, dynamic>) onSave;
 
-  const _TournamentFormDialog({
-    this.tournament,
-    required this.onSave,
-  });
+  const _TournamentFormDialog({this.tournament, required this.onSave});
 
   @override
   State<_TournamentFormDialog> createState() => _TournamentFormDialogState();
@@ -926,8 +936,9 @@ class _TournamentFormDialogState extends State<_TournamentFormDialog> {
   TournamentFormat _selectedFormat = TournamentFormat.classic;
   DateTime _startDate = DateTime.now().add(const Duration(days: 1));
   DateTime _endDate = DateTime.now().add(const Duration(days: 2));
-  DateTime _registrationDeadline =
-      DateTime.now().add(const Duration(hours: 12));
+  DateTime _registrationDeadline = DateTime.now().add(
+    const Duration(hours: 12),
+  );
 
   @override
   void initState() {
@@ -935,8 +946,9 @@ class _TournamentFormDialogState extends State<_TournamentFormDialog> {
 
     final tournament = widget.tournament;
     _nameController = TextEditingController(text: tournament?.name ?? '');
-    _descriptionController =
-        TextEditingController(text: tournament?.description ?? '');
+    _descriptionController = TextEditingController(
+      text: tournament?.description ?? '',
+    );
     _maxParticipantsController = TextEditingController(
       text: tournament?.maxParticipants.toString() ?? '16',
     );
@@ -966,7 +978,8 @@ class _TournamentFormDialogState extends State<_TournamentFormDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-          widget.tournament == null ? 'إنشاء مسابقة جديدة' : 'تعديل المسابقة'),
+        widget.tournament == null ? '????? ?????? ?????' : '????? ????????',
+      ),
       content: SizedBox(
         width: double.maxFinite,
         child: Form(
@@ -977,22 +990,22 @@ class _TournamentFormDialogState extends State<_TournamentFormDialog> {
               children: [
                 TextFormField(
                   controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'اسم المسابقة'),
+                  decoration: const InputDecoration(labelText: '??? ????????'),
                   validator: (value) =>
-                      value?.isEmpty == true ? 'الحقل مطلوب' : null,
+                      value?.isEmpty == true ? '????? ?????' : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _descriptionController,
-                  decoration: const InputDecoration(labelText: 'الوصف'),
+                  decoration: const InputDecoration(labelText: '?????'),
                   maxLines: 3,
                   validator: (value) =>
-                      value?.isEmpty == true ? 'الحقل مطلوب' : null,
+                      value?.isEmpty == true ? '????? ?????' : null,
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<TournamentType>(
                   value: _selectedType,
-                  decoration: const InputDecoration(labelText: 'نوع المسابقة'),
+                  decoration: const InputDecoration(labelText: '??? ????????'),
                   items: TournamentType.values
                       .map(
                         (type) => DropdownMenuItem(
@@ -1006,8 +1019,9 @@ class _TournamentFormDialogState extends State<_TournamentFormDialog> {
                 const SizedBox(height: 16),
                 DropdownButtonFormField<TournamentFormat>(
                   value: _selectedFormat,
-                  decoration:
-                      const InputDecoration(labelText: 'تنسيق المسابقة'),
+                  decoration: const InputDecoration(
+                    labelText: '????? ????????',
+                  ),
                   items: TournamentFormat.values
                       .map(
                         (format) => DropdownMenuItem(
@@ -1022,28 +1036,30 @@ class _TournamentFormDialogState extends State<_TournamentFormDialog> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _maxParticipantsController,
-                  decoration:
-                      const InputDecoration(labelText: 'عدد المشاركين الأقصى'),
+                  decoration: const InputDecoration(
+                    labelText: '??? ????????? ??????',
+                  ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (value?.isEmpty == true) return 'الحقل مطلوب';
+                    if (value?.isEmpty == true) return '????? ?????';
                     final number = int.tryParse(value!);
                     if (number == null || number < 2)
-                      return 'يجب أن يكون 2 على الأقل';
+                      return '??? ?? ???? 2 ??? ?????';
                     return null;
                   },
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _entryFeeController,
-                  decoration:
-                      const InputDecoration(labelText: 'رسوم الدخول (جواهر)'),
+                  decoration: const InputDecoration(
+                    labelText: '???? ?????? (?????)',
+                  ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (value?.isEmpty == true) return 'الحقل مطلوب';
+                    if (value?.isEmpty == true) return '????? ?????';
                     final number = double.tryParse(value!);
                     if (number == null || number < 0)
-                      return 'يجب أن يكون صفر أو أكثر';
+                      return '??? ?? ???? ??? ?? ????';
                     return null;
                   },
                 ),
@@ -1055,11 +1071,11 @@ class _TournamentFormDialogState extends State<_TournamentFormDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('إلغاء'),
+          child: const Text('?????'),
         ),
         TextButton(
           onPressed: _saveTournament,
-          child: Text(widget.tournament == null ? 'إنشاء' : 'تحديث'),
+          child: Text(widget.tournament == null ? '?????' : '?????'),
         ),
       ],
     );
@@ -1087,26 +1103,26 @@ class _TournamentFormDialogState extends State<_TournamentFormDialog> {
   String _getTypeDisplayName(TournamentType type) {
     switch (type) {
       case TournamentType.knockout:
-        return 'خروج المغلوب';
+        return '???? ???????';
       case TournamentType.roundRobin:
-        return 'الدوري';
+        return '??????';
       case TournamentType.swiss:
-        return 'السويسري';
+        return '????????';
       case TournamentType.bracket:
-        return 'الأقواس';
+        return '???????';
     }
   }
 
   String _getFormatDisplayName(TournamentFormat format) {
     switch (format) {
       case TournamentFormat.classic:
-        return 'كلاسيكي';
+        return '???????';
       case TournamentFormat.blitz:
-        return 'خاطف';
+        return '????';
       case TournamentFormat.bullet:
-        return 'سريع';
+        return '????';
       case TournamentFormat.ultraBullet:
-        return 'سريع جداً';
+        return '???? ????';
     }
   }
 }

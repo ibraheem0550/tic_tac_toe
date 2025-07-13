@@ -1,9 +1,10 @@
 import '../models/store_models.dart';
-import 'firestore_service.dart';
-import 'firebase_auth_service.dart';
+import 'unified_auth_services.dart';
+import 'package:flutter/foundation.dart';
 
 class StoreService {
-  final FirestoreService _firestoreService = FirestoreService();
+  // Remove unused field
+  // final FirestoreService _firestoreService = FirestoreService();
   final FirebaseAuthService _authService = FirebaseAuthService();
 
   // Get all available offers
@@ -24,7 +25,7 @@ class StoreService {
         ),
       ];
     } catch (e) {
-      print('Error fetching offers: $e');
+      debugPrint('Error fetching offers: $e');
       return [];
     }
   }
@@ -48,7 +49,7 @@ class StoreService {
         ),
       ];
     } catch (e) {
-      print('Error fetching themes: $e');
+      debugPrint('Error fetching themes: $e');
       return [];
     }
   }
@@ -66,13 +67,13 @@ class StoreService {
           soundFiles: [
             'classic_click.mp3',
             'classic_win.mp3',
-            'classic_lose.mp3'
+            'classic_lose.mp3',
           ],
           isPremium: false,
         ),
       ];
     } catch (e) {
-      print('Error fetching sound packs: $e');
+      debugPrint('Error fetching sound packs: $e');
       return [];
     }
   }
@@ -93,7 +94,7 @@ class StoreService {
         ),
       ];
     } catch (e) {
-      print('Error fetching boosts: $e');
+      debugPrint('Error fetching boosts: $e');
       return [];
     }
   }
@@ -105,10 +106,10 @@ class StoreService {
       if (user == null) return false;
 
       // TODO: Implement actual purchase logic with Firestore
-      print('Purchasing $itemType with id $itemId for $price gems');
+      debugPrint('Purchasing $itemType with id $itemId for $price gems');
       return true;
     } catch (e) {
-      print('Error purchasing item: $e');
+      debugPrint('Error purchasing item: $e');
       return false;
     }
   }
@@ -122,7 +123,7 @@ class StoreService {
       // TODO: Implement actual ownership check with Firestore
       return false;
     } catch (e) {
-      print('Error checking item ownership: $e');
+      debugPrint('Error checking item ownership: $e');
       return false;
     }
   }

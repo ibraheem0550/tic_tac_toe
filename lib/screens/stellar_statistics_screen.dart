@@ -211,25 +211,31 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
                           slivers: [
                             _buildStellarAppBar(),
                             SliverPadding(
-                              padding:
-                                  const EdgeInsets.all(AppDimensions.paddingLG),
+                              padding: const EdgeInsets.all(
+                                AppDimensions.paddingLG,
+                              ),
                               sliver: SliverList(
                                 delegate: SliverChildListDelegate([
                                   _buildPeriodSelector(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingXL),
+                                    height: AppDimensions.paddingXL,
+                                  ),
                                   _buildOverviewStats(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingXL),
+                                    height: AppDimensions.paddingXL,
+                                  ),
                                   _buildPerformanceChart(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingXL),
+                                    height: AppDimensions.paddingXL,
+                                  ),
                                   _buildAchievementsSection(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingXL),
+                                    height: AppDimensions.paddingXL,
+                                  ),
                                   _buildRecentMatchesSection(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingXXL),
+                                    height: AppDimensions.paddingXXL,
+                                  ),
                                 ]),
                               ),
                             ),
@@ -265,9 +271,7 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
           ),
         ),
         background: Container(
-          decoration: const BoxDecoration(
-            gradient: AppColors.stellarGradient,
-          ),
+          decoration: const BoxDecoration(gradient: AppColors.stellarGradient),
           child: Stack(
             children: [
               // خلفية نجمية متحركة
@@ -301,10 +305,7 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
             color: AppColors.surfaceSecondary.withValues(alpha: 0.8),
             borderRadius: BorderRadius.circular(AppDimensions.radiusMD),
           ),
-          child: const Icon(
-            Icons.arrow_back,
-            color: AppColors.textPrimary,
-          ),
+          child: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
         ),
         onPressed: () => Navigator.pop(context),
       ),
@@ -338,8 +339,9 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          padding:
-              const EdgeInsets.symmetric(vertical: AppDimensions.paddingMD),
+          padding: const EdgeInsets.symmetric(
+            vertical: AppDimensions.paddingMD,
+          ),
           decoration: BoxDecoration(
             gradient: isSelected ? AppColors.cosmicButtonGradient : null,
             borderRadius: BorderRadius.circular(AppDimensions.radiusXL),
@@ -348,8 +350,9 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
             title,
             textAlign: TextAlign.center,
             style: AppTextStyles.titleSmall.copyWith(
-              color:
-                  isSelected ? AppColors.textPrimary : AppColors.textTertiary,
+              color: isSelected
+                  ? AppColors.textPrimary
+                  : AppColors.textTertiary,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             ),
           ),
@@ -408,7 +411,11 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
   }
 
   Widget _buildStatCard(
-      String title, String value, IconData icon, Color color) {
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return AnimatedBuilder(
       animation: _counterController,
       builder: (context, child) {
@@ -431,7 +438,7 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
                     height: 80,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: color.withOpacity(0.1),
+                      color: color.withValues(alpha: 0.1),
                     ),
                   ),
                 ),
@@ -443,9 +450,10 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
                       Container(
                         padding: const EdgeInsets.all(AppDimensions.paddingSM),
                         decoration: BoxDecoration(
-                          color: color.withOpacity(0.2),
-                          borderRadius:
-                              BorderRadius.circular(AppDimensions.radiusMD),
+                          color: color.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(
+                            AppDimensions.radiusMD,
+                          ),
                         ),
                         child: Icon(
                           icon,
@@ -540,11 +548,20 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildPerformanceLegend(
-                  'انتصارات', _gameStats['wins'], AppColors.success),
+                'انتصارات',
+                _gameStats['wins'],
+                AppColors.success,
+              ),
               _buildPerformanceLegend(
-                  'هزائم', _gameStats['losses'], AppColors.error),
+                'هزائم',
+                _gameStats['losses'],
+                AppColors.error,
+              ),
               _buildPerformanceLegend(
-                  'تعادل', _gameStats['draws'], AppColors.warning),
+                'تعادل',
+                _gameStats['draws'],
+                AppColors.warning,
+              ),
             ],
           ),
         ],
@@ -558,10 +575,7 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
         Container(
           width: 12,
           height: 12,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(height: 4),
         Text(
@@ -624,8 +638,9 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
 
     return Container(
       decoration: BoxDecoration(
-        gradient:
-            unlocked ? AppColors.nebularGradient : AppColors.starfieldGradient,
+        gradient: unlocked
+            ? AppColors.nebularGradient
+            : AppColors.starfieldGradient,
         borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
         border: Border.all(
           color: unlocked ? AppColors.accent : AppColors.borderPrimary,
@@ -643,11 +658,7 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
                   color: AppColors.success,
                   borderRadius: BorderRadius.circular(AppDimensions.radiusSM),
                 ),
-                child: const Icon(
-                  Icons.check,
-                  size: 16,
-                  color: Colors.white,
-                ),
+                child: const Icon(Icons.check, size: 16, color: Colors.white),
               ),
             ),
           Padding(
@@ -658,7 +669,7 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
                   padding: const EdgeInsets.all(AppDimensions.paddingMD),
                   decoration: BoxDecoration(
                     color: unlocked
-                        ? AppColors.accent.withOpacity(0.2)
+                        ? AppColors.accent.withValues(alpha: 0.2)
                         : AppColors.surfaceSecondary.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(AppDimensions.radiusMD),
                   ),
@@ -698,8 +709,9 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
                           child: LinearProgressIndicator(
                             value: progress,
                             backgroundColor: AppColors.surfaceSecondary,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(AppColors.accent),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.accent,
+                            ),
                             minHeight: 6,
                           ),
                         ),
@@ -827,8 +839,9 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
                       ),
                       decoration: BoxDecoration(
                         color: resultColor.withOpacity(0.2),
-                        borderRadius:
-                            BorderRadius.circular(AppDimensions.radiusSM),
+                        borderRadius: BorderRadius.circular(
+                          AppDimensions.radiusSM,
+                        ),
                       ),
                       child: Text(
                         resultText,
@@ -856,11 +869,7 @@ class _StellarStatisticsScreenState extends State<StellarStatisticsScreen>
                       ),
                     ),
                     const SizedBox(width: AppDimensions.paddingMD),
-                    Icon(
-                      Icons.diamond,
-                      size: 16,
-                      color: AppColors.accent,
-                    ),
+                    Icon(Icons.diamond, size: 16, color: AppColors.accent),
                     const SizedBox(width: 4),
                     Text(
                       '+${match['gemsEarned']}',

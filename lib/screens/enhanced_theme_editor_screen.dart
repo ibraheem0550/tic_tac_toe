@@ -58,7 +58,7 @@ class _EnhancedThemeEditorScreenState extends State<EnhancedThemeEditorScreen>
         bottom: TabBar(
           controller: _tabController,
           labelColor: AppColors.textLight,
-          unselectedLabelColor: AppColors.textLight.withOpacity(0.7),
+          unselectedLabelColor: AppColors.textLight.withValues(alpha: 0.7),
           indicatorColor: AppColors.accent,
           tabs: const [
             Tab(icon: Icon(Icons.palette), text: 'الألوان'),
@@ -291,7 +291,7 @@ class _EnhancedThemeEditorScreenState extends State<EnhancedThemeEditorScreen>
             decoration: BoxDecoration(
               color: _surfaceColor,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: _primaryColor.withOpacity(0.3)),
+              border: Border.all(color: _primaryColor.withValues(alpha: 0.3)),
             ),
             child: _buildLivePreview(),
           ),
@@ -308,7 +308,7 @@ class _EnhancedThemeEditorScreenState extends State<EnhancedThemeEditorScreen>
         color: AppColors.surfaceLight,
         borderRadius: BorderRadius.circular(12),
         boxShadow: AppShadows.card,
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,7 +322,7 @@ class _EnhancedThemeEditorScreenState extends State<EnhancedThemeEditorScreen>
                   color: color,
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
-                      color: AppColors.textSecondary.withOpacity(0.3)),
+                      color: AppColors.textSecondary.withValues(alpha: 0.3)),
                 ),
               ),
               const SizedBox(width: 12),
@@ -444,7 +444,7 @@ class _EnhancedThemeEditorScreenState extends State<EnhancedThemeEditorScreen>
       decoration: BoxDecoration(
         color: _backgroundColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _primaryColor.withOpacity(0.3)),
+        border: Border.all(color: _primaryColor.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -472,13 +472,13 @@ class _EnhancedThemeEditorScreenState extends State<EnhancedThemeEditorScreen>
           Text(
             'نص متوسط الحجم للمعلومات الإضافية والتفاصيل.',
             style: AppTextStyles.bodyMedium
-                .copyWith(color: _textColor.withOpacity(0.8)),
+                .copyWith(color: _textColor.withValues(alpha: 0.8)),
           ),
           const SizedBox(height: 8),
           Text(
             'نص صغير للملاحظات والمعلومات الثانوية.',
             style: AppTextStyles.bodySmall
-                .copyWith(color: _textColor.withOpacity(0.6)),
+                .copyWith(color: _textColor.withValues(alpha: 0.6)),
           ),
         ],
       ),
@@ -531,7 +531,7 @@ class _EnhancedThemeEditorScreenState extends State<EnhancedThemeEditorScreen>
       decoration: BoxDecoration(
         color: _backgroundColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _primaryColor.withOpacity(0.3)),
+        border: Border.all(color: _primaryColor.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -619,7 +619,7 @@ class _EnhancedThemeEditorScreenState extends State<EnhancedThemeEditorScreen>
       decoration: BoxDecoration(
         color: _surfaceColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: accentColor.withOpacity(0.3)),
+        border: Border.all(color: accentColor.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -648,7 +648,7 @@ class _EnhancedThemeEditorScreenState extends State<EnhancedThemeEditorScreen>
           Text(
             content,
             style: AppTextStyles.bodySmall.copyWith(
-              color: _textColor.withOpacity(0.7),
+              color: _textColor.withValues(alpha: 0.7),
             ),
           ),
         ],
@@ -742,7 +742,7 @@ class _EnhancedThemeEditorScreenState extends State<EnhancedThemeEditorScreen>
       decoration: BoxDecoration(
         color: _backgroundColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _primaryColor.withOpacity(0.3)),
+        border: Border.all(color: _primaryColor.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -768,7 +768,7 @@ class _EnhancedThemeEditorScreenState extends State<EnhancedThemeEditorScreen>
               color: color,
               borderRadius: BorderRadius.circular(4),
               border:
-                  Border.all(color: AppColors.textSecondary.withOpacity(0.3)),
+                  Border.all(color: AppColors.textSecondary.withValues(alpha: 0.3)),
             ),
           ),
           const SizedBox(width: 12),
@@ -780,7 +780,7 @@ class _EnhancedThemeEditorScreenState extends State<EnhancedThemeEditorScreen>
           Text(
             '#${color.value.toRadixString(16).substring(2).toUpperCase()}',
             style: AppTextStyles.bodySmall.copyWith(
-              color: _textColor.withOpacity(0.7),
+              color: _textColor.withValues(alpha: 0.7),
               fontFamily: 'monospace',
             ),
           ),

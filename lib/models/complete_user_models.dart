@@ -1,32 +1,25 @@
-// lib/models/complete_user_models.dart
 /// نماذج المستخدم والإحصائيات الكاملة - تحتوي على جميع النماذج المطلوبة
+library complete_user_models;
+
+import 'game_mode_models.dart';
 
 /// مقدمي الخدمة للمصادقة
-enum AuthProvider {
-  email,
-  google,
-  facebook,
-  apple,
-  guest,
-  googlePlay,
-}
+enum AuthProvider { email, google, facebook, apple, guest, googlePlay }
 
 /// حالات طلب الصداقة
-enum FriendRequestStatus {
-  pending,
-  accepted,
-  rejected,
-  cancelled,
-}
+enum FriendRequestStatus { pending, accepted, rejected, cancelled }
 
 /// أنواع طرق الدفع
-enum PaymentMethodType {
-  creditCard,
-  paypal,
-  googlePay,
-  applePay,
-  stripe,
-}
+enum PaymentMethodType { creditCard, paypal, googlePay, applePay, stripe }
+
+/// حالات المعاملة المالية
+enum PaymentStatus { pending, completed, failed, refunded, cancelled }
+
+/// أنواع الاشتراك المميز
+enum PremiumType { monthly, yearly, lifetime }
+
+/// أنواع المنتجات في المتجر
+enum ProductType { coins, gems, premium, theme, avatar }
 
 /// نموذج تفضيلات المستخدم
 class UserPreferences {
@@ -147,20 +140,26 @@ class GameStats {
       draws: json['draws'] ?? 0,
       streak: json['streak'] ?? 0,
       bestStreak: json['best_streak'] ?? json['bestStreak'] ?? 0,
-      modeStats:
-          Map<String, int>.from(json['mode_stats'] ?? json['modeStats'] ?? {}),
+      modeStats: Map<String, int>.from(
+        json['mode_stats'] ?? json['modeStats'] ?? {},
+      ),
       difficultyStats: Map<String, int>.from(
-          json['difficulty_stats'] ?? json['difficultyStats'] ?? {}),
-      lastUpdated: DateTime.tryParse(
-              json['last_updated'] ?? json['lastUpdated'] ?? '') ??
+        json['difficulty_stats'] ?? json['difficultyStats'] ?? {},
+      ),
+      lastUpdated:
+          DateTime.tryParse(
+            json['last_updated'] ?? json['lastUpdated'] ?? '',
+          ) ??
           DateTime.now(),
       totalPlayTime: json['total_play_time'] ?? json['totalPlayTime'] ?? 0,
-      achievements: (json['achievements'] as List?)
+      achievements:
+          (json['achievements'] as List?)
               ?.map((a) => Achievement.fromJson(a))
               .toList() ??
           [],
       additionalData: Map<String, dynamic>.from(
-          json['additional_data'] ?? json['additionalData'] ?? {}),
+        json['additional_data'] ?? json['additionalData'] ?? {},
+      ),
     );
   }
 
@@ -218,10 +217,7 @@ class GameStats {
 
   /// إنشاء إحصائيات فارغة
   factory GameStats.empty(String userId) {
-    return GameStats(
-      userId: userId,
-      lastUpdated: DateTime.now(),
-    );
+    return GameStats(userId: userId, lastUpdated: DateTime.now());
   }
 
   /// تسجيل نتيجة لعبة جديدة
@@ -431,12 +427,18 @@ class User {
       isVerified: json['is_verified'] ?? json['isVerified'] ?? false,
       bio: json['bio'],
       preferences: Map<String, dynamic>.from(json['preferences'] ?? {}),
-      linkedProviders: (json['linked_providers'] as List?)
-              ?.map((p) => AuthProvider.values.firstWhere((ap) => ap.name == p,
-                  orElse: () => AuthProvider.email))
+      linkedProviders:
+          (json['linked_providers'] as List?)
+              ?.map(
+                (p) => AuthProvider.values.firstWhere(
+                  (ap) => ap.name == p,
+                  orElse: () => AuthProvider.email,
+                ),
+              )
               .toList() ??
           [],
-      linkedAccounts: (json['linked_accounts'] as List?)
+      linkedAccounts:
+          (json['linked_accounts'] as List?)
               ?.map((a) => LinkedAccount.fromJson(a))
               .toList() ??
           [],
@@ -609,7 +611,7 @@ class Achievement {
       iconName: json['icon_name'] ?? json['iconName'] ?? 'star',
       unlockedAt:
           DateTime.tryParse(json['unlocked_at'] ?? json['unlockedAt'] ?? '') ??
-              DateTime.now(),
+          DateTime.now(),
       points: json['points'] ?? 0,
       category: json['category'] ?? 'general',
       metadata: Map<String, dynamic>.from(json['metadata'] ?? {}),
@@ -664,9 +666,10 @@ class GameRecord {
       duration: json['duration'] ?? 0,
       playedAt:
           DateTime.tryParse(json['played_at'] ?? json['playedAt'] ?? '') ??
-              DateTime.now(),
+          DateTime.now(),
       gameData: Map<String, dynamic>.from(
-          json['game_data'] ?? json['gameData'] ?? {}),
+        json['game_data'] ?? json['gameData'] ?? {},
+      ),
       pointsEarned: json['points_earned'] ?? json['pointsEarned'] ?? 0,
     );
   }
@@ -714,9 +717,10 @@ class Friend {
       isOnline: json['is_online'] ?? json['isOnline'] ?? false,
       lastSeen:
           DateTime.tryParse(json['last_seen'] ?? json['lastSeen'] ?? '') ??
-              DateTime.now(),
+          DateTime.now(),
       gameStats: Map<String, dynamic>.from(
-          json['game_stats'] ?? json['gameStats'] ?? {}),
+        json['game_stats'] ?? json['gameStats'] ?? {},
+      ),
       status: json['status'] ?? 'offline',
     );
   }
@@ -764,12 +768,13 @@ class FriendRequest {
       status: json['status'] ?? 'pending',
       createdAt:
           DateTime.tryParse(json['created_at'] ?? json['createdAt'] ?? '') ??
-              DateTime.now(),
+          DateTime.now(),
       respondedAt: json['responded_at'] != null
           ? DateTime.tryParse(json['responded_at'])
           : null,
-      fromUser:
-          json['from_user'] != null ? User.fromJson(json['from_user']) : null,
+      fromUser: json['from_user'] != null
+          ? User.fromJson(json['from_user'])
+          : null,
       toUser: json['to_user'] != null ? User.fromJson(json['to_user']) : null,
     );
   }
@@ -822,7 +827,7 @@ class Challenge {
       status: json['status'] ?? 'pending',
       createdAt:
           DateTime.tryParse(json['created_at'] ?? json['createdAt'] ?? '') ??
-              DateTime.now(),
+          DateTime.now(),
       expiresAt: json['expires_at'] != null
           ? DateTime.tryParse(json['expires_at'])
           : null,
@@ -835,12 +840,576 @@ class Challenge {
       'id': id,
       'from_user_id': fromUserId,
       'to_user_id': toUserId,
-      'game_mode': gameMode,
-      'difficulty': difficulty,
-      'status': status,
+      'game_mode': gameMode.toString().split('.').last,
+      'difficulty': difficulty.toString().split('.').last,
+      'status': status.toString().split('.').last,
       'created_at': createdAt.toIso8601String(),
       'expires_at': expiresAt?.toIso8601String(),
       'settings': settings,
+    };
+  }
+}
+
+/// نموذج المعاملة المالية
+class PaymentTransaction {
+  final String id;
+  final String userId;
+  final String productId;
+  final double amount;
+  final String currency;
+  final PaymentMethodType paymentMethod;
+  final PaymentStatus status;
+  final DateTime createdAt;
+  DateTime? updatedAt;
+  final int? coinAmount;
+  final int? gemAmount;
+  final PremiumType? premiumType;
+  final Map<String, dynamic>? metadata;
+
+  PaymentTransaction({
+    required this.id,
+    required this.userId,
+    required this.productId,
+    required this.amount,
+    required this.currency,
+    required this.paymentMethod,
+    required this.status,
+    required this.createdAt,
+    this.updatedAt,
+    this.coinAmount,
+    this.gemAmount,
+    this.premiumType,
+    this.metadata,
+  });
+
+  factory PaymentTransaction.fromJson(Map<String, dynamic> json) {
+    return PaymentTransaction(
+      id: json['id'],
+      userId: json['user_id'],
+      productId: json['product_id'],
+      amount: (json['amount'] ?? 0.0).toDouble(),
+      currency: json['currency'] ?? 'USD',
+      paymentMethod: PaymentMethodType.values.firstWhere(
+        (e) => e.toString().split('.').last == json['payment_method'],
+        orElse: () => PaymentMethodType.stripe,
+      ),
+      status: PaymentStatus.values.firstWhere(
+        (e) => e.toString().split('.').last == json['status'],
+        orElse: () => PaymentStatus.pending,
+      ),
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
+      coinAmount: json['coin_amount'],
+      gemAmount: json['gem_amount'],
+      premiumType: json['premium_type'] != null
+          ? PremiumType.values.firstWhere(
+              (e) => e.toString().split('.').last == json['premium_type'],
+              orElse: () => PremiumType.monthly,
+            )
+          : null,
+      metadata: json['metadata'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'user_id': userId,
+      'product_id': productId,
+      'amount': amount,
+      'currency': currency,
+      'payment_method': paymentMethod.toString().split('.').last,
+      'status': status.toString().split('.').last,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
+      'coin_amount': coinAmount,
+      'gem_amount': gemAmount,
+      'premium_type': premiumType?.toString().split('.').last,
+      'metadata': metadata,
+    };
+  }
+}
+
+/// نموذج نتيجة الدفع
+class PaymentResult {
+  final bool success;
+  final String? transactionId;
+  final String? error;
+  final String? message;
+  final int? coinAmount;
+  final int? gemAmount;
+  final PremiumType? premiumType;
+
+  PaymentResult({
+    required this.success,
+    this.transactionId,
+    this.error,
+    this.message,
+    this.coinAmount,
+    this.gemAmount,
+    this.premiumType,
+  });
+}
+
+/// نموذج منتج المتجر
+class StoreProduct {
+  final String id;
+  final String name;
+  final String description;
+  final double price;
+  final String currency;
+  final ProductType type;
+  final int? coinAmount;
+  final int? gemAmount;
+  final PremiumType? premiumType;
+  final bool isOnSale;
+  final double? originalPrice;
+  final Map<String, dynamic>? metadata;
+
+  StoreProduct({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.price,
+    required this.currency,
+    required this.type,
+    this.coinAmount,
+    this.gemAmount,
+    this.premiumType,
+    this.isOnSale = false,
+    this.originalPrice,
+    this.metadata,
+  });
+
+  factory StoreProduct.fromJson(Map<String, dynamic> json) {
+    return StoreProduct(
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      price: (json['price'] ?? 0.0).toDouble(),
+      currency: json['currency'] ?? 'USD',
+      type: ProductType.values.firstWhere(
+        (e) => e.toString().split('.').last == json['type'],
+        orElse: () => ProductType.coins,
+      ),
+      coinAmount: json['coin_amount'],
+      gemAmount: json['gem_amount'],
+      premiumType: json['premium_type'] != null
+          ? PremiumType.values.firstWhere(
+              (e) => e.toString().split('.').last == json['premium_type'],
+              orElse: () => PremiumType.monthly,
+            )
+          : null,
+      isOnSale: json['is_on_sale'] ?? false,
+      originalPrice: json['original_price']?.toDouble(),
+      metadata: json['metadata'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'price': price,
+      'currency': currency,
+      'type': type.toString().split('.').last,
+      'coin_amount': coinAmount,
+      'gem_amount': gemAmount,
+      'premium_type': premiumType?.toString().split('.').last,
+      'is_on_sale': isOnSale,
+      'original_price': originalPrice,
+      'metadata': metadata,
+    };
+  }
+}
+
+/// حالات المباراة
+enum GameStatus { waiting, active, paused, finished, abandoned, cancelled }
+
+/// أنواع الرسائل
+enum MessageType { text, emoji, system, invite }
+
+/// نموذج اللعبة الأونلاين
+class OnlineGame {
+  final String id;
+  final String player1Id;
+  final String? player2Id;
+  final GameMode gameMode;
+  final DifficultyLevel difficulty;
+  GameStatus status;
+  final DateTime createdAt;
+  DateTime? startedAt;
+  DateTime? endedAt;
+  final int? timeLimit;
+  List<String> board;
+  String currentTurn;
+  List<GameMove> moves;
+  String? winnerId;
+  final Map<String, dynamic>? metadata;
+
+  OnlineGame({
+    required this.id,
+    required this.player1Id,
+    this.player2Id,
+    required this.gameMode,
+    required this.difficulty,
+    required this.status,
+    required this.createdAt,
+    this.startedAt,
+    this.endedAt,
+    this.timeLimit,
+    required this.board,
+    required this.currentTurn,
+    required this.moves,
+    this.winnerId,
+    this.metadata,
+  });
+
+  factory OnlineGame.fromJson(Map<String, dynamic> json) {
+    return OnlineGame(
+      id: json['id'],
+      player1Id: json['player1_id'],
+      player2Id: json['player2_id'],
+      gameMode: GameMode.values.firstWhere(
+        (e) => e.toString().split('.').last == json['game_mode'],
+        orElse: () => GameMode.online,
+      ),
+      difficulty: DifficultyLevel.values.firstWhere(
+        (e) => e.toString().split('.').last == json['difficulty'],
+        orElse: () => DifficultyLevel.medium,
+      ),
+      status: GameStatus.values.firstWhere(
+        (e) => e.toString().split('.').last == json['status'],
+        orElse: () => GameStatus.waiting,
+      ),
+      createdAt: DateTime.parse(json['created_at']),
+      startedAt: json['started_at'] != null
+          ? DateTime.parse(json['started_at'])
+          : null,
+      endedAt: json['ended_at'] != null
+          ? DateTime.parse(json['ended_at'])
+          : null,
+      timeLimit: json['time_limit'],
+      board: List<String>.from(
+        json['board'] ?? List.generate(9, (index) => ''),
+      ),
+      currentTurn: json['current_turn'] ?? 'X',
+      moves:
+          (json['moves'] as List?)?.map((m) => GameMove.fromJson(m)).toList() ??
+          [],
+      winnerId: json['winner_id'],
+      metadata: json['metadata'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'player1_id': player1Id,
+      'player2_id': player2Id,
+      'game_mode': gameMode.toString().split('.').last,
+      'difficulty': difficulty.toString().split('.').last,
+      'status': status.toString().split('.').last,
+      'created_at': createdAt.toIso8601String(),
+      'started_at': startedAt?.toIso8601String(),
+      'ended_at': endedAt?.toIso8601String(),
+      'time_limit': timeLimit,
+      'board': board,
+      'current_turn': currentTurn,
+      'moves': moves.map((m) => m.toJson()).toList(),
+      'winner_id': winnerId,
+      'metadata': metadata,
+    };
+  }
+}
+
+/// نموذج حركة اللعبة
+class GameMove {
+  final String playerId;
+  final int position;
+  final String symbol;
+  final DateTime timestamp;
+
+  GameMove({
+    required this.playerId,
+    required this.position,
+    required this.symbol,
+    required this.timestamp,
+  });
+
+  factory GameMove.fromJson(Map<String, dynamic> json) {
+    return GameMove(
+      playerId: json['player_id'],
+      position: json['position'],
+      symbol: json['symbol'],
+      timestamp: DateTime.parse(json['timestamp']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'player_id': playerId,
+      'position': position,
+      'symbol': symbol,
+      'timestamp': timestamp.toIso8601String(),
+    };
+  }
+}
+
+/// نموذج اللاعب المتصل
+class OnlinePlayer {
+  final String id;
+  final String displayName;
+  final String? avatarUrl;
+  final bool isOnline;
+  final DateTime lastSeen;
+  final GameStats? gameStats;
+
+  OnlinePlayer({
+    required this.id,
+    required this.displayName,
+    this.avatarUrl,
+    required this.isOnline,
+    required this.lastSeen,
+    this.gameStats,
+  });
+
+  factory OnlinePlayer.fromJson(Map<String, dynamic> json) {
+    return OnlinePlayer(
+      id: json['id'],
+      displayName: json['display_name'],
+      avatarUrl: json['avatar_url'],
+      isOnline: json['is_online'] ?? false,
+      lastSeen: DateTime.parse(json['last_seen']),
+      gameStats: json['game_stats'] != null
+          ? GameStats.fromJson(json['game_stats'])
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'display_name': displayName,
+      'avatar_url': avatarUrl,
+      'is_online': isOnline,
+      'last_seen': lastSeen.toIso8601String(),
+      'game_stats': gameStats?.toJson(),
+    };
+  }
+}
+
+/// نموذج رسالة اللعبة
+class GameMessage {
+  final String id;
+  final String gameId;
+  final String playerId;
+  final String message;
+  final MessageType type;
+  final DateTime timestamp;
+
+  GameMessage({
+    required this.id,
+    required this.gameId,
+    required this.playerId,
+    required this.message,
+    required this.type,
+    required this.timestamp,
+  });
+
+  factory GameMessage.fromJson(Map<String, dynamic> json) {
+    return GameMessage(
+      id: json['id'],
+      gameId: json['game_id'],
+      playerId: json['player_id'],
+      message: json['message'],
+      type: MessageType.values.firstWhere(
+        (e) => e.toString().split('.').last == json['type'],
+        orElse: () => MessageType.text,
+      ),
+      timestamp: DateTime.parse(json['timestamp']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'game_id': gameId,
+      'player_id': playerId,
+      'message': message,
+      'type': type.toString().split('.').last,
+      'timestamp': timestamp.toIso8601String(),
+    };
+  }
+}
+
+/// نموذج نتيجة البحث عن مباراة
+class MatchmakingResult {
+  final bool success;
+  final OnlineGame? game;
+  final String? error;
+  final String? message;
+
+  MatchmakingResult({
+    required this.success,
+    this.game,
+    this.error,
+    this.message,
+  });
+}
+
+/// أنواع البطولات
+enum TournamentType { single, double, roundRobin, swiss }
+
+/// حالات البطولة
+enum TournamentStatus { upcoming, active, finished, cancelled }
+
+/// نموذج البطولة
+class Tournament {
+  final String id;
+  final String name;
+  final String description;
+  final String creatorId;
+  final int maxPlayers;
+  final DateTime startTime;
+  final TournamentType type;
+  TournamentStatus status;
+  final double? entryFee;
+  final DateTime createdAt;
+  final List<String> participants;
+  final List<TournamentMatch> matches;
+  final String? winnerId;
+  final Map<String, dynamic>? prizes;
+
+  Tournament({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.creatorId,
+    required this.maxPlayers,
+    required this.startTime,
+    required this.type,
+    required this.status,
+    this.entryFee,
+    required this.createdAt,
+    required this.participants,
+    required this.matches,
+    this.winnerId,
+    this.prizes,
+  });
+
+  factory Tournament.fromJson(Map<String, dynamic> json) {
+    return Tournament(
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      creatorId: json['creator_id'],
+      maxPlayers: json['max_players'],
+      startTime: DateTime.parse(json['start_time']),
+      type: TournamentType.values.firstWhere(
+        (e) => e.toString().split('.').last == json['type'],
+        orElse: () => TournamentType.single,
+      ),
+      status: TournamentStatus.values.firstWhere(
+        (e) => e.toString().split('.').last == json['status'],
+        orElse: () => TournamentStatus.upcoming,
+      ),
+      entryFee: json['entry_fee']?.toDouble(),
+      createdAt: DateTime.parse(json['created_at']),
+      participants: List<String>.from(json['participants'] ?? []),
+      matches:
+          (json['matches'] as List?)
+              ?.map((m) => TournamentMatch.fromJson(m))
+              .toList() ??
+          [],
+      winnerId: json['winner_id'],
+      prizes: json['prizes'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'creator_id': creatorId,
+      'max_players': maxPlayers,
+      'start_time': startTime.toIso8601String(),
+      'type': type.toString().split('.').last,
+      'status': status.toString().split('.').last,
+      'entry_fee': entryFee,
+      'created_at': createdAt.toIso8601String(),
+      'participants': participants,
+      'matches': matches.map((m) => m.toJson()).toList(),
+      'winner_id': winnerId,
+      'prizes': prizes,
+    };
+  }
+}
+
+/// نموذج مباراة البطولة
+class TournamentMatch {
+  final String id;
+  final String tournamentId;
+  final String player1Id;
+  final String? player2Id;
+  final int round;
+  final GameStatus status;
+  final String? winnerId;
+  final DateTime scheduledTime;
+  final DateTime? startedAt;
+  final DateTime? endedAt;
+
+  TournamentMatch({
+    required this.id,
+    required this.tournamentId,
+    required this.player1Id,
+    this.player2Id,
+    required this.round,
+    required this.status,
+    this.winnerId,
+    required this.scheduledTime,
+    this.startedAt,
+    this.endedAt,
+  });
+
+  factory TournamentMatch.fromJson(Map<String, dynamic> json) {
+    return TournamentMatch(
+      id: json['id'],
+      tournamentId: json['tournament_id'],
+      player1Id: json['player1_id'],
+      player2Id: json['player2_id'],
+      round: json['round'],
+      status: GameStatus.values.firstWhere(
+        (e) => e.toString().split('.').last == json['status'],
+        orElse: () => GameStatus.waiting,
+      ),
+      winnerId: json['winner_id'],
+      scheduledTime: DateTime.parse(json['scheduled_time']),
+      startedAt: json['started_at'] != null
+          ? DateTime.parse(json['started_at'])
+          : null,
+      endedAt: json['ended_at'] != null
+          ? DateTime.parse(json['ended_at'])
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'tournament_id': tournamentId,
+      'player1_id': player1Id,
+      'player2_id': player2Id,
+      'round': round,
+      'status': status.toString().split('.').last,
+      'winner_id': winnerId,
+      'scheduled_time': scheduledTime.toIso8601String(),
+      'started_at': startedAt?.toIso8601String(),
+      'ended_at': endedAt?.toIso8601String(),
     };
   }
 }

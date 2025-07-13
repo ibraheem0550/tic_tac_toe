@@ -44,7 +44,7 @@ class AudioHelper {
 
       await _player.play(source);
     } catch (e) {
-      print('Error playing sound: $e');
+      debugPrint('Error playing sound: $e');
     }
   }
 

@@ -1,11 +1,11 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../services/game_stats_service.dart';
-import '../services/firebase_auth_service.dart';
+import '../services/unified_auth_services.dart';
 import '../models/complete_user_models.dart';
 import '../utils/app_theme_new.dart';
 import '../utils/responsive_system.dart';
 
-/// شاشة الإحصائيات الحقيقية - تعرض البيانات الفعلية للمستخدم
+/// ???? ?????????? ???????? - ???? ???????? ??????? ????????
 class StellarRealStatsScreen extends StatefulWidget {
   const StellarRealStatsScreen({super.key});
 
@@ -50,24 +50,24 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
     );
   }
 
-  /// تحميل البيانات الحقيقية
+  /// ????? ???????? ????????
   Future<void> _loadRealData() async {
     try {
       setState(() => _isLoading = true);
 
-      // تحميل المستخدم الحالي
-      _currentUser = _authService.currentUser;
+      // ????? ???????? ??????
+      _currentUser = _authService.currentUserModel;
 
-      // تحميل الإحصائيات الحقيقية
+      // ????? ?????????? ????????
       _stats = await _gameStatsService.loadGameStats();
 
-      // تحميل تاريخ الألعاب الحقيقي
+      // ????? ????? ??????? ???????
       _gameHistory = await _gameStatsService.getGameHistory(limit: 10);
 
       setState(() => _isLoading = false);
       _animationController.forward();
     } catch (e) {
-      print('خطأ في تحميل البيانات: $e');
+      debugPrint('خطأ في تحميل الإحصائيات: $e');
       setState(() => _isLoading = false);
     }
   }
@@ -76,9 +76,7 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: AppColors.starfieldGradient,
-        ),
+        decoration: BoxDecoration(gradient: AppColors.starfieldGradient),
         child: SafeArea(
           child: ResponsiveBuilder(
             builder: (context, sizingInfo) {
@@ -108,7 +106,7 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
           ),
           SizedBox(height: 16),
           Text(
-            'تحميل إحصائياتك الحقيقية...',
+            '????? ????????? ????????...',
             style: AppTextStyles.titleMedium.copyWith(
               color: AppColors.textPrimary,
             ),
@@ -123,14 +121,10 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: AppColors.error,
-          ),
+          Icon(Icons.error_outline, size: 64, color: AppColors.error),
           SizedBox(height: 16),
           Text(
-            'حدث خطأ في تحميل الإحصائيات',
+            '??? ??? ?? ????? ??????????',
             style: AppTextStyles.titleLarge.copyWith(
               color: AppColors.textPrimary,
             ),
@@ -138,11 +132,9 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
           SizedBox(height: 16),
           ElevatedButton(
             onPressed: _loadRealData,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
             child: Text(
-              'إعادة المحاولة',
+              '????? ????????',
               style: TextStyle(color: Colors.white),
             ),
           ),
@@ -189,7 +181,7 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
           ),
           Expanded(
             child: Text(
-              'إحصائياتك الحقيقية',
+              '????????? ????????',
               style: AppTextStyles.headlineMedium.copyWith(
                 color: AppColors.starGold,
                 fontWeight: FontWeight.bold,
@@ -216,7 +208,7 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
       ),
       child: Row(
         children: [
-          // صورة المستخدم
+          // ???? ????????
           Container(
             width: sizingInfo.isDesktop ? 80 : 64,
             height: sizingInfo.isDesktop ? 80 : 64,
@@ -239,13 +231,13 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
           ),
           SizedBox(width: 16),
 
-          // معلومات المستخدم
+          // ??????? ????????
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _currentUser?.displayName ?? 'مستخدم',
+                  _currentUser?.displayName ?? '??????',
                   style: AppTextStyles.titleLarge.copyWith(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.bold,
@@ -268,7 +260,7 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    _currentUser?.isGuest == true ? 'ضيف' : 'مستخدم مسجل',
+                    _currentUser?.isGuest == true ? '???' : '?????? ????',
                     style: AppTextStyles.bodySmall.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -304,7 +296,7 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'الإحصائيات الرئيسية',
+          '?????????? ????????',
           style: AppTextStyles.titleLarge.copyWith(
             color: AppColors.starGold,
             fontWeight: FontWeight.bold,
@@ -318,14 +310,30 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
           children: [
-            _buildStatCard('إجمالي الألعاب', '${stats.totalGames}', Icons.games,
-                AppColors.primary),
-            _buildStatCard('الانتصارات', '${stats.wins}', Icons.emoji_events,
-                AppColors.success),
-            _buildStatCard('الخسارات', '${stats.losses}',
-                Icons.sentiment_dissatisfied, AppColors.error),
-            _buildStatCard('التعادل', '${stats.draws}', Icons.handshake,
-                AppColors.warning),
+            _buildStatCard(
+              '?????? ???????',
+              '${stats.totalGames}',
+              Icons.games,
+              AppColors.primary,
+            ),
+            _buildStatCard(
+              '??????????',
+              '${stats.wins}',
+              Icons.emoji_events,
+              AppColors.success,
+            ),
+            _buildStatCard(
+              '????????',
+              '${stats.losses}',
+              Icons.sentiment_dissatisfied,
+              AppColors.error,
+            ),
+            _buildStatCard(
+              '???????',
+              '${stats.draws}',
+              Icons.handshake,
+              AppColors.warning,
+            ),
           ],
         ),
         SizedBox(height: 16),
@@ -336,15 +344,24 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,
           children: [
-            _buildStatCard('معدل الفوز', '${stats.winRate.toStringAsFixed(1)}%',
-                Icons.trending_up, AppColors.starGold),
-            _buildStatCard('أفضل سلسلة', '${stats.bestWinStreak}',
-                Icons.local_fire_department, AppColors.secondary),
             _buildStatCard(
-                'وقت اللعب',
-                '${(stats.totalPlayTime / 3600).toStringAsFixed(1)}س',
-                Icons.schedule,
-                AppColors.info),
+              '???? ?????',
+              '${stats.winRate.toStringAsFixed(1)}%',
+              Icons.trending_up,
+              AppColors.starGold,
+            ),
+            _buildStatCard(
+              '???? ?????',
+              '${stats.bestWinStreak}',
+              Icons.local_fire_department,
+              AppColors.secondary,
+            ),
+            _buildStatCard(
+              '??? ?????',
+              '${(stats.totalPlayTime / 3600).toStringAsFixed(1)}?',
+              Icons.schedule,
+              AppColors.info,
+            ),
           ],
         ),
       ],
@@ -352,7 +369,11 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
   }
 
   Widget _buildStatCard(
-      String title, String value, IconData icon, Color color) {
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -396,7 +417,7 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'إحصائيات المستويات',
+          '???????? ?????????',
           style: AppTextStyles.titleLarge.copyWith(
             color: AppColors.starGold,
             fontWeight: FontWeight.bold,
@@ -467,21 +488,17 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
         ),
         child: Column(
           children: [
-            Icon(
-              Icons.history,
-              size: 48,
-              color: AppColors.textSecondary,
-            ),
+            Icon(Icons.history, size: 48, color: AppColors.textSecondary),
             SizedBox(height: 8),
             Text(
-              'لا يوجد تاريخ ألعاب بعد',
+              '?? ???? ????? ????? ???',
               style: AppTextStyles.titleMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
             ),
             SizedBox(height: 4),
             Text(
-              'ابدأ بلعب بعض الألعاب لرؤية التاريخ هنا',
+              '???? ???? ??? ??????? ????? ??????? ???',
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -496,7 +513,7 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'آخر الألعاب',
+          '??? ???????',
           style: AppTextStyles.titleLarge.copyWith(
             color: AppColors.starGold,
             fontWeight: FontWeight.bold,
@@ -510,10 +527,10 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
         if (_gameHistory.length > 5)
           TextButton(
             onPressed: () {
-              // عرض جميع الألعاب
+              // ??? ???? ???????
             },
             child: Text(
-              'عرض المزيد...',
+              '??? ??????...',
               style: TextStyle(color: AppColors.starGold),
             ),
           ),
@@ -535,29 +552,29 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
       case 'win':
         resultColor = AppColors.success;
         resultIcon = Icons.emoji_events;
-        resultText = 'فوز';
+        resultText = '???';
         break;
       case 'loss':
         resultColor = AppColors.error;
         resultIcon = Icons.sentiment_dissatisfied;
-        resultText = 'خسارة';
+        resultText = '?????';
         break;
       default:
         resultColor = AppColors.warning;
         resultIcon = Icons.handshake;
-        resultText = 'تعادل';
+        resultText = '?????';
     }
 
     String modeText;
     switch (mode) {
       case 'ai':
-        modeText = 'ذكاء اصطناعي';
+        modeText = '???? ???????';
         break;
       case 'local':
-        modeText = 'لعب محلي';
+        modeText = '??? ????';
         break;
       case 'online':
-        modeText = 'أونلاين';
+        modeText = '???????';
         break;
       default:
         modeText = mode;
@@ -611,13 +628,13 @@ class _StellarRealStatsScreenState extends State<StellarRealStatsScreen>
     final difference = now.difference(dateTime);
 
     if (difference.inDays > 0) {
-      return 'منذ ${difference.inDays} يوم';
+      return '??? ${difference.inDays} ???';
     } else if (difference.inHours > 0) {
-      return 'منذ ${difference.inHours} ساعة';
+      return '??? ${difference.inHours} ????';
     } else if (difference.inMinutes > 0) {
-      return 'منذ ${difference.inMinutes} دقيقة';
+      return '??? ${difference.inMinutes} ?????';
     } else {
-      return 'الآن';
+      return '????';
     }
   }
 }

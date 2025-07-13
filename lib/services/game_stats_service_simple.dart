@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/complete_user_models.dart';
-import 'firebase_auth_service.dart';
+import 'unified_auth_services.dart';
 
 /// خدمة إحصائيات اللعبة - مبسطة للعمل مع التخزين المحلي
 class GameStatsService {
@@ -22,20 +23,17 @@ class GameStatsService {
   /// تحميل إحصائيات اللعبة من التخزين المحلي
   Future<GameStats> loadGameStats() async {
     try {
-      final user = _authService.currentUser;
+      final user = _authService.currentUserModel;
       final userId = user?.id ?? 'guest';
 
       _currentStats = await _loadFromLocalStorage(userId);
-      _currentStats ??= GameStats(
-        userId: userId,
-        lastUpdated: DateTime.now(),
-      );
+      _currentStats ??= GameStats(userId: userId, lastUpdated: DateTime.now());
 
       _statsController.add(_currentStats!);
       return _currentStats!;
     } catch (e) {
-      print('خطأ في تحميل إحصائيات اللعبة: $e');
-      final currentUser = _authService.currentUser;
+      debugPrint('خطأ في تحميل إحصائيات اللعبة: $e');
+      final currentUser = _authService.currentUserModel;
       _currentStats = GameStats(
         userId: currentUser?.id ?? 'guest',
         lastUpdated: DateTime.now(),
@@ -51,7 +49,7 @@ class GameStatsService {
       await _saveToLocalStorage(stats);
       _statsController.add(stats);
     } catch (e) {
-      print('خطأ في حفظ الإحصائيات: $e');
+      debugPrint('خطأ في حفظ الإحصائيات: $e');
     }
   }
 
@@ -111,7 +109,7 @@ class GameStatsService {
         opponentId: opponentId,
       );
     } catch (e) {
-      print('خطأ في تسجيل نتيجة اللعبة: $e');
+      debugPrint('خطأ في تسجيل نتيجة اللعبة: $e');
     }
   }
 
@@ -124,7 +122,7 @@ class GameStatsService {
     String? opponentId,
   }) async {
     try {
-      final user = _authService.currentUser;
+      final user = _authService.currentUserModel;
       if (user == null) return;
 
       final gameRecord = {
@@ -140,7 +138,7 @@ class GameStatsService {
 
       await _saveGameHistoryLocally(gameRecord);
     } catch (e) {
-      print('خطأ في تسجيل تاريخ اللعبة: $e');
+      debugPrint('خطأ في تسجيل تاريخ اللعبة: $e');
     }
   }
 
@@ -179,7 +177,7 @@ class GameStatsService {
         return GameStats.fromJson(statsMap);
       }
     } catch (e) {
-      print('خطأ في تحميل الإحصائيات من التخزين المحلي: $e');
+      debugPrint('خطأ في تحميل الإحصائيات من التخزين المحلي: $e');
     }
     return null;
   }
@@ -191,7 +189,7 @@ class GameStatsService {
       final statsJson = jsonEncode(stats.toJson());
       await prefs.setString('game_stats_${stats.userId}', statsJson);
     } catch (e) {
-      print('خطأ في حفظ الإحصائيات في التخزين المحلي: $e');
+      debugPrint('خطأ في حفظ الإحصائيات في التخزين المحلي: $e');
     }
   }
 
@@ -211,7 +209,7 @@ class GameStatsService {
 
       await prefs.setString('game_history', jsonEncode(history));
     } catch (e) {
-      print('خطأ في حفظ تاريخ اللعبة: $e');
+      debugPrint('خطأ في حفظ تاريخ اللعبة: $e');
     }
   }
 
@@ -224,7 +222,7 @@ class GameStatsService {
 
       return history.take(limit).toList();
     } catch (e) {
-      print('خطأ في جلب تاريخ الألعاب: $e');
+      debugPrint('خطأ في جلب تاريخ الألعاب: $e');
       return [];
     }
   }
@@ -232,20 +230,17 @@ class GameStatsService {
   /// مسح جميع الإحصائيات
   Future<void> clearAllStats() async {
     try {
-      final user = _authService.currentUser;
+      final user = _authService.currentUserModel;
       if (user != null) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.remove('game_stats_${user.id}');
         await prefs.remove('game_history');
 
-        _currentStats = GameStats(
-          userId: user.id,
-          lastUpdated: DateTime.now(),
-        );
+        _currentStats = GameStats(userId: user.id, lastUpdated: DateTime.now());
         _statsController.add(_currentStats!);
       }
     } catch (e) {
-      print('خطأ في مسح الإحصائيات: $e');
+      debugPrint('خطأ في مسح الإحصائيات: $e');
     }
   }
 

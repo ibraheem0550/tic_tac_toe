@@ -1,12 +1,12 @@
 // SupabaseService placeholder - redirects to FirestoreService
 // This file exists for compatibility with existing code that imports SupabaseService
 
-import 'firestore_service.dart';
 import '../utils/logger.dart';
 
 class SupabaseService {
   static final SupabaseService _instance = SupabaseService._internal();
-  static final FirestoreService _firestoreService = FirestoreService();
+  // Use FirestoreService methods directly instead of storing instance
+  // static final FirestoreService _firestoreService = FirestoreService();
 
   factory SupabaseService() {
     return _instance;

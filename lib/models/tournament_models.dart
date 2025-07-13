@@ -1,4 +1,5 @@
 /// نماذج بيانات المسابقات والبطولات النجمية
+library tournament_models;
 
 enum TournamentType {
   knockout, // خروج المغلوب

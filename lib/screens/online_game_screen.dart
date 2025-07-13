@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../services/online_game_service.dart';
-import '../services/firebase_auth_service.dart';
-import '../models/complete_user_models.dart';
+import '../services/unified_auth_services.dart';
+import '../models/complete_user_models.dart' as UserModels;
 import '../audio_helper.dart';
 import '../utils/app_theme_new.dart';
 
@@ -23,7 +22,7 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
   late Animation<double> _pulseAnimation;
   late Animation<double> _boardAnimation;
   bool _isConnecting = false;
-  User? _currentUser;
+  UserModels.User? _currentUser;
 
   @override
   void initState() {
@@ -43,27 +42,19 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
       vsync: this,
     );
 
-    _pulseAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.2,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
+    _pulseAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
 
-    _boardAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _boardController,
-      curve: Curves.elasticOut,
-    ));
+    _boardAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _boardController, curve: Curves.elasticOut),
+    );
 
     _pulseController.repeat(reverse: true);
   }
 
   Future<void> _loadCurrentUser() async {
-    _currentUser = _authService.currentUser;
+    _currentUser = _authService.currentUserModel;
     setState(() {});
   }
 
@@ -137,11 +128,7 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.wifi_off,
-              size: 80,
-              color: Colors.grey[400],
-            ),
+            Icon(Icons.wifi_off, size: 80, color: Colors.grey[400]),
             const SizedBox(height: 24),
             Text(
               'الاتصال بالخادم',
@@ -150,8 +137,9 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
             const SizedBox(height: 16),
             Text(
               'يجب الاتصال بالخادم للعب أونلاين',
-              style:
-                  AppTextStyles.bodyLarge.copyWith(color: AppColors.textMuted),
+              style: AppTextStyles.bodyLarge.copyWith(
+                color: AppColors.textMuted,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
@@ -224,11 +212,7 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
               builder: (context, child) {
                 return Transform.scale(
                   scale: _pulseAnimation.value,
-                  child: Icon(
-                    Icons.search,
-                    size: 80,
-                    color: AppColors.primary,
-                  ),
+                  child: Icon(Icons.search, size: 80, color: AppColors.primary),
                 );
               },
             ),
@@ -240,8 +224,9 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
             const SizedBox(height: 16),
             Text(
               'يرجى الانتظار حتى العثور على مباراة',
-              style:
-                  AppTextStyles.bodyLarge.copyWith(color: AppColors.textMuted),
+              style: AppTextStyles.bodyLarge.copyWith(
+                color: AppColors.textMuted,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
@@ -278,8 +263,10 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(20),
@@ -393,21 +380,15 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 80,
-              color: color,
-            ),
+            Icon(icon, size: 80, color: color),
             const SizedBox(height: 24),
-            Text(
-              title,
-              style: AppTextStyles.h1.copyWith(color: color),
-            ),
+            Text(title, style: AppTextStyles.h1.copyWith(color: color)),
             const SizedBox(height: 16),
             Text(
               message,
-              style:
-                  AppTextStyles.bodyLarge.copyWith(color: AppColors.textMuted),
+              style: AppTextStyles.bodyLarge.copyWith(
+                color: AppColors.textMuted,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
@@ -453,7 +434,7 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
   }
 
   Widget _buildPlayerCard(
-    User? user, {
+    UserModels.User? user, {
     required bool isCurrentUser,
     String? symbol,
     bool isActive = false,
@@ -464,8 +445,9 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
         decoration: BoxDecoration(
           color: AppColors.surfaceLight,
           borderRadius: BorderRadius.circular(12),
-          border:
-              isActive ? Border.all(color: AppColors.primary, width: 2) : null,
+          border: isActive
+              ? Border.all(color: AppColors.primary, width: 2)
+              : null,
         ),
         child: Column(
           children: [
@@ -477,8 +459,9 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
             const SizedBox(height: 8),
             Text(
               'انتظار...',
-              style:
-                  AppTextStyles.bodyMedium.copyWith(color: AppColors.textMuted),
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textMuted,
+              ),
             ),
           ],
         ),
@@ -490,8 +473,9 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
       decoration: BoxDecoration(
         color: AppColors.surfaceLight,
         borderRadius: BorderRadius.circular(12),
-        border:
-            isActive ? Border.all(color: AppColors.primary, width: 2) : null,
+        border: isActive
+            ? Border.all(color: AppColors.primary, width: 2)
+            : null,
       ),
       child: Column(
         children: [
@@ -500,7 +484,7 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
               CircleAvatar(
                 radius: 30,
                 backgroundImage: user.photoURL?.isNotEmpty == true
-                    ? CachedNetworkImageProvider(user.photoURL!)
+                    ? NetworkImage(user.photoURL!)
                     : null,
                 backgroundColor: AppColors.primary,
                 child: user.photoURL?.isEmpty != false
@@ -556,8 +540,9 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
                 const SizedBox(width: 4),
                 Text(
                   '${user.gems}',
-                  style: AppTextStyles.bodySmall
-                      .copyWith(color: AppColors.textMuted),
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.textMuted,
+                  ),
                 ),
               ],
             ),
@@ -589,14 +574,16 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
                   children: [
                     Text(
                       title,
-                      style:
-                          AppTextStyles.h3.copyWith(color: AppColors.textLight),
+                      style: AppTextStyles.h3.copyWith(
+                        color: AppColors.textLight,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       subtitle,
-                      style: AppTextStyles.bodyMedium
-                          .copyWith(color: AppColors.textMuted),
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.textMuted,
+                      ),
                     ),
                   ],
                 ),
@@ -642,14 +629,14 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
       child: Container(
         decoration: BoxDecoration(
           color: isEmpty
-              ? AppColors.backgroundDark.withOpacity(0.3)
+              ? AppColors.backgroundDark.withValues(alpha: 0.3)
               : isX
-                  ? AppColors.primary
-                  : AppColors.secondary,
+              ? AppColors.primary
+              : AppColors.secondary,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isEmpty
-                ? AppColors.primary.withOpacity(0.3)
+                ? AppColors.primary.withValues(alpha: 0.3)
                 : Colors.transparent,
           ),
         ),
@@ -689,8 +676,8 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
               color: isEmpty
                   ? Colors.grey[300]
                   : isX
-                      ? AppColors.primary
-                      : AppColors.secondary,
+                  ? AppColors.primary
+                  : AppColors.secondary,
               borderRadius: BorderRadius.circular(4),
             ),
             child: Center(
@@ -759,9 +746,7 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
   void _showFriendsList() {
     // TODO: تنفيذ قائمة الأصدقاء للدعوة
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('دعوة الأصدقاء ستكون متاحة قريباً'),
-      ),
+      const SnackBar(content: Text('دعوة الأصدقاء ستكون متاحة قريباً')),
     );
   }
 

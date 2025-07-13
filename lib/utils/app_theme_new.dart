@@ -77,6 +77,16 @@ class AppColors {
   static const Color surfaceDark = backgroundPrimary;
   static const Color textLight = textPrimary;
 
+  // أبيض صريح للتوافق مع الأكواد القديمة
+  static const Color white = Color(0xFFFFFFFF);
+
+  // تدرج كوني عام للأزرار والخلفيات
+  static const LinearGradient cosmicGradient = LinearGradient(
+    colors: [primary, secondary, accent],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
   // ألوان إضافية مطلوبة للمتجر الشامل
   static const LinearGradient surfaceGradient = LinearGradient(
     colors: [surfacePrimary, surfaceSecondary],
@@ -100,7 +110,7 @@ class AppColors {
       Color(0xFF3B4CFF),
       Color(0xFF9C27B0),
       Color(0xFF2196F3),
-      Color(0xFF00BCD4)
+      Color(0xFF00BCD4),
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -112,7 +122,7 @@ class AppColors {
       Color(0xFFFFD700),
       Color(0xFFFF6D00),
       Color(0xFFFF1744),
-      Color(0xFF3B4CFF)
+      Color(0xFF3B4CFF),
     ],
     stops: [0.0, 0.3, 0.7, 1.0],
   );
@@ -128,7 +138,7 @@ class AppColors {
       Color(0xFF1A237E),
       Color(0xFF3B4CFF),
       Color(0xFF9C27B0),
-      Color(0xFF1A237E)
+      Color(0xFF1A237E),
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -187,6 +197,39 @@ class AppDimensions {
   // تأثيرات التوهج النجمي
   static const double glowRadius = 20.0;
   static const double glowSpread = 5.0;
+
+  // إضافة أحجام متجاوبة للأزرار والشاشات
+  static double getResponsiveButtonHeight(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth > 1400) return buttonHeightXL * 1.2; // شاشات كبيرة جداً
+    if (screenWidth > 1200) return buttonHeightXL; // شاشات كبيرة
+    if (screenWidth > 800) return buttonHeightLG; // شاشات متوسطة
+    return buttonHeightMD; // شاشات صغيرة
+  }
+
+  static double getResponsivePadding(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth > 1400) return paddingXXL; // شاشات كبيرة جداً
+    if (screenWidth > 1200) return paddingXL; // شاشات كبيرة
+    if (screenWidth > 800) return paddingLG; // شاشات متوسطة
+    return paddingMD; // شاشات صغيرة
+  }
+
+  static double getResponsiveFontSize(BuildContext context, double baseSize) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth > 1400) return baseSize * 1.3; // شاشات كبيرة جداً
+    if (screenWidth > 1200) return baseSize * 1.2; // شاشات كبيرة
+    if (screenWidth > 800) return baseSize * 1.1; // شاشات متوسطة
+    return baseSize; // شاشات صغيرة
+  }
+
+  static double getResponsiveIconSize(BuildContext context, double baseSize) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth > 1400) return baseSize * 1.4; // شاشات كبيرة جداً
+    if (screenWidth > 1200) return baseSize * 1.3; // شاشات كبيرة
+    if (screenWidth > 800) return baseSize * 1.2; // شاشات متوسطة
+    return baseSize; // شاشات صغيرة
+  }
 }
 
 /// أنماط النصوص النجمية الاحترافية
@@ -324,11 +367,7 @@ class AppTextStyles {
     letterSpacing: 1.0,
     height: 1.2,
     shadows: [
-      Shadow(
-        offset: Offset(0, 0),
-        blurRadius: 10.0,
-        color: AppColors.starGold,
-      ),
+      Shadow(offset: Offset(0, 0), blurRadius: 10.0, color: AppColors.starGold),
     ],
   );
 
@@ -426,10 +465,7 @@ class AppComponents {
                     ),
                     const SizedBox(width: AppDimensions.paddingSM),
                   ],
-                  Text(
-                    text,
-                    style: AppTextStyles.cosmicButton,
-                  ),
+                  Text(text, style: AppTextStyles.cosmicButton),
                 ],
               ],
             ),
@@ -452,10 +488,7 @@ class AppComponents {
         color: backgroundColor ?? AppColors.surfacePrimary,
         gradient: gradient,
         borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
-        border: Border.all(
-          color: AppColors.borderPrimary,
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.borderPrimary, width: 1),
         boxShadow: [
           BoxShadow(
             color: AppColors.backgroundPrimary.withValues(alpha: 0.5),
@@ -486,10 +519,7 @@ class AppComponents {
       decoration: BoxDecoration(
         color: AppColors.surfaceSecondary,
         borderRadius: BorderRadius.circular(AppDimensions.radiusMD),
-        border: Border.all(
-          color: AppColors.borderPrimary,
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.borderPrimary, width: 1),
       ),
       child: TextFormField(
         controller: controller,
@@ -533,37 +563,17 @@ class AppComponents {
 class AppShadows {
   // ظلال أساسية
   static const List<BoxShadow> card = [
-    BoxShadow(
-      color: Color(0x1A000000),
-      blurRadius: 8.0,
-      offset: Offset(0, 2),
-    ),
-    BoxShadow(
-      color: Color(0x0D000000),
-      blurRadius: 16.0,
-      offset: Offset(0, 4),
-    ),
+    BoxShadow(color: Color(0x1A000000), blurRadius: 8.0, offset: Offset(0, 2)),
+    BoxShadow(color: Color(0x0D000000), blurRadius: 16.0, offset: Offset(0, 4)),
   ];
 
   static const List<BoxShadow> elevated = [
-    BoxShadow(
-      color: Color(0x26000000),
-      blurRadius: 12.0,
-      offset: Offset(0, 4),
-    ),
-    BoxShadow(
-      color: Color(0x12000000),
-      blurRadius: 24.0,
-      offset: Offset(0, 8),
-    ),
+    BoxShadow(color: Color(0x26000000), blurRadius: 12.0, offset: Offset(0, 4)),
+    BoxShadow(color: Color(0x12000000), blurRadius: 24.0, offset: Offset(0, 8)),
   ];
 
   static const List<BoxShadow> modal = [
-    BoxShadow(
-      color: Color(0x33000000),
-      blurRadius: 20.0,
-      offset: Offset(0, 8),
-    ),
+    BoxShadow(color: Color(0x33000000), blurRadius: 20.0, offset: Offset(0, 8)),
     BoxShadow(
       color: Color(0x1A000000),
       blurRadius: 40.0,
@@ -573,16 +583,8 @@ class AppShadows {
 
   // ظلال نجمية متوهجة
   static const List<BoxShadow> stellar = [
-    BoxShadow(
-      color: AppColors.starGold,
-      blurRadius: 20.0,
-      spreadRadius: 2.0,
-    ),
-    BoxShadow(
-      color: AppColors.primary,
-      blurRadius: 40.0,
-      spreadRadius: -5.0,
-    ),
+    BoxShadow(color: AppColors.starGold, blurRadius: 20.0, spreadRadius: 2.0),
+    BoxShadow(color: AppColors.primary, blurRadius: 40.0, spreadRadius: -5.0),
   ];
 
   static const List<BoxShadow> nebular = [
@@ -599,11 +601,7 @@ class AppShadows {
   ];
 
   static const List<BoxShadow> cosmic = [
-    BoxShadow(
-      color: AppColors.cosmicTeal,
-      blurRadius: 25.0,
-      spreadRadius: 0.0,
-    ),
+    BoxShadow(color: AppColors.cosmicTeal, blurRadius: 25.0, spreadRadius: 0.0),
     BoxShadow(
       color: AppColors.secondaryDark,
       blurRadius: 35.0,

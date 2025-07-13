@@ -1,6 +1,6 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../services/firebase_auth_service.dart';
+import '../services/unified_auth_services.dart';
 import '../models/complete_user_models.dart';
 import '../utils/app_theme_new.dart';
 import '../utils/logger.dart';
@@ -63,9 +63,10 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
       CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
     );
 
-    _rotationAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      _rotationController,
-    );
+    _rotationAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(_rotationController);
 
     _animationController.forward();
   }
@@ -84,7 +85,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
   Future<void> _loadUserData() async {
     setState(() => _isLoading = true);
     try {
-      _currentUser = _authService.currentUser;
+      _currentUser = _authService.currentUserModel;
       if (_currentUser != null) {
         _displayNameController.text = _currentUser!.displayName;
         _emailController.text = _currentUser!.email;
@@ -92,7 +93,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
         _bioController.text = '';
       }
     } catch (e) {
-      Logger.logError('خطأ في تحميل بيانات المستخدم', e);
+      Logger.logError('??? ?? ????? ?????? ????????', e);
     } finally {
       setState(() => _isLoading = false);
     }
@@ -125,25 +126,31 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
                           slivers: [
                             _buildStellarAppBar(),
                             SliverPadding(
-                              padding:
-                                  const EdgeInsets.all(AppDimensions.paddingLG),
+                              padding: const EdgeInsets.all(
+                                AppDimensions.paddingLG,
+                              ),
                               sliver: SliverList(
                                 delegate: SliverChildListDelegate([
                                   _buildUserProfileSection(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingXL),
+                                    height: AppDimensions.paddingXL,
+                                  ),
                                   _buildGameSettingsSection(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingXL),
+                                    height: AppDimensions.paddingXL,
+                                  ),
                                   _buildNotificationSettingsSection(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingXL),
+                                    height: AppDimensions.paddingXL,
+                                  ),
                                   _buildAppearanceSettingsSection(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingXL),
+                                    height: AppDimensions.paddingXL,
+                                  ),
                                   _buildAccountSettingsSection(),
                                   const SizedBox(
-                                      height: AppDimensions.paddingXXL),
+                                    height: AppDimensions.paddingXXL,
+                                  ),
                                 ]),
                               ),
                             ),
@@ -173,18 +180,13 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
             gradient: AppColors.nebularGradient,
             boxShadow: AppShadows.card,
           ),
-          child: const Icon(
-            Icons.arrow_back,
-            color: AppColors.textPrimary,
-          ),
+          child: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
         ),
         onPressed: () => Navigator.pop(context),
       ),
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
-            gradient: AppColors.nebularGradient,
-          ),
+          decoration: const BoxDecoration(gradient: AppColors.nebularGradient),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -212,7 +214,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
               ),
               const SizedBox(height: AppDimensions.paddingLG),
               Text(
-                'الإعدادات النجمية',
+                '????????? ???????',
                 style: AppTextStyles.displayMedium.copyWith(
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.w900,
@@ -220,7 +222,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
               ),
               const SizedBox(height: AppDimensions.paddingSM),
               Text(
-                'خصص تجربتك في المجرة',
+                '??? ?????? ?? ??????',
                 style: AppTextStyles.bodyLarge.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -236,12 +238,12 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader('الملف الشخصي', Icons.person),
+        _buildSectionHeader('????? ??????', Icons.person),
         const SizedBox(height: AppDimensions.paddingLG),
         AppComponents.stellarCard(
           child: Column(
             children: [
-              // صورة الملف الشخصي
+              // ???? ????? ??????
               Center(
                 child: Stack(
                   children: [
@@ -251,10 +253,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: AppColors.stellarGradient,
-                        border: Border.all(
-                          color: AppColors.starGold,
-                          width: 3,
-                        ),
+                        border: Border.all(color: AppColors.starGold, width: 3),
                         boxShadow: AppShadows.stellar,
                       ),
                       child: ClipOval(
@@ -294,33 +293,33 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
                 ),
               ),
               const SizedBox(height: AppDimensions.paddingXL),
-              // حقول الإدخال
+              // ???? ???????
               AppComponents.stellarTextField(
                 controller: _displayNameController,
-                hintText: 'اسم العرض',
+                hintText: '??? ?????',
                 prefixIcon: Icons.badge,
               ),
               const SizedBox(height: AppDimensions.paddingMD),
               AppComponents.stellarTextField(
                 controller: _emailController,
-                hintText: 'البريد الإلكتروني',
+                hintText: '?????? ??????????',
                 prefixIcon: Icons.email,
               ),
               const SizedBox(height: AppDimensions.paddingMD),
               AppComponents.stellarTextField(
                 controller: _phoneController,
-                hintText: 'رقم الهاتف',
+                hintText: '??? ??????',
                 prefixIcon: Icons.phone,
               ),
               const SizedBox(height: AppDimensions.paddingMD),
               AppComponents.stellarTextField(
                 controller: _bioController,
-                hintText: 'نبذة عنك',
+                hintText: '???? ???',
                 prefixIcon: Icons.info,
               ),
               const SizedBox(height: AppDimensions.paddingXL),
               AppComponents.stellarButton(
-                text: 'حفظ التغييرات',
+                text: '??? ?????????',
                 onPressed: _saveUserData,
                 icon: Icons.save,
               ),
@@ -335,30 +334,30 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader('إعدادات اللعبة', Icons.games),
+        _buildSectionHeader('??????? ??????', Icons.games),
         const SizedBox(height: AppDimensions.paddingLG),
         AppComponents.stellarCard(
           child: Column(
             children: [
               _buildSwitchSetting(
-                'الأصوات',
-                'تشغيل الأصوات والموسيقى',
+                '???????',
+                '????? ??????? ?????????',
                 Icons.volume_up,
                 _soundEnabled,
                 (value) => setState(() => _soundEnabled = value),
               ),
               _buildDivider(),
               _buildSwitchSetting(
-                'الاهتزاز',
-                'اهتزاز الجهاز عند اللعب',
+                '????????',
+                '?????? ?????? ??? ?????',
                 Icons.vibration,
                 _vibrationEnabled,
                 (value) => setState(() => _vibrationEnabled = value),
               ),
               _buildDivider(),
               _buildSliderSetting(
-                'مستوى الصوت الرئيسي',
-                'التحكم في مستوى صوت اللعبة',
+                '????? ????? ???????',
+                '?????? ?? ????? ??? ??????',
                 Icons.volume_down,
                 _masterVolume,
                 (value) => setState(() => _masterVolume = value),
@@ -374,29 +373,29 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader('الإشعارات', Icons.notifications),
+        _buildSectionHeader('?????????', Icons.notifications),
         const SizedBox(height: AppDimensions.paddingLG),
         AppComponents.stellarCard(
           child: Column(
             children: [
               _buildSwitchSetting(
-                'الإشعارات',
-                'تلقي إشعارات من التطبيق',
+                '?????????',
+                '???? ??????? ?? ???????',
                 Icons.notifications_active,
                 _notificationsEnabled,
                 (value) => setState(() => _notificationsEnabled = value),
               ),
               _buildDivider(),
               _buildOptionSetting(
-                'تحديثات الأصدقاء',
-                'إشعارات عند انضمام أصدقاء',
+                '??????? ????????',
+                '??????? ??? ?????? ??????',
                 Icons.people,
                 () => _showNotificationOptions('friends'),
               ),
               _buildDivider(),
               _buildOptionSetting(
-                'التحديات',
-                'إشعارات التحديات والمسابقات',
+                '????????',
+                '??????? ???????? ??????????',
                 Icons.emoji_events,
                 () => _showNotificationOptions('challenges'),
               ),
@@ -411,28 +410,28 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader('المظهر', Icons.palette),
+        _buildSectionHeader('??????', Icons.palette),
         const SizedBox(height: AppDimensions.paddingLG),
         AppComponents.stellarCard(
           child: Column(
             children: [
               _buildOptionSetting(
-                'اللغة',
+                '?????',
                 _getLanguageName(_selectedLanguage),
                 Icons.language,
                 _showLanguageOptions,
               ),
               _buildDivider(),
               _buildOptionSetting(
-                'الثيم',
+                '?????',
                 _getThemeName(_selectedTheme),
                 Icons.color_lens,
                 _showThemeOptions,
               ),
               _buildDivider(),
               _buildSwitchSetting(
-                'الوضع المظلم',
-                'استخدام الوضع المظلم',
+                '????? ??????',
+                '??????? ????? ??????',
                 Icons.dark_mode,
                 true,
                 (value) => {},
@@ -448,35 +447,35 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader('الحساب', Icons.account_circle),
+        _buildSectionHeader('??????', Icons.account_circle),
         const SizedBox(height: AppDimensions.paddingLG),
         AppComponents.stellarCard(
           child: Column(
             children: [
               _buildOptionSetting(
-                'تغيير كلمة المرور',
-                'حدث كلمة مرور حسابك',
+                '????? ???? ??????',
+                '??? ???? ???? ?????',
                 Icons.lock,
                 _changePassword,
               ),
               _buildDivider(),
               _buildOptionSetting(
-                'الخصوصية والأمان',
-                'إعدادات الخصوصية والحماية',
+                '???????? ???????',
+                '??????? ???????? ????????',
                 Icons.security,
                 _showPrivacySettings,
               ),
               _buildDivider(),
               _buildOptionSetting(
-                'النسخ الاحتياطي',
-                'نسخ احتياطي للبيانات والتقدم',
+                '????? ?????????',
+                '??? ??????? ???????? ???????',
                 Icons.backup,
                 _showBackupOptions,
               ),
               _buildDivider(),
               _buildOptionSetting(
-                'حذف الحساب',
-                'حذف الحساب نهائياً',
+                '??? ??????',
+                '??? ?????? ???????',
                 Icons.delete_forever,
                 _deleteAccount,
                 isDangerous: true,
@@ -498,11 +497,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
             gradient: AppColors.stellarGradient,
             boxShadow: AppShadows.card,
           ),
-          child: Icon(
-            icon,
-            color: AppColors.textPrimary,
-            size: 20,
-          ),
+          child: Icon(icon, color: AppColors.textPrimary, size: 20),
         ),
         const SizedBox(width: AppDimensions.paddingMD),
         Text(
@@ -531,11 +526,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
             shape: BoxShape.circle,
             color: AppColors.surfaceSecondary,
           ),
-          child: Icon(
-            icon,
-            color: AppColors.textSecondary,
-            size: 20,
-          ),
+          child: Icon(icon, color: AppColors.textSecondary, size: 20),
         ),
         const SizedBox(width: AppDimensions.paddingMD),
         Expanded(
@@ -561,7 +552,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
           value: value,
           onChanged: onChanged,
           activeColor: AppColors.primary,
-          activeTrackColor: AppColors.primary.withOpacity(0.3),
+          activeTrackColor: AppColors.primary.withValues(alpha: 0.3),
           inactiveThumbColor: AppColors.textTertiary,
           inactiveTrackColor: AppColors.surfaceSecondary,
         ),
@@ -586,11 +577,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
                 shape: BoxShape.circle,
                 color: AppColors.surfaceSecondary,
               ),
-              child: Icon(
-                icon,
-                color: AppColors.textSecondary,
-                size: 20,
-              ),
+              child: Icon(icon, color: AppColors.textSecondary, size: 20),
             ),
             const SizedBox(width: AppDimensions.paddingMD),
             Expanded(
@@ -626,15 +613,10 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
             activeTrackColor: AppColors.primary,
             inactiveTrackColor: AppColors.surfaceSecondary,
             thumbColor: AppColors.primary,
-            overlayColor: AppColors.primary.withOpacity(0.2),
+            overlayColor: AppColors.primary.withValues(alpha: 0.2),
             trackHeight: 4.0,
           ),
-          child: Slider(
-            value: value,
-            onChanged: onChanged,
-            min: 0.0,
-            max: 1.0,
-          ),
+          child: Slider(value: value, onChanged: onChanged, min: 0.0, max: 1.0),
         ),
       ],
     );
@@ -659,7 +641,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isDangerous
-                    ? AppColors.error.withOpacity(0.2)
+                    ? AppColors.error.withValues(alpha: 0.2)
                     : AppColors.surfaceSecondary,
               ),
               child: Icon(
@@ -676,8 +658,9 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
                   Text(
                     title,
                     style: AppTextStyles.titleMedium.copyWith(
-                      color:
-                          isDangerous ? AppColors.error : AppColors.textPrimary,
+                      color: isDangerous
+                          ? AppColors.error
+                          : AppColors.textPrimary,
                     ),
                   ),
                   Text(
@@ -689,11 +672,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
                 ],
               ),
             ),
-            Icon(
-              Icons.chevron_right,
-              color: AppColors.textTertiary,
-              size: 20,
-            ),
+            Icon(Icons.chevron_right, color: AppColors.textTertiary, size: 20),
           ],
         ),
       ),
@@ -711,24 +690,24 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
   String _getLanguageName(String code) {
     switch (code) {
       case 'ar':
-        return 'العربية';
+        return '???????';
       case 'en':
         return 'English';
       default:
-        return 'العربية';
+        return '???????';
     }
   }
 
   String _getThemeName(String theme) {
     switch (theme) {
       case 'stellar':
-        return 'النجمي';
+        return '??????';
       case 'dark':
-        return 'المظلم';
+        return '??????';
       case 'light':
-        return 'الفاتح';
+        return '??????';
       default:
-        return 'النجمي';
+        return '??????';
     }
   }
 
@@ -742,14 +721,14 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('تم حفظ البيانات بنجاح'),
+          content: Text('?? ??? ???????? ?????'),
           backgroundColor: AppColors.success,
         ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('خطأ في حفظ البيانات: $e'),
+          content: Text('??? ?? ??? ????????: $e'),
           backgroundColor: AppColors.error,
         ),
       );
@@ -759,17 +738,11 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
   }
 
   void _showLanguageOptions() {
-    showDialog(
-      context: context,
-      builder: (context) => _buildLanguageDialog(),
-    );
+    showDialog(context: context, builder: (context) => _buildLanguageDialog());
   }
 
   void _showThemeOptions() {
-    showDialog(
-      context: context,
-      builder: (context) => _buildThemeDialog(),
-    );
+    showDialog(context: context, builder: (context) => _buildThemeDialog());
   }
 
   void _showNotificationOptions(String type) {
@@ -809,7 +782,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'اختيار اللغة',
+              '?????? ?????',
               style: AppTextStyles.headlineMedium.copyWith(
                 color: AppColors.textPrimary,
               ),
@@ -858,7 +831,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'اختيار الثيم',
+              '?????? ?????',
               style: AppTextStyles.headlineMedium.copyWith(
                 color: AppColors.textPrimary,
               ),
@@ -910,7 +883,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.error.withOpacity(0.2),
+                color: AppColors.error.withValues(alpha: 0.2),
                 border: Border.all(color: AppColors.error, width: 2),
               ),
               child: const Icon(
@@ -921,14 +894,14 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
             ),
             const SizedBox(height: AppDimensions.paddingLG),
             Text(
-              'تحذير',
+              '?????',
               style: AppTextStyles.headlineMedium.copyWith(
                 color: AppColors.error,
               ),
             ),
             const SizedBox(height: AppDimensions.paddingMD),
             Text(
-              'هل أنت متأكد من حذف حسابك؟ هذا الإجراء لا يمكن التراجع عنه.',
+              '?? ??? ????? ?? ??? ?????? ??? ??????? ?? ???? ??????? ???.',
               style: AppTextStyles.bodyLarge.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -939,14 +912,14 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
               children: [
                 Expanded(
                   child: AppComponents.stellarButton(
-                    text: 'إلغاء',
+                    text: '?????',
                     onPressed: () => Navigator.pop(context),
                   ),
                 ),
                 const SizedBox(width: AppDimensions.paddingMD),
                 Expanded(
                   child: AppComponents.stellarButton(
-                    text: 'حذف',
+                    text: '???',
                     onPressed: () {
                       Navigator.pop(context);
                       // TODO: Implement account deletion

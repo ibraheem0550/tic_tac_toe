@@ -8,7 +8,8 @@ import '../screens/stellar_online_game_screen.dart';
 import '../screens/stellar_missions_screen.dart';
 import '../screens/stellar_real_stats_screen.dart';
 import '../screens/admin_screen.dart';
-import '../services/firebase_auth_service.dart';
+import '../services/unified_auth_services.dart';
+import '../models/complete_user_models.dart';
 import '../utils/app_theme_new.dart';
 import '../screens/auth_screen.dart';
 
@@ -25,7 +26,7 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double>
-      _scaleAnimation; // متغيرات للدخول لوضع الإدارة عبر النجمة
+  _scaleAnimation; // متغيرات للدخول لوضع الإدارة عبر النجمة
   int _starTapCount = 0;
   DateTime? _lastStarTap;
   int _adminAttempts = 0;
@@ -59,7 +60,7 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
     super.dispose();
   }
 
-  void _onUserDataChanged(user) {
+  void _onUserDataChanged(User? user) {
     if (mounted) {
       setState(() {});
     }
@@ -102,98 +103,171 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.surfaceElevated,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
-        ),
-        title: Row(
-          children: [
-            Icon(
-              Icons.admin_panel_settings,
-              color: AppColors.starGold,
-              size: AppDimensions.iconLG,
-            ),
-            const SizedBox(width: AppDimensions.paddingSM),
-            Text(
-              'وضع الإدارة النجمي',
-              style: AppTextStyles.headlineMedium.copyWith(
-                color: AppColors.starGold,
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 400, maxHeight: 350),
+          decoration: BoxDecoration(
+            gradient: AppColors.nebularGradient,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.starGold.withValues(alpha: 0.3),
+                spreadRadius: 2,
+                blurRadius: 20,
+                offset: const Offset(0, 8),
               ),
+            ],
+            border: Border.all(
+              color: AppColors.starGold.withValues(alpha: 0.5),
+              width: 2,
             ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'أدخل كلمة مرور الإدارة للوصول إلى لوحة التحكم النجمية',
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: AppDimensions.paddingMD),
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textPrimary,
-              ),
-              decoration: InputDecoration(
-                hintText: 'كلمة مرور المشرف',
-                hintStyle: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-                prefixIcon: const Icon(
-                  Icons.lock,
-                  color: AppColors.starGold,
-                ),
-                filled: true,
-                fillColor: AppColors.surfaceElevated,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppDimensions.radiusMD),
-                  borderSide: BorderSide.none,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppDimensions.radiusMD),
-                  borderSide: const BorderSide(
-                    color: AppColors.starGold,
-                    width: 2,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // أيقونة النجمة المتحركة
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: AppColors.stellarGradient,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.starGold.withValues(alpha: 0.4),
+                        spreadRadius: 2,
+                        blurRadius: 15,
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.admin_panel_settings,
+                    color: Colors.white,
+                    size: 40,
                   ),
                 ),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              'إلغاء',
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              gradient: AppColors.stellarGradient,
-              borderRadius: BorderRadius.circular(AppDimensions.radiusMD),
-            ),
-            child: TextButton(
-              onPressed: () {
-                _checkAdminPassword(passwordController.text);
-              },
-              child: Text(
-                'دخول',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.bold,
+                const SizedBox(height: 20),
+
+                // العنوان
+                Text(
+                  '🌟 وضع الإدارة النجمي 🌟',
+                  style: AppTextStyles.headlineMedium.copyWith(
+                    color: AppColors.starGold,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-              ),
+                const SizedBox(height: 16),
+
+                // الوصف
+                Text(
+                  'أدخل كلمة مرور الإدارة للوصول إلى لوحة التحكم النجمية',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+
+                // حقل كلمة المرور
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceElevated.withValues(alpha: 0.8),
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(
+                      color: AppColors.starGold.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: AppColors.textPrimary,
+                      fontSize: 16,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: '🔐 كلمة مرور المشرف',
+                      hintStyle: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 16,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // الأزرار
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceElevated,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: AppColors.textSecondary.withValues(
+                              alpha: 0.3,
+                            ),
+                          ),
+                        ),
+                        child: TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text(
+                            'إلغاء',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.textSecondary,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                          gradient: AppColors.stellarGradient,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.starGold.withValues(alpha: 0.3),
+                              spreadRadius: 1,
+                              blurRadius: 8,
+                            ),
+                          ],
+                        ),
+                        child: TextButton(
+                          onPressed: () {
+                            _checkAdminPassword(passwordController.text);
+                          },
+                          child: Text(
+                            '⭐ دخول',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -208,17 +282,11 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
         ),
         title: Row(
           children: [
-            Icon(
-              Icons.block,
-              color: Colors.red,
-              size: AppDimensions.iconLG,
-            ),
+            Icon(Icons.block, color: Colors.red, size: AppDimensions.iconLG),
             const SizedBox(width: AppDimensions.paddingSM),
             Text(
               'وصول محظور',
-              style: AppTextStyles.headlineMedium.copyWith(
-                color: Colors.red,
-              ),
+              style: AppTextStyles.headlineMedium.copyWith(color: Colors.red),
             ),
           ],
         ),
@@ -304,8 +372,9 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
                       // المحتوى الرئيسي
                       SliverToBoxAdapter(
                         child: Padding(
-                          padding:
-                              const EdgeInsets.all(AppDimensions.paddingLG),
+                          padding: const EdgeInsets.all(
+                            AppDimensions.paddingLG,
+                          ),
                           child: Column(
                             children: [
                               // معلومات المستخدم النجمية
@@ -344,9 +413,7 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
       elevation: 0,
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
-            gradient: AppColors.nebularGradient,
-          ),
+          decoration: const BoxDecoration(gradient: AppColors.nebularGradient),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -380,10 +447,7 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
                 style: AppTextStyles.stellarTitle.copyWith(fontSize: 36),
               ),
               const SizedBox(height: AppDimensions.paddingSM),
-              Text(
-                'مغامرة نجمية ملحمية',
-                style: AppTextStyles.nebularSubtitle,
-              ),
+              Text('مغامرة نجمية ملحمية', style: AppTextStyles.nebularSubtitle),
             ],
           ),
         ),
@@ -405,8 +469,7 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
   }
 
   Widget _buildStellarUserInfo() {
-    final user = _authService.currentUser;
-    if (user == null) return const SizedBox.shrink();
+    final user = _authService.currentUserModel;
 
     return AppComponents.stellarCard(
       gradient: AppColors.nebularGradient,
@@ -419,10 +482,7 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: AppColors.stellarGradient,
-              border: Border.all(
-                color: AppColors.starGold,
-                width: 3,
-              ),
+              border: Border.all(color: AppColors.starGold, width: 3),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.starGold.withValues(alpha: 0.6),
@@ -482,8 +542,9 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
                     ),
                     decoration: BoxDecoration(
                       color: AppColors.warning,
-                      borderRadius:
-                          BorderRadius.circular(AppDimensions.radiusSM),
+                      borderRadius: BorderRadius.circular(
+                        AppDimensions.radiusSM,
+                      ),
                     ),
                     child: Text(
                       'ضيف',
@@ -506,10 +567,7 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
             decoration: BoxDecoration(
               color: AppColors.surfaceElevated,
               borderRadius: BorderRadius.circular(AppDimensions.radiusXL),
-              border: Border.all(
-                color: AppColors.starGold,
-                width: 2,
-              ),
+              border: Border.all(color: AppColors.starGold, width: 2),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.starGold.withValues(alpha: 0.3),
@@ -540,12 +598,10 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       color: AppColors.starGold.withValues(alpha: 0.2),
-                      borderRadius:
-                          BorderRadius.circular(AppDimensions.radiusCircular),
-                      border: Border.all(
-                        color: AppColors.starGold,
-                        width: 1,
+                      borderRadius: BorderRadius.circular(
+                        AppDimensions.radiusCircular,
                       ),
+                      border: Border.all(color: AppColors.starGold, width: 1),
                     ),
                     child: const Icon(
                       Icons.add,
@@ -565,10 +621,7 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
   Widget _buildStellarGameButtons() {
     return Column(
       children: [
-        Text(
-          'اختر مغامرتك النجمية',
-          style: AppTextStyles.headlineLarge,
-        ),
+        Text('اختر مغامرتك النجمية', style: AppTextStyles.headlineLarge),
         const SizedBox(height: AppDimensions.paddingLG),
 
         // الأزرار الرئيسية
@@ -595,7 +648,8 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
           ],
         ),
         const SizedBox(
-            height: AppDimensions.paddingLG), // زر اللعب عبر الإنترنت
+          height: AppDimensions.paddingLG,
+        ), // زر اللعب عبر الإنترنت
         AppComponents.stellarButton(
           text: 'مغامرة عبر المجرة',
           icon: Icons.wifi,
@@ -610,10 +664,7 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
   Widget _buildStellarFeatures() {
     return Column(
       children: [
-        Text(
-          'استكشف المزيد',
-          style: AppTextStyles.headlineLarge,
-        ),
+        Text('استكشف المزيد', style: AppTextStyles.headlineLarge),
         const SizedBox(height: AppDimensions.paddingLG),
 
         // الصف الأول
@@ -738,7 +789,7 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
   // دالة بناء زر تسجيل الدخول/الخروج حسب حالة المستخدم
   Widget _buildAuthButton() {
     final user = _authService.currentUser;
-    final isGuest = user?.isGuest ?? false;
+    final isGuest = user?.isGuest ?? true;
 
     if (isGuest) {
       // إذا كان المستخدم ضيف، أظهر زر تسجيل الدخول
@@ -778,9 +829,8 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const StellarGameScreenEnhanced(
-          gameMode: 'local',
-        ),
+        builder: (context) =>
+            const StellarGameScreenEnhanced(gameMode: 'local'),
       ),
     );
   }
@@ -797,18 +847,14 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
   void _navigateToOnlineGame() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const StellarOnlineGameScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const StellarOnlineGameScreen()),
     );
   }
 
   void _navigateToGemsStore() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const GemsStoreScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const GemsStoreScreen()),
     );
   }
 
@@ -817,45 +863,35 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
   void _navigateToMissions() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const StellarMissionsScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const StellarMissionsScreen()),
     );
   }
 
   void _navigateToFriends() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const StellarFriendsScreenReal(),
-      ),
+      MaterialPageRoute(builder: (context) => const StellarFriendsScreenReal()),
     );
   }
 
   void _navigateToSettings() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const StellarSettingsScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const StellarSettingsScreen()),
     );
   }
 
   void _navigateToStats() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const StellarRealStatsScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const StellarRealStatsScreen()),
     );
   }
 
   void _navigateToAdmin() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const AdminScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const AdminScreen()),
     );
   }
 
@@ -867,10 +903,7 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
         ),
-        title: Text(
-          'تسجيل الخروج',
-          style: AppTextStyles.headlineMedium,
-        ),
+        title: Text('تسجيل الخروج', style: AppTextStyles.headlineMedium),
         content: Text(
           'هل تريد تسجيل الخروج من حسابك؟',
           style: AppTextStyles.bodyLarge,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import '../services/firebase_auth_service.dart';
+import '../services/unified_auth_services.dart';
 import '../utils/app_theme_new.dart';
 import '../utils/responsive_sizes.dart';
 
@@ -48,7 +47,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
     final responsiveSizes = ResponsiveSizes(context);
     final isDesktopOrTablet =
         responsiveSizes.deviceType == ResponsiveDeviceType.desktop ||
-            responsiveSizes.deviceType == ResponsiveDeviceType.tablet;
+        responsiveSizes.deviceType == ResponsiveDeviceType.tablet;
 
     return Scaffold(
       backgroundColor: AppColors.backgroundPrimary,
@@ -60,15 +59,16 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppColors.primary.withOpacity(0.1),
-              AppColors.secondary.withOpacity(0.05),
+              AppColors.primary.withValues(alpha: 0.1),
+              AppColors.secondary.withValues(alpha: 0.05),
               AppColors.background,
             ],
           ),
         ),
         child: SafeArea(
-          child:
-              isDesktopOrTablet ? _buildDesktopLayout() : _buildMobileLayout(),
+          child: isDesktopOrTablet
+              ? _buildDesktopLayout()
+              : _buildMobileLayout(),
         ),
       ),
     );
@@ -81,7 +81,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
         margin: const EdgeInsets.all(AppDimensions.paddingXL),
         child: Card(
           elevation: 12,
-          shadowColor: AppColors.primary.withOpacity(0.3),
+          shadowColor: AppColors.primary.withValues(alpha: 0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppDimensions.radiusXL),
           ),
@@ -92,10 +92,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  AppColors.surfaceLight,
-                  AppColors.surface,
-                ],
+                colors: [AppColors.surfaceLight, AppColors.surface],
               ),
             ),
             child: _buildAuthContent(),
@@ -132,14 +129,11 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                AppColors.primary,
-                AppColors.secondary,
-              ],
+              colors: [AppColors.primary, AppColors.secondary],
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.3),
+                color: AppColors.primary.withValues(alpha: 0.3),
                 blurRadius: 20,
                 spreadRadius: 5,
               ),
@@ -199,10 +193,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
             onPageChanged: (index) {
               _tabController.animateTo(index);
             },
-            children: [
-              _buildLoginForm(),
-              _buildSignUpForm(),
-            ],
+            children: [_buildLoginForm(), _buildSignUpForm()],
           ),
         ),
         _buildQuickSignInButton(), // زر الدخول السريع
@@ -398,15 +389,12 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
             borderSide: BorderSide(
-              color: AppColors.borderPrimary.withOpacity(0.3),
+              color: AppColors.borderPrimary.withValues(alpha: 0.3),
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
-            borderSide: BorderSide(
-              color: AppColors.primary,
-              width: 2,
-            ),
+            borderSide: BorderSide(color: AppColors.primary, width: 2),
           ),
         ),
       ),
@@ -426,7 +414,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           elevation: 8,
-          shadowColor: AppColors.primary.withOpacity(0.3),
+          shadowColor: AppColors.primary.withValues(alpha: 0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(buttonSizes.borderRadius),
           ),
@@ -466,7 +454,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
           backgroundColor: AppColors.secondary,
           foregroundColor: Colors.white,
           elevation: 8,
-          shadowColor: AppColors.secondary.withOpacity(0.3),
+          shadowColor: AppColors.secondary.withValues(alpha: 0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(buttonSizes.borderRadius),
           ),
@@ -498,13 +486,14 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
       children: [
         Expanded(
           child: Divider(
-            color: AppColors.borderPrimary.withOpacity(0.3),
+            color: AppColors.borderPrimary.withValues(alpha: 0.3),
             thickness: 1,
           ),
         ),
         Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: AppDimensions.paddingMD),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimensions.paddingMD,
+          ),
           child: Text(
             'أو',
             style: AppTextStyles.bodyMedium.copyWith(
@@ -514,7 +503,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
         ),
         Expanded(
           child: Divider(
-            color: AppColors.borderPrimary.withOpacity(0.3),
+            color: AppColors.borderPrimary.withValues(alpha: 0.3),
             thickness: 1,
           ),
         ),
@@ -578,7 +567,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
           ),
         ),
         style: OutlinedButton.styleFrom(
-          side: BorderSide(color: color.withOpacity(0.3)),
+          side: BorderSide(color: color.withValues(alpha: 0.3)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(buttonSizes.borderRadius),
           ),
@@ -597,8 +586,11 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
       height: buttonSizes.height * 0.85, // أصغر قليلاً من الأزرار الأساسية
       child: TextButton.icon(
         onPressed: _isLoading ? null : _handleContinueAsGuest,
-        icon: Icon(Icons.person_outline,
-            color: AppColors.textSecondary, size: buttonSizes.iconSize),
+        icon: Icon(
+          Icons.person_outline,
+          color: AppColors.textSecondary,
+          size: buttonSizes.iconSize,
+        ),
         label: Text(
           'متابعة كضيف',
           style: TextStyle(
@@ -610,7 +602,9 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
         style: TextButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(buttonSizes.borderRadius),
-            side: BorderSide(color: AppColors.textSecondary.withOpacity(0.3)),
+            side: BorderSide(
+              color: AppColors.textSecondary.withValues(alpha: 0.3),
+            ),
           ),
           padding: buttonSizes.padding,
         ),
@@ -627,8 +621,11 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
       height: buttonSizes.height * 0.85,
       child: ElevatedButton.icon(
         onPressed: _isLoading ? null : _handleQuickSignIn,
-        icon: Icon(Icons.flash_on,
-            color: Colors.orange, size: buttonSizes.iconSize),
+        icon: Icon(
+          Icons.flash_on,
+          color: Colors.orange,
+          size: buttonSizes.iconSize,
+        ),
         label: Text(
           'دخول سريع (تطوير)',
           style: TextStyle(
@@ -638,11 +635,11 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
           ),
         ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.orange.withOpacity(0.1),
+          backgroundColor: Colors.orange.withValues(alpha: 0.1),
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(buttonSizes.borderRadius),
-            side: BorderSide(color: Colors.orange.withOpacity(0.5)),
+            side: BorderSide(color: Colors.orange.withValues(alpha: 0.5)),
           ),
           padding: buttonSizes.padding,
         ),
@@ -660,21 +657,21 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
       _isLoading = true;
     });
     try {
-      print('🔄 Starting login process...');
-      final result = await _authService.signInWithEmailPassword(
+      debugPrint('🔄 Starting login process...');
+      final result = await _authService.signInWithEmail(
         _emailController.text.trim(),
         _passwordController.text,
       );
-      print('📋 Login result: ${result.isSuccess}');
-      if (result.isSuccess) {
-        print('✅ Login successful, navigating to home');
+      debugPrint('📋 Login result: ${result != null ? 'Success' : 'Failed'}');
+      if (result != null) {
+        debugPrint('✅ Login successful, navigating to home');
         _navigateToHome(); // دخول مباشر بدون رسائل
       } else {
-        print('❌ Login failed: ${result.error}');
-        _showErrorSnackBar(result.error ?? 'خطأ في تسجيل الدخول');
+        debugPrint('❌ Login failed');
+        _showErrorSnackBar('خطأ في تسجيل الدخول');
       }
     } catch (e) {
-      print('💥 Login exception: $e'); // Debug log
+      debugPrint('💥 Login exception: $e'); // Debug log
       _showErrorSnackBar('خطأ في تسجيل الدخول');
     } finally {
       setState(() {
@@ -716,22 +713,21 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
     });
 
     try {
-      print('🔄 Starting sign up process...');
-      final result = await _authService.createUserWithEmailPassword(
+      debugPrint('🔄 Starting sign up process...');
+      final result = await _authService.signUpWithEmail(
         _emailController.text.trim(),
         _passwordController.text,
-        displayName: _displayNameController.text.trim(),
       );
-      print('📋 Sign up result: ${result.isSuccess}');
-      if (result.isSuccess) {
-        print('✅ Sign up successful, navigating to home');
+      debugPrint('📋 Sign up result: ${result != null ? 'Success' : 'Failed'}');
+      if (result != null) {
+        debugPrint('✅ Sign up successful, navigating to home');
         _navigateToHome(); // دخول مباشر بدون رسائل
       } else {
-        print('❌ Sign up failed: ${result.error}');
-        _showErrorSnackBar(result.error ?? 'خطأ في إنشاء الحساب');
+        debugPrint('❌ Sign up failed');
+        _showErrorSnackBar('خطأ في إنشاء الحساب');
       }
     } catch (e) {
-      print('❌ Sign up exception: $e');
+      debugPrint('❌ Sign up exception: $e');
       _showErrorSnackBar('خطأ في إنشاء الحساب');
     } finally {
       setState(() {
@@ -750,18 +746,20 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
     });
 
     try {
-      print('🔄 Starting Google sign in...');
+      debugPrint('🔄 Starting Google sign in...');
       final result = await _authService.signInWithGoogle();
-      print('📋 Google sign in result: ${result.isSuccess}');
-      if (result.isSuccess) {
-        print('✅ Google sign in successful');
+      debugPrint(
+        '📋 Google sign in result: ${result != null ? 'Success' : 'Failed'}',
+      );
+      if (result != null) {
+        debugPrint('✅ Google sign in successful');
         _navigateToHome(); // دخول مباشر بدون رسائل
       } else {
-        print('❌ Google sign in failed: ${result.error}');
-        _showErrorSnackBar(result.error ?? 'خطأ في تسجيل الدخول');
+        debugPrint('❌ Google sign in failed');
+        _showErrorSnackBar('خطأ في تسجيل الدخول');
       }
     } catch (e) {
-      print('❌ Google sign in exception: $e');
+      debugPrint('❌ Google sign in exception: $e');
       _showErrorSnackBar('خطأ في تسجيل الدخول');
     } finally {
       setState(() {
@@ -776,18 +774,20 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
     });
 
     try {
-      print('🔄 Starting Apple sign in...');
+      debugPrint('🔄 Starting Apple sign in...');
       final result = await _authService.signInWithApple();
-      print('📋 Apple sign in result: ${result.isSuccess}');
-      if (result.isSuccess) {
-        print('✅ Apple sign in successful');
+      debugPrint(
+        '📋 Apple sign in result: ${result != null ? 'Success' : 'Failed'}',
+      );
+      if (result != null) {
+        debugPrint('✅ Apple sign in successful');
         _navigateToHome(); // دخول مباشر بدون رسائل
       } else {
-        print('❌ Apple sign in failed: ${result.error}');
-        _showErrorSnackBar(result.error ?? 'خطأ في تسجيل الدخول');
+        debugPrint('❌ Apple sign in failed');
+        _showErrorSnackBar('خطأ في تسجيل الدخول');
       }
     } catch (e) {
-      print('❌ Apple sign in exception: $e');
+      debugPrint('❌ Apple sign in exception: $e');
       _showErrorSnackBar('خطأ في تسجيل الدخول');
     } finally {
       setState(() {
@@ -803,13 +803,13 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
     try {
       // استخدام Google Sign-In العادي
       final result = await _authService.signInWithGoogle();
-      if (result.isSuccess) {
+      if (result != null) {
         _navigateToHome();
       } else {
-        _showErrorSnackBar(result.error ?? 'حدث خطأ أثناء تسجيل الدخول');
+        _showErrorSnackBar('حدث خطأ أثناء تسجيل الدخول');
       }
     } catch (e) {
-      print('Google Play Games sign in error: $e'); // Debug log
+      debugPrint('Google Play Games sign in error: $e'); // Debug log
       _showErrorSnackBar('حدث خطأ غير متوقع: $e');
     } finally {
       setState(() {
@@ -824,18 +824,12 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
     });
 
     try {
-      print('🔄 Starting guest mode...');
-      final result = await _authService.signInAsGuest();
-
-      if (result.isSuccess) {
-        print('✅ Guest mode successful, navigating to home');
-        _navigateToHome();
-      } else {
-        print('❌ Guest mode failed: ${result.error}');
-        _showErrorSnackBar('خطأ في وضع الضيف');
-      }
+      debugPrint('🔄 Starting guest mode...');
+      await _authService.signInAsGuest();
+      debugPrint('✅ Guest mode successful, navigating to home');
+      _navigateToHome();
     } catch (e) {
-      print('💥 Guest mode exception: $e');
+      debugPrint('💥 Guest mode exception: $e');
       _showErrorSnackBar('خطأ في وضع الضيف');
     } finally {
       setState(() {
@@ -857,12 +851,9 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
       if (email.isEmpty) email = 'test@example.com';
       if (password.isEmpty) password = '123456';
 
-      final result = await _authService.quickSignIn(
-        email: email,
-        password: password,
-      );
+      final result = await _authService.signInWithEmail(email, password);
 
-      if (result.isSuccess) {
+      if (result != null) {
         _navigateToHome();
       } else {
         _showErrorSnackBar('خطأ في الدخول السريع');
@@ -879,10 +870,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          message,
-          style: const TextStyle(color: Colors.white),
-        ),
+        content: Text(message, style: const TextStyle(color: Colors.white)),
         backgroundColor: AppColors.error,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
@@ -893,9 +881,6 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
   }
 
   void _navigateToHome() {
-    Navigator.of(context).pushNamedAndRemoveUntil(
-      '/home',
-      (route) => false,
-    );
+    Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
   }
 }

@@ -48,8 +48,9 @@ class _AdminScreenState extends State<AdminScreen> {
         SnackBar(
           content: Text(
             'تم تحديث قائمة المنتجات',
-            style:
-                AppTextStyles.bodyMedium.copyWith(color: AppColors.textLight),
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.textLight,
+            ),
           ),
           backgroundColor: AppColors.primary,
         ),
@@ -98,11 +99,7 @@ class _AdminScreenState extends State<AdminScreen> {
           actions: _buildAppBarActions(),
         ),
         body: _isLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.primary,
-                ),
-              )
+            ? Center(child: CircularProgressIndicator(color: AppColors.primary))
             : Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -110,7 +107,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     end: Alignment.bottomRight,
                     colors: [
                       AppColors.backgroundDark,
-                      AppColors.primaryDark.withOpacity(0.3),
+                      AppColors.primaryDark.withValues(alpha: 0.3),
                     ],
                   ),
                 ),
@@ -147,11 +144,14 @@ class _AdminScreenState extends State<AdminScreen> {
           // شريط أدوات سريع
           Container(
             padding: EdgeInsets.all(
-                ResponsiveHelper.getPadding(context, size: PaddingSize.small)),
+              ResponsiveHelper.getPadding(context, size: PaddingSize.small),
+            ),
             decoration: BoxDecoration(
-              color: AppColors.surfaceLight.withOpacity(0.1),
+              color: AppColors.surfaceLight.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.3),
+              ),
             ),
             child: Column(
               children: [
@@ -247,12 +247,15 @@ class _AdminScreenState extends State<AdminScreen> {
             // Panel جانبي مُصغر للتحكم
             Container(
               width: 280,
-              padding: EdgeInsets.all(ResponsiveHelper.getPadding(context,
-                  size: PaddingSize.small)),
+              padding: EdgeInsets.all(
+                ResponsiveHelper.getPadding(context, size: PaddingSize.small),
+              ),
               decoration: BoxDecoration(
-                color: AppColors.surfaceLight.withOpacity(0.1),
+                color: AppColors.surfaceLight.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                border: Border.all(
+                  color: AppColors.primary.withValues(alpha: 0.3),
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,12 +269,18 @@ class _AdminScreenState extends State<AdminScreen> {
                     ),
                   ),
                   SizedBox(
-                      height: ResponsiveHelper.getPadding(context,
-                          size: PaddingSize.small)),
+                    height: ResponsiveHelper.getPadding(
+                      context,
+                      size: PaddingSize.small,
+                    ),
+                  ),
                   _buildCategoryFilter(),
                   SizedBox(
-                      height: ResponsiveHelper.getPadding(context,
-                          size: PaddingSize.small)),
+                    height: ResponsiveHelper.getPadding(
+                      context,
+                      size: PaddingSize.small,
+                    ),
+                  ),
                   Expanded(child: _buildQuickActions()),
                 ],
               ),
@@ -290,12 +299,15 @@ class _AdminScreenState extends State<AdminScreen> {
           children: [
             // إعدادات سريعة في الأعلى
             Container(
-              padding: EdgeInsets.all(ResponsiveHelper.getPadding(context,
-                  size: PaddingSize.small)),
+              padding: EdgeInsets.all(
+                ResponsiveHelper.getPadding(context, size: PaddingSize.small),
+              ),
               decoration: BoxDecoration(
-                color: AppColors.surfaceLight.withOpacity(0.1),
+                color: AppColors.surfaceLight.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                border: Border.all(
+                  color: AppColors.primary.withValues(alpha: 0.3),
+                ),
               ),
               child: Row(
                 children: [
@@ -350,9 +362,11 @@ class _AdminScreenState extends State<AdminScreen> {
             width: 350,
             padding: EdgeInsets.all(ResponsiveHelper.getPadding(context)),
             decoration: BoxDecoration(
-              color: AppColors.surfaceLight.withOpacity(0.1),
+              color: AppColors.surfaceLight.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.3),
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -431,9 +445,9 @@ class _AdminScreenState extends State<AdminScreen> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: AppColors.surfaceDark.withOpacity(0.3),
+            color: AppColors.surfaceDark.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppColors.accent.withOpacity(0.3)),
+            border: Border.all(color: AppColors.accent.withValues(alpha: 0.3)),
           ),
           child: Column(
             children: [
@@ -484,9 +498,9 @@ class _AdminScreenState extends State<AdminScreen> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: AppColors.surfaceDark.withOpacity(0.3),
+            color: AppColors.surfaceDark.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppColors.accent.withOpacity(0.3)),
+            border: Border.all(color: AppColors.accent.withValues(alpha: 0.3)),
           ),
           child: Column(
             children: [
@@ -498,8 +512,11 @@ class _AdminScreenState extends State<AdminScreen> {
                 },
                 child: Row(
                   children: [
-                    Icon(Icons.settings_applications,
-                        color: AppColors.accent, size: 20),
+                    Icon(
+                      Icons.settings_applications,
+                      color: AppColors.accent,
+                      size: 20,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       'إعدادات متقدمة',
@@ -520,42 +537,34 @@ class _AdminScreenState extends State<AdminScreen> {
               ),
               if (_showAdvancedSettings) ...[
                 const SizedBox(height: 12),
-                _buildQuickActionButton(
-                  'إدارة الثيمات',
-                  Icons.palette,
-                  () {
-                    // TODO: فتح شاشة إدارة الثيمات
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'ستتوفر قريباً',
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.textLight,
-                          ),
+                _buildQuickActionButton('إدارة الثيمات', Icons.palette, () {
+                  // TODO: فتح شاشة إدارة الثيمات
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'ستتوفر قريباً',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.textLight,
                         ),
-                        backgroundColor: AppColors.secondary,
                       ),
-                    );
-                  },
-                ),
+                      backgroundColor: AppColors.secondary,
+                    ),
+                  );
+                }),
                 const SizedBox(height: 8),
-                _buildQuickActionButton(
-                  'إحصائيات النظام',
-                  Icons.analytics,
-                  () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'ستتوفر قريباً',
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.textLight,
-                          ),
+                _buildQuickActionButton('إحصائيات النظام', Icons.analytics, () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'ستتوفر قريباً',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.textLight,
                         ),
-                        backgroundColor: AppColors.secondary,
                       ),
-                    );
-                  },
-                ),
+                      backgroundColor: AppColors.secondary,
+                    ),
+                  );
+                }),
               ],
             ],
           ),
@@ -565,7 +574,10 @@ class _AdminScreenState extends State<AdminScreen> {
   }
 
   Widget _buildQuickActionButton(
-      String title, IconData icon, VoidCallback onPressed) {
+    String title,
+    IconData icon,
+    VoidCallback onPressed,
+  ) {
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton.icon(
@@ -574,11 +586,9 @@ class _AdminScreenState extends State<AdminScreen> {
         label: Text(title),
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.textLight,
-          side: BorderSide(color: AppColors.primary.withOpacity(0.5)),
+          side: BorderSide(color: AppColors.primary.withValues(alpha: 0.5)),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
     );
@@ -588,9 +598,9 @@ class _AdminScreenState extends State<AdminScreen> {
     return Container(
       padding: EdgeInsets.all(ResponsiveHelper.getPadding(context)),
       decoration: BoxDecoration(
-        color: AppColors.surfaceLight.withOpacity(0.1),
+        color: AppColors.surfaceLight.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -629,17 +639,18 @@ class _AdminScreenState extends State<AdminScreen> {
         style: AppTextStyles.bodyMedium.copyWith(
           color: isSelected
               ? AppColors.textLight
-              : AppColors.textLight.withOpacity(0.7),
+              : AppColors.textLight.withValues(alpha: 0.7),
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
       ),
       selected: isSelected,
       selectedColor: AppColors.primary,
       checkmarkColor: AppColors.textLight,
-      backgroundColor: AppColors.surfaceLight.withOpacity(0.2),
+      backgroundColor: AppColors.surfaceLight.withValues(alpha: 0.2),
       side: BorderSide(
-        color:
-            isSelected ? AppColors.primary : AppColors.primary.withOpacity(0.3),
+        color: isSelected
+            ? AppColors.primary
+            : AppColors.primary.withValues(alpha: 0.3),
       ),
       onSelected: (selected) {
         setState(() {
@@ -663,13 +674,13 @@ class _AdminScreenState extends State<AdminScreen> {
             Icon(
               Icons.inventory_2_outlined,
               size: 64,
-              color: AppColors.textLight.withOpacity(0.5),
+              color: AppColors.textLight.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 16),
             Text(
               'لا توجد منتجات في هذه الفئة',
               style: AppTextStyles.bodyLarge.copyWith(
-                color: AppColors.textLight.withOpacity(0.7),
+                color: AppColors.textLight.withValues(alpha: 0.7),
               ),
             ),
           ],
@@ -677,8 +688,11 @@ class _AdminScreenState extends State<AdminScreen> {
       );
     }
 
-    final columns =
-        ResponsiveHelper.getColumnsCount(context, maxColumns: 4, minColumns: 1);
+    final columns = ResponsiveHelper.getColumnsCount(
+      context,
+      maxColumns: 4,
+      minColumns: 1,
+    );
 
     return GridView.builder(
       padding: EdgeInsets.all(ResponsiveHelper.getPadding(context)),
@@ -699,12 +713,12 @@ class _AdminScreenState extends State<AdminScreen> {
   Widget _buildProductCard(Product product) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surfaceLight.withOpacity(0.1),
+        color: AppColors.surfaceLight.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryDark.withOpacity(0.1),
+            color: AppColors.primaryDark.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -720,7 +734,7 @@ class _AdminScreenState extends State<AdminScreen> {
               height: 60,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.2),
+                color: AppColors.primary.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -745,7 +759,7 @@ class _AdminScreenState extends State<AdminScreen> {
             Text(
               product.description,
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textLight.withOpacity(0.8),
+                color: AppColors.textLight.withValues(alpha: 0.8),
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -763,12 +777,14 @@ class _AdminScreenState extends State<AdminScreen> {
                   ),
                 ),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: product.isActive
-                        ? AppColors.accent.withOpacity(0.2)
-                        : Colors.red.withOpacity(0.2),
+                        ? AppColors.accent.withValues(alpha: 0.2)
+                        : Colors.red.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -790,7 +806,9 @@ class _AdminScreenState extends State<AdminScreen> {
                     onPressed: () => _editProduct(product),
                     icon: const Icon(Icons.edit, size: 20),
                     style: IconButton.styleFrom(
-                      backgroundColor: AppColors.secondary.withOpacity(0.2),
+                      backgroundColor: AppColors.secondary.withValues(
+                        alpha: 0.2,
+                      ),
                       foregroundColor: AppColors.secondary,
                     ),
                   ),
@@ -801,7 +819,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     onPressed: () => _deleteProduct(product),
                     icon: const Icon(Icons.delete, size: 20),
                     style: IconButton.styleFrom(
-                      backgroundColor: Colors.red.withOpacity(0.2),
+                      backgroundColor: Colors.red.withValues(alpha: 0.2),
                       foregroundColor: Colors.red,
                     ),
                   ),
@@ -848,11 +866,12 @@ class _AdminScreenState extends State<AdminScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.backgroundDark.withOpacity(0.9),
+        backgroundColor: AppColors.backgroundDark.withValues(alpha: 0.9),
         title: Text(
           'حذف المنتج',
-          style:
-              AppTextStyles.headlineSmall.copyWith(color: AppColors.textLight),
+          style: AppTextStyles.headlineSmall.copyWith(
+            color: AppColors.textLight,
+          ),
         ),
         content: Text(
           'هل أنت متأكد من حذف "${product.name}"؟',
@@ -863,7 +882,9 @@ class _AdminScreenState extends State<AdminScreen> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'إلغاء',
-              style: TextStyle(color: AppColors.textLight.withOpacity(0.7)),
+              style: TextStyle(
+                color: AppColors.textLight.withValues(alpha: 0.7),
+              ),
             ),
           ),
           ElevatedButton(
@@ -886,11 +907,7 @@ class ProductFormDialog extends StatefulWidget {
   final Product? product;
   final Function(Product) onSave;
 
-  const ProductFormDialog({
-    super.key,
-    this.product,
-    required this.onSave,
-  });
+  const ProductFormDialog({super.key, this.product, required this.onSave});
 
   @override
   State<ProductFormDialog> createState() => _ProductFormDialogState();
@@ -909,12 +926,15 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.product?.name ?? '');
-    _descriptionController =
-        TextEditingController(text: widget.product?.description ?? '');
-    _priceController =
-        TextEditingController(text: widget.product?.price.toString() ?? '');
-    _imageUrlController =
-        TextEditingController(text: widget.product?.imageUrl ?? '');
+    _descriptionController = TextEditingController(
+      text: widget.product?.description ?? '',
+    );
+    _priceController = TextEditingController(
+      text: widget.product?.price.toString() ?? '',
+    );
+    _imageUrlController = TextEditingController(
+      text: widget.product?.imageUrl ?? '',
+    );
     _selectedCategory = widget.product?.category ?? ProductCategory.themes;
     _isActive = widget.product?.isActive ?? true;
   }
@@ -931,7 +951,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: AppColors.backgroundDark.withOpacity(0.95),
+      backgroundColor: AppColors.backgroundDark.withValues(alpha: 0.95),
       title: Text(
         widget.product == null ? 'إضافة منتج جديد' : 'تعديل المنتج',
         style: AppTextStyles.headlineSmall.copyWith(color: AppColors.textLight),
@@ -1039,7 +1059,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
           onPressed: () => Navigator.pop(context),
           child: Text(
             'إلغاء',
-            style: TextStyle(color: AppColors.textLight.withOpacity(0.7)),
+            style: TextStyle(color: AppColors.textLight.withValues(alpha: 0.7)),
           ),
         ),
         ElevatedButton(

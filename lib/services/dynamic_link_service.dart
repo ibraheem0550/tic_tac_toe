@@ -1,6 +1,8 @@
 /// خدمة الروابط الديناميكية للمشاركة والدعوات
 /// تمكن من إنشاء روابط قابلة للمشاركة تفتح التطبيق مع محتوى محدد
 
+import 'package:flutter/foundation.dart';
+
 class DynamicLinkService {
   static const String domain = 'tictactoe.page.link';
 
@@ -19,8 +21,9 @@ class DynamicLinkService {
     if (gameMode != null) params['mode'] = gameMode;
 
     if (params.isNotEmpty) {
-      final queryString =
-          params.entries.map((e) => '${e.key}=${e.value}').join('&');
+      final queryString = params.entries
+          .map((e) => '${e.key}=${e.value}')
+          .join('&');
       link += '?$queryString';
     }
 
@@ -35,9 +38,7 @@ class DynamicLinkService {
   }) async {
     String link = 'https://$domain/share';
 
-    final params = <String, String>{
-      'type': type,
-    };
+    final params = <String, String>{'type': type};
 
     if (title != null) params['title'] = title;
     if (description != null) params['desc'] = description;
@@ -77,7 +78,7 @@ class DynamicLinkService {
     final gameMode = params['mode'];
 
     // إظهار شاشة قبول الدعوة
-    print('دعوة من $playerName للعب في وضع $gameMode');
+    debugPrint('دعوة من $playerName للعب في وضع $gameMode');
   }
 
   /// معالجة المشاركة
@@ -86,12 +87,12 @@ class DynamicLinkService {
     final title = params['title'];
 
     // التنقل إلى المحتوى المشارك
-    print('مشاركة: $title من نوع $type');
+    debugPrint('مشاركة: $title من نوع $type');
   }
 
   /// معالجة افتراضية
   static void _handleDefault() {
     // فتح الشاشة الرئيسية
-    print('فتح الشاشة الرئيسية');
+    debugPrint('فتح الشاشة الرئيسية');
   }
 }

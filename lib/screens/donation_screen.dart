@@ -89,7 +89,7 @@ class _DonationScreenState extends State<DonationScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.deepPurple.shade700.withOpacity(0.3),
+              Colors.deepPurple.shade700.withValues(alpha: 0.3),
               Colors.grey.shade900,
             ],
           ),
@@ -120,22 +120,22 @@ class _DonationScreenState extends State<DonationScreen> {
                 'تبرعك سيساعدنا في تحسين اللعبة وإضافة المزيد من المميزات',
                 style: TextStyle(
                   fontSize: 18,
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 40),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(15),
                   border: Border.all(
-                    color: Colors.deepPurpleAccent.withOpacity(0.3),
+                    color: Colors.deepPurpleAccent.withValues(alpha: 0.3),
                     width: 2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.deepPurple.withOpacity(0.2),
+                      color: Colors.deepPurple.withValues(alpha: 0.2),
                       spreadRadius: 2,
                       blurRadius: 8,
                       offset: const Offset(0, 4),
@@ -157,7 +157,7 @@ class _DonationScreenState extends State<DonationScreen> {
                   decoration: InputDecoration(
                     hintText: 'أدخل مبلغ التبرع',
                     hintStyle: TextStyle(
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.white.withValues(alpha: 0.5),
                       fontSize: 20,
                     ),
                     prefixText: '\$ ',

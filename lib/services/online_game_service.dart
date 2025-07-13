@@ -1,9 +1,9 @@
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:flutter/foundation.dart';
-import 'firebase_auth_service.dart';
-import '../models/complete_user_models.dart';
+import 'unified_auth_services.dart';
+import '../models/complete_user_models.dart' as UserModels;
 
-/// ???? ????? ??????? ???????? Socket.IO
+/// خدمة الألعاب الجماعية باستخدام Socket.IO
 class OnlineGameService extends ChangeNotifier {
   static final OnlineGameService _instance = OnlineGameService._internal();
   factory OnlineGameService() => _instance;
@@ -15,7 +15,7 @@ class OnlineGameService extends ChangeNotifier {
   String? _gameRoomId;
   String? _playerId;
   Map<String, dynamic>? _currentGame;
-  User? _opponent;
+  UserModels.User? _opponent;
 
   // Game state
   List<String> _board = List.filled(9, '');
@@ -29,7 +29,7 @@ class OnlineGameService extends ChangeNotifier {
   String? get gameRoomId => _gameRoomId;
   String? get playerId => _playerId;
   Map<String, dynamic>? get currentGame => _currentGame;
-  User? get opponent => _opponent;
+  UserModels.User? get opponent => _opponent;
   List<String> get board => _board;
   bool get isMyTurn => _isMyTurn;
   String get mySymbol => _mySymbol;
@@ -41,12 +41,15 @@ class OnlineGameService extends ChangeNotifier {
     if (_isConnected) return;
 
     try {
-      // ??????? ????? ?????? ??????
-      _socket = IO.io('http://localhost:3000', <String, dynamic>{
-        'transports': ['websocket', 'polling'],
-        'autoConnect': false,
-        'timeout': 20000,
-      });
+      // تهيئة اتصال السوكت الجديد
+      _socket = IO.io(
+        'http://localhost:3000',
+        IO.OptionBuilder()
+            .setTransports(['websocket', 'polling'])
+            .enableAutoConnect()
+            .setTimeout(20000)
+            .build(),
+      );
 
       _socket?.connect();
 
@@ -55,7 +58,7 @@ class OnlineGameService extends ChangeNotifier {
         debugPrint('? Connected to game server');
 
         // ????? ?????? ???????? ??? ???????
-        final currentUser = _authService.currentUser;
+        final currentUser = _authService.currentUserModel;
         if (currentUser != null) {
           registerPlayer(currentUser);
         }
@@ -91,7 +94,7 @@ class OnlineGameService extends ChangeNotifier {
   }
 
   /// ????? ?????? ?? ??????
-  void registerPlayer(User user) {
+  void registerPlayer(UserModels.User user) {
     if (_socket?.connected == true) {
       _socket?.emit('register_player', {
         'username': user.displayName,
@@ -163,7 +166,7 @@ class OnlineGameService extends ChangeNotifier {
       return;
     }
 
-    if (!_authService.isAuthenticated) {
+    if (!_authService.isSignedIn) {
       debugPrint('? User not authenticated');
       return;
     }
@@ -171,7 +174,7 @@ class OnlineGameService extends ChangeNotifier {
     _gameStatus = 'searching';
     notifyListeners();
 
-    final currentUser = _authService.currentUser;
+    final currentUser = _authService.currentUserModel;
     if (currentUser == null) return;
 
     _socket?.emit('find_match', {
@@ -191,12 +194,12 @@ class OnlineGameService extends ChangeNotifier {
       return;
     }
 
-    if (!_authService.isAuthenticated) {
+    if (!_authService.isSignedIn) {
       debugPrint('? User not authenticated');
       return;
     }
 
-    final currentUser = _authService.currentUser;
+    final currentUser = _authService.currentUserModel;
     if (currentUser == null) return;
 
     _socket?.emit('invite_friend', {
@@ -210,16 +213,12 @@ class OnlineGameService extends ChangeNotifier {
 
   /// ???? ???? ????
   void acceptFriendInvite(String gameRoomId) {
-    _socket?.emit('accept_invite', {
-      'gameRoomId': gameRoomId,
-    });
+    _socket?.emit('accept_invite', {'gameRoomId': gameRoomId});
   }
 
   /// ??? ???? ????
   void rejectFriendInvite(String gameRoomId) {
-    _socket?.emit('reject_invite', {
-      'gameRoomId': gameRoomId,
-    });
+    _socket?.emit('reject_invite', {'gameRoomId': gameRoomId});
   }
 
   /// ????? ???? ?? ??????
@@ -246,9 +245,7 @@ class OnlineGameService extends ChangeNotifier {
   /// ?????? ??????
   void leaveGame() {
     if (_gameRoomId != null) {
-      _socket?.emit('leave_game', {
-        'gameRoomId': _gameRoomId,
-      });
+      _socket?.emit('leave_game', {'gameRoomId': _gameRoomId});
     }
     _resetGameState();
     notifyListeners();
@@ -276,26 +273,28 @@ class OnlineGameService extends ChangeNotifier {
     }
 
     if (opponentData != null) {
-      _opponent = User(
+      _opponent = UserModels.User(
         id: opponentData['userId'] ?? opponentData['socketId'],
         email: opponentData['email'] ?? '',
         displayName: opponentData['username'] ?? '????',
         photoURL: opponentData['avatarUrl'],
-        provider: AuthProvider.email,
+        provider: UserModels.AuthProvider.email,
         gems: opponentData['gems'] ?? 0,
         createdAt: DateTime.now(),
         lastLoginAt: DateTime.now(),
-        profile: UserProfile(
-          preferences: const UserPreferences(),
-          gameStats: GameStats.empty(
-              opponentData['userId'] ?? opponentData['socketId']),
+        profile: UserModels.UserProfile(
+          preferences: const UserModels.UserPreferences(),
+          gameStats: UserModels.GameStats.empty(
+            opponentData['userId'] ?? opponentData['socketId'],
+          ),
         ),
-        linkedProviders: [AuthProvider.email],
+        linkedProviders: [UserModels.AuthProvider.email],
         linkedAccounts: [],
       );
     }
     debugPrint(
-        '?? Match found! Room: $_gameRoomId, Symbol: $_mySymbol, My turn: $_isMyTurn');
+      '?? Match found! Room: $_gameRoomId, Symbol: $_mySymbol, My turn: $_isMyTurn',
+    );
     notifyListeners();
   }
 
@@ -339,19 +338,12 @@ class OnlineGameService extends ChangeNotifier {
   /// ?????? ??????
   Future<void> _rewardWinner() async {
     try {
-      final currentUser = _authService.currentUser;
+      final currentUser = _authService.currentUserModel;
       if (currentUser == null) return;
 
       const int winReward = 10; // 10 ????? ?????
 
-      // ????? ??????? ?? AuthService
-      final updatedUser =
-          currentUser.copyWith(gems: currentUser.gems + winReward);
-      await _authService.updateProfile(
-        displayName: updatedUser.displayName,
-        photoURL: updatedUser.photoURL,
-      );
-
+      // TODO: Implement updateUserModel method in AuthService to update gems
       debugPrint('?? Reward added: $winReward gems');
     } catch (e) {
       debugPrint('? Error adding reward: $e');

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:cached_network_image/cached_network_image.dart'; // TODO: Add when needed
 import '../services/online_game_service.dart';
-import '../services/firebase_auth_service.dart';
+import '../services/unified_auth_services.dart';
 import '../models/complete_user_models.dart';
 import '../audio_helper.dart';
 import '../utils/app_theme_new.dart';
@@ -51,21 +51,13 @@ class _StellarOnlineGameScreenState extends State<StellarOnlineGameScreen>
       vsync: this,
     )..repeat();
 
-    _pulseAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.2,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
+    _pulseAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
 
-    _boardAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _boardController,
-      curve: Curves.elasticOut,
-    ));
+    _boardAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _boardController, curve: Curves.elasticOut),
+    );
 
     _starfieldAnimation = Tween<double>(
       begin: 0.0,
@@ -75,7 +67,7 @@ class _StellarOnlineGameScreenState extends State<StellarOnlineGameScreen>
 
   void _loadCurrentUser() async {
     try {
-      final user = FirebaseAuthService().currentUser;
+      final user = FirebaseAuthService().currentUserModel;
       setState(() {
         _currentUser = user;
       });
@@ -107,9 +99,7 @@ class _StellarOnlineGameScreenState extends State<StellarOnlineGameScreen>
 
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.starfieldGradient,
-        ),
+        decoration: const BoxDecoration(gradient: AppColors.starfieldGradient),
         child: Stack(
           children: [
             _buildAnimatedStarfield(),
@@ -117,9 +107,7 @@ class _StellarOnlineGameScreenState extends State<StellarOnlineGameScreen>
               child: Column(
                 children: [
                   _buildHeader(isTablet),
-                  Expanded(
-                    child: _buildGameContent(isTablet),
-                  ),
+                  Expanded(child: _buildGameContent(isTablet)),
                 ],
               ),
             ),
@@ -368,22 +356,22 @@ class _StellarOnlineGameScreenState extends State<StellarOnlineGameScreen>
             decoration: BoxDecoration(
               gradient: AppColors.stellarGradient,
               shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.starGold,
-                width: 2,
-              ),
+              border: Border.all(color: AppColors.starGold, width: 2),
             ),
             child: ClipOval(
               child: _currentUser!.photoURL != null
-                  ? CachedNetworkImage(
-                      imageUrl: _currentUser!.photoURL!,
+                  ? Image.network(
+                      _currentUser!.photoURL!,
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => Icon(
-                        Icons.person,
-                        color: Colors.white,
-                        size: isTablet ? 30 : 25,
-                      ),
-                      errorWidget: (context, url, error) => Icon(
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: isTablet ? 30 : 25,
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) => Icon(
                         Icons.person,
                         color: Colors.white,
                         size: isTablet ? 30 : 25,
@@ -490,11 +478,7 @@ class _StellarOnlineGameScreenState extends State<StellarOnlineGameScreen>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                color: Colors.white,
-                size: isTablet ? 24 : 20,
-              ),
+              Icon(icon, color: Colors.white, size: isTablet ? 24 : 20),
               SizedBox(width: isTablet ? 12 : 8),
               Text(
                 text,
@@ -588,9 +572,7 @@ class _StellarOnlineGameScreenState extends State<StellarOnlineGameScreen>
               children: [
                 _buildPlayersInfo(isTablet),
                 SizedBox(height: isTablet ? 24 : 16),
-                Expanded(
-                  child: _buildBoard(isTablet),
-                ),
+                Expanded(child: _buildBoard(isTablet)),
                 SizedBox(height: isTablet ? 24 : 16),
                 _buildGameActions(isTablet),
               ],
@@ -609,9 +591,7 @@ class _StellarOnlineGameScreenState extends State<StellarOnlineGameScreen>
           colors: [AppColors.surfacePrimary, AppColors.surfaceSecondary],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.primaryLight.withOpacity(0.3),
-        ),
+        border: Border.all(color: AppColors.primaryLight.withOpacity(0.3)),
       ),
       child: Row(
         children: [
@@ -688,12 +668,12 @@ class _StellarOnlineGameScreenState extends State<StellarOnlineGameScreen>
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.primaryLight.withOpacity(0.5),
+          color: AppColors.primaryLight.withValues(alpha: 0.5),
           width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: AppColors.primary.withValues(alpha: 0.3),
             blurRadius: 20,
             spreadRadius: 5,
           ),
@@ -724,17 +704,19 @@ class _StellarOnlineGameScreenState extends State<StellarOnlineGameScreen>
             ? const LinearGradient(
                 colors: [
                   AppColors.backgroundSecondary,
-                  AppColors.backgroundTertiary
+                  AppColors.backgroundTertiary,
                 ],
               )
             : (cellValue == 'X'
-                ? const LinearGradient(
-                    colors: [AppColors.primary, AppColors.primaryLight])
-                : const LinearGradient(
-                    colors: [AppColors.accent, AppColors.accentLight])),
+                  ? const LinearGradient(
+                      colors: [AppColors.primary, AppColors.primaryLight],
+                    )
+                  : const LinearGradient(
+                      colors: [AppColors.accent, AppColors.accentLight],
+                    )),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppColors.primaryLight.withOpacity(0.3),
+          color: AppColors.primaryLight.withValues(alpha: 0.3),
         ),
       ),
       child: Material(
@@ -815,7 +797,7 @@ class _StellarOnlineGameScreenState extends State<StellarOnlineGameScreen>
                     boxShadow: [
                       BoxShadow(
                         color: (isWinner ? AppColors.starGold : AppColors.error)
-                            .withOpacity(0.5),
+                            .withValues(alpha: 0.5),
                         blurRadius: 30,
                         spreadRadius: 10,
                       ),
@@ -933,7 +915,7 @@ class StarfieldPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = AppColors.starGold.withOpacity(0.6);
+    final paint = Paint()..color = AppColors.starGold.withValues(alpha: 0.6);
 
     // Draw animated stars
     for (int i = 0; i < 50; i++) {
@@ -944,7 +926,8 @@ class StarfieldPainter extends CustomPainter {
       canvas.drawCircle(
         Offset(x, y),
         starSize,
-        paint..color = AppColors.starGold.withOpacity(0.3 + (i % 3) * 0.2),
+        paint
+          ..color = AppColors.starGold.withValues(alpha: 0.3 + (i % 3) * 0.2),
       );
     }
   }

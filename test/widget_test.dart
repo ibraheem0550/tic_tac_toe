@@ -5,10 +5,10 @@ import 'package:tic_tac_toe/main.dart';
 void main() {
   testWidgets('Tic Tac Toe UI test', (WidgetTester tester) async {
     // تشغيل التطبيق.
-    await tester.pumpWidget(TicTacToeApp());
+    await tester.pumpWidget(const SimpleTicTacToeApp());
 
     // التحقق من وجود عنوان التطبيق.
-    expect(find.text('Tic Tac Toe'), findsOneWidget);
+    expect(find.text('🎮 Tic Tac Toe - Simple'), findsOneWidget);
 
     // انتظار رسم الشاشة.
     await tester.pumpAndSettle();

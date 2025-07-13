@@ -121,7 +121,7 @@ class _MissionsScreenState extends State<MissionsScreen>
               end: Alignment.bottomRight,
               colors: [
                 AppColors.backgroundDark,
-                AppColors.primaryDark.withOpacity(0.3),
+                AppColors.primaryDark.withValues(alpha: 0.3),
               ],
             ),
           ),
@@ -177,7 +177,7 @@ class _MissionsScreenState extends State<MissionsScreen>
       child: Row(
         children: [
           // Panel جانبي للمعلومات
-          Container(
+          SizedBox(
             width: 400,
             child: Column(
               children: [
@@ -209,7 +209,7 @@ class _MissionsScreenState extends State<MissionsScreen>
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.accent.withOpacity(0.3),
+            color: AppColors.accent.withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -230,7 +230,7 @@ class _MissionsScreenState extends State<MissionsScreen>
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.textLight.withOpacity(0.2),
+                color: AppColors.textLight.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
@@ -256,7 +256,7 @@ class _MissionsScreenState extends State<MissionsScreen>
                   Text(
                     'مهام متقدمة بالذكاء الاصطناعي',
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.textLight.withOpacity(0.9),
+                      color: AppColors.textLight.withValues(alpha: 0.9),
                     ),
                   ),
                 ],
@@ -277,9 +277,9 @@ class _MissionsScreenState extends State<MissionsScreen>
     return Container(
       padding: EdgeInsets.all(ResponsiveHelper.getPadding(context)),
       decoration: BoxDecoration(
-        color: AppColors.surfaceLight.withOpacity(0.1),
+        color: AppColors.surfaceLight.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -322,9 +322,9 @@ class _MissionsScreenState extends State<MissionsScreen>
     return Container(
       padding: EdgeInsets.all(ResponsiveHelper.getPadding(context)),
       decoration: BoxDecoration(
-        color: AppColors.surfaceLight.withOpacity(0.1),
+        color: AppColors.surfaceLight.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -338,7 +338,7 @@ class _MissionsScreenState extends State<MissionsScreen>
           SizedBox(height: ResponsiveHelper.getPadding(context) * 0.5),
           CircularProgressIndicator(
             value: progress,
-            backgroundColor: AppColors.surfaceLight.withOpacity(0.3),
+            backgroundColor: AppColors.surfaceLight.withValues(alpha: 0.3),
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.accent),
             strokeWidth: 6,
           ),
@@ -346,7 +346,7 @@ class _MissionsScreenState extends State<MissionsScreen>
           Text(
             '$completedCount من $totalCount مكتملة',
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textLight.withOpacity(0.8),
+              color: AppColors.textLight.withValues(alpha: 0.8),
             ),
           ),
         ],
@@ -363,13 +363,13 @@ class _MissionsScreenState extends State<MissionsScreen>
             Icon(
               Icons.assignment_outlined,
               size: 64,
-              color: AppColors.textLight.withOpacity(0.5),
+              color: AppColors.textLight.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 16),
             Text(
               'لا توجد مهام متاحة حالياً',
               style: AppTextStyles.bodyLarge.copyWith(
-                color: AppColors.textLight.withOpacity(0.7),
+                color: AppColors.textLight.withValues(alpha: 0.7),
               ),
             ),
           ],
@@ -406,18 +406,18 @@ class _MissionsScreenState extends State<MissionsScreen>
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.surfaceLight.withOpacity(0.1),
+          color: AppColors.surfaceLight.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: mission.isCompleted
-                ? AppColors.accent.withOpacity(0.5)
-                : AppColors.primary.withOpacity(0.3),
+                ? AppColors.accent.withValues(alpha: 0.5)
+                : AppColors.primary.withValues(alpha: 0.3),
           ),
           boxShadow: [
             BoxShadow(
               color: mission.isCompleted
-                  ? AppColors.accent.withOpacity(0.2)
-                  : AppColors.primary.withOpacity(0.1),
+                  ? AppColors.accent.withValues(alpha: 0.2)
+                  : AppColors.primary.withValues(alpha: 0.2),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -442,7 +442,7 @@ class _MissionsScreenState extends State<MissionsScreen>
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.accent.withOpacity(0.2),
+                      color: AppColors.accent.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -484,7 +484,7 @@ class _MissionsScreenState extends State<MissionsScreen>
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.accent.withOpacity(0.2),
+                    color: AppColors.accent.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -511,7 +511,7 @@ class _MissionsScreenState extends State<MissionsScreen>
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.2),
+                    color: AppColors.primary.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(

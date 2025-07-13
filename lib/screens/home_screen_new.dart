@@ -4,12 +4,13 @@ import '../screens/game_screen.dart';
 import '../screens/admin_screen.dart';
 import '../screens/gems_store_screen.dart';
 import '../screens/settings_screen.dart';
-import '../screens/friends_screen.dart';
+// import '../screens/friends_screen.dart'; // معطل مؤقتاً
 import '../screens/online_game_screen.dart';
 import '../screens/missions_screen.dart';
-import '../services/firebase_auth_service.dart';
+import '../services/unified_auth_services.dart';
 import '../utils/app_theme_new.dart';
 import '../screens/auth_screen.dart';
+import '../models/complete_user_models.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  void _onUserDataChanged(user) {
+  void _onUserDataChanged(User? user) {
     if (mounted) {
       setState(() {});
     }
@@ -69,14 +70,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 50),
                         // أيقونة نجمية متوهجة
                         Container(
-                          padding:
-                              const EdgeInsets.all(AppDimensions.paddingLG),
+                          padding: const EdgeInsets.all(
+                            AppDimensions.paddingLG,
+                          ),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             gradient: AppColors.stellarGradient,
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.starGold.withOpacity(0.6),
+                                color: AppColors.starGold.withValues(
+                                  alpha: 0.6,
+                                ),
                                 blurRadius: 30,
                                 spreadRadius: 10,
                               ),
@@ -89,10 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         const SizedBox(height: AppDimensions.paddingMD),
-                        Text(
-                          'TIC TAC TOE',
-                          style: AppTextStyles.stellarTitle,
-                        ),
+                        Text('TIC TAC TOE', style: AppTextStyles.stellarTitle),
                         Text(
                           'مغامرة نجمية ملحمية',
                           style: AppTextStyles.nebularSubtitle,
@@ -156,18 +157,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildUserInfo() {
     final user = _authService.currentUser;
+    final userModel = _authService.currentUserModel;
     if (user == null) return const SizedBox.shrink();
 
     return AppComponents.stellarCard(
       child: Row(
         children: [
           CircleAvatar(
-            backgroundImage:
-                user.photoURL != null ? NetworkImage(user.photoURL!) : null,
+            backgroundImage: user.photoURL != null
+                ? NetworkImage(user.photoURL!)
+                : null,
             backgroundColor: AppColors.primary,
             child: user.photoURL == null
                 ? Text(
-                    user.displayName?.substring(0, 1).toUpperCase() ?? '؟',
+                    user.displayName.substring(0, 1).toUpperCase(),
                     style: AppTextStyles.headlineMedium.copyWith(
                       color: AppColors.textPrimary,
                     ),
@@ -180,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  user.displayName ?? 'مستخدم',
+                  user.displayName,
                   style: AppTextStyles.headlineMedium.copyWith(
                     color: AppColors.textPrimary,
                   ),
@@ -197,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const Icon(Icons.diamond, color: Colors.amber, size: 20),
           const SizedBox(width: 4),
           Text(
-            '${user.gems}',
+            '${userModel.gems}',
             style: AppTextStyles.labelLarge.copyWith(
               color: Colors.amber,
               fontWeight: FontWeight.bold,
@@ -269,7 +272,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildFeatureButton(
-      String title, IconData icon, VoidCallback onPressed) {
+    String title,
+    IconData icon,
+    VoidCallback onPressed,
+  ) {
     return AppComponents.stellarCard(
       child: InkWell(
         onTap: onPressed,
@@ -279,11 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.all(AppDimensions.paddingMD),
           child: Column(
             children: [
-              Icon(
-                icon,
-                size: 32,
-                color: AppColors.primary,
-              ),
+              Icon(icon, size: 32, color: AppColors.primary),
               const SizedBox(height: AppDimensions.paddingXS),
               Text(
                 title,
@@ -303,9 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _navigateToAIGame() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => AILevelSelectionScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => AILevelSelectionScreen()),
     );
   }
 
@@ -321,45 +321,36 @@ class _HomeScreenState extends State<HomeScreen> {
   void _navigateToOnlineGame() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const OnlineGameScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const OnlineGameScreen()),
     );
   }
 
   void _navigateToFriends() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const FriendsScreen(),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => const FriendsScreen()),
+    // );
+    debugPrint('الأصدقاء - قريباً');
   }
 
   void _navigateToMissions() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const MissionsScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const MissionsScreen()),
     );
   }
 
   void _navigateToGemsStore() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const GemsStoreScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const GemsStoreScreen()),
     );
   }
 
   void _navigateToSettings() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const SettingsScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const SettingsScreen()),
     );
   }
 
@@ -377,9 +368,7 @@ class _HomeScreenState extends State<HomeScreen> {
         content: TextField(
           controller: passwordController,
           obscureText: true,
-          decoration: const InputDecoration(
-            hintText: 'أدخل كلمة مرور الإدارة',
-          ),
+          decoration: const InputDecoration(hintText: 'أدخل كلمة مرور الإدارة'),
         ),
         actions: [
           TextButton(
@@ -392,9 +381,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.of(context).pop();
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const AdminScreen(),
-                  ),
+                  MaterialPageRoute(builder: (context) => const AdminScreen()),
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(

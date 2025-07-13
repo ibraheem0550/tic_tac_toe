@@ -115,14 +115,19 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
       await Future.delayed(const Duration(milliseconds: 500));
 
       // محاكاة البحث
-      _searchResults = [
-        _createMockUser('5', 'khalid@example.com', 'خالد محمود'),
-        _createMockUser('6', 'noura@example.com', 'نورا سامي'),
-      ]
-          .where((user) =>
-              user.displayName.toLowerCase().contains(query.toLowerCase()) ||
-              user.email.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      _searchResults =
+          [
+                _createMockUser('5', 'khalid@example.com', 'خالد محمود'),
+                _createMockUser('6', 'noura@example.com', 'نورا سامي'),
+              ]
+              .where(
+                (user) =>
+                    user.displayName.toLowerCase().contains(
+                      query.toLowerCase(),
+                    ) ||
+                    user.email.toLowerCase().contains(query.toLowerCase()),
+              )
+              .toList();
     } finally {
       setState(() => _isSearching = false);
     }
@@ -189,18 +194,13 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
             gradient: AppColors.nebularGradient,
             boxShadow: AppShadows.card,
           ),
-          child: const Icon(
-            Icons.arrow_back,
-            color: AppColors.textPrimary,
-          ),
+          child: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
         ),
         onPressed: () => Navigator.pop(context),
       ),
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
-            gradient: AppColors.nebularGradient,
-          ),
+          decoration: const BoxDecoration(gradient: AppColors.nebularGradient),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -252,24 +252,11 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
               _friends.length,
             ),
           ),
-          Container(
-            width: 1,
-            height: 40,
-            color: AppColors.dividerPrimary,
-          ),
+          Container(width: 1, height: 40, color: AppColors.dividerPrimary),
           Expanded(
-            child: _buildTabButton(
-              'search',
-              'البحث',
-              Icons.search,
-              null,
-            ),
+            child: _buildTabButton('search', 'البحث', Icons.search, null),
           ),
-          Container(
-            width: 1,
-            height: 40,
-            color: AppColors.dividerPrimary,
-          ),
+          Container(width: 1, height: 40, color: AppColors.dividerPrimary),
           Expanded(
             child: _buildTabButton(
               'requests',
@@ -300,8 +287,9 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
               children: [
                 Icon(
                   icon,
-                  color:
-                      isSelected ? AppColors.primary : AppColors.textTertiary,
+                  color: isSelected
+                      ? AppColors.primary
+                      : AppColors.textTertiary,
                   size: 24,
                 ),
                 if (count != null && count > 0)
@@ -371,8 +359,9 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
             Icons.search_off,
           )
         else
-          ..._searchResults
-              .map((user) => _buildUserCard(user, _buildAddFriendButton(user))),
+          ..._searchResults.map(
+            (user) => _buildUserCard(user, _buildAddFriendButton(user)),
+          ),
       ],
     );
   }
@@ -397,7 +386,8 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
     return Column(
       children: [
         ..._friends.map(
-            (friend) => _buildUserCard(friend, _buildFriendActions(friend))),
+          (friend) => _buildUserCard(friend, _buildFriendActions(friend)),
+        ),
       ],
     );
   }
@@ -413,8 +403,9 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
 
     return Column(
       children: [
-        ..._friendRequests
-            .map((user) => _buildUserCard(user, _buildRequestActions(user))),
+        ..._friendRequests.map(
+          (user) => _buildUserCard(user, _buildRequestActions(user)),
+        ),
       ],
     );
   }
@@ -433,17 +424,11 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: AppColors.stellarGradient,
-                    border: Border.all(
-                      color: AppColors.primary,
-                      width: 3,
-                    ),
+                    border: Border.all(color: AppColors.primary, width: 3),
                   ),
                   child: ClipOval(
                     child: user.photoURL != null
-                        ? Image.network(
-                            user.photoURL!,
-                            fit: BoxFit.cover,
-                          )
+                        ? Image.network(user.photoURL!, fit: BoxFit.cover)
                         : const Icon(
                             Icons.person,
                             size: 30,
@@ -515,7 +500,7 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.error.withOpacity(0.2),
+              color: AppColors.error.withValues(alpha: 0.2),
               border: Border.all(color: AppColors.error),
             ),
             child: const Icon(
@@ -545,14 +530,10 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.error.withOpacity(0.2),
+              color: AppColors.error.withValues(alpha: 0.2),
               border: Border.all(color: AppColors.error),
             ),
-            child: const Icon(
-              Icons.close,
-              color: AppColors.error,
-              size: 20,
-            ),
+            child: const Icon(Icons.close, color: AppColors.error, size: 20),
           ),
           onPressed: () => _rejectRequest(user),
         ),
@@ -568,13 +549,9 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.textTertiary.withOpacity(0.1),
+              color: AppColors.textTertiary.withValues(alpha: 0.1),
             ),
-            child: Icon(
-              icon,
-              size: 48,
-              color: AppColors.textTertiary,
-            ),
+            child: Icon(icon, size: 48, color: AppColors.textTertiary),
           ),
           const SizedBox(height: AppDimensions.paddingLG),
           Text(
@@ -753,7 +730,7 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.warning.withOpacity(0.2),
+                color: AppColors.warning.withValues(alpha: 0.2),
                 border: Border.all(color: AppColors.warning),
               ),
               child: const Icon(

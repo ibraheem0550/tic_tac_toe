@@ -2,6 +2,63 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../utils/app_theme_new.dart';
 
+// إضافة Helper للتجاوب مع الشاشات
+class ResponsiveHelper {
+  static double getScreenWidth(BuildContext context) =>
+      MediaQuery.of(context).size.width;
+
+  static double getScreenHeight(BuildContext context) =>
+      MediaQuery.of(context).size.height;
+
+  static bool isSmallScreen(BuildContext context) =>
+      getScreenWidth(context) < 600;
+
+  static bool isMediumScreen(BuildContext context) =>
+      getScreenWidth(context) >= 600 && getScreenWidth(context) < 1200;
+
+  static bool isLargeScreen(BuildContext context) =>
+      getScreenWidth(context) >= 1200;
+
+  static double getResponsiveFontSize(BuildContext context, double baseSize) {
+    final screenWidth = getScreenWidth(context);
+    if (screenWidth < 600) return baseSize * 0.8;
+    if (screenWidth < 1200) return baseSize * 0.9;
+    return baseSize;
+  }
+
+  static EdgeInsets getResponsivePadding(BuildContext context) {
+    final screenWidth = getScreenWidth(context);
+    if (screenWidth < 600) return const EdgeInsets.all(8.0);
+    if (screenWidth < 1200) return const EdgeInsets.all(12.0);
+    return const EdgeInsets.all(16.0);
+  }
+
+  static double getResponsiveAppBarHeight(BuildContext context) {
+    final screenHeight = getScreenHeight(context);
+    if (screenHeight < 700) return 120.0;
+    if (screenHeight < 900) return 150.0;
+    return 200.0;
+  }
+
+  static double getResponsiveIconSize(BuildContext context, double baseSize) {
+    final screenWidth = getScreenWidth(context);
+    if (screenWidth < 600) return baseSize * 0.8;
+    if (screenWidth < 1200) return baseSize * 0.9;
+    return baseSize;
+  }
+
+  static int getResponsiveMaxLines(BuildContext context) {
+    return isSmallScreen(context) ? 1 : 2;
+  }
+
+  static double getResponsiveCardHeight(BuildContext context) {
+    final screenHeight = getScreenHeight(context);
+    if (screenHeight < 700) return 60.0;
+    if (screenHeight < 900) return 70.0;
+    return 80.0;
+  }
+}
+
 class StellarFriendsScreen extends StatefulWidget {
   const StellarFriendsScreen({super.key});
 
@@ -115,30 +172,35 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
     try {
       await Future.delayed(const Duration(milliseconds: 500));
 
-      _searchResults = [
-        {
-          'id': '5',
-          'name': 'خالد محمود',
-          'email': 'khalid@example.com',
-          'isOnline': true,
-          'lastSeen': DateTime.now(),
-          'avatar': null,
-        },
-        {
-          'id': '6',
-          'name': 'نورا سامي',
-          'email': 'noura@example.com',
-          'isOnline': false,
-          'lastSeen': DateTime.now().subtract(const Duration(hours: 1)),
-          'avatar': null,
-        },
-      ]
-          .where((user) =>
-              (user['name']?.toString().toLowerCase() ?? '')
-                  .contains(query.toLowerCase()) ||
-              (user['email']?.toString().toLowerCase() ?? '')
-                  .contains(query.toLowerCase()))
-          .toList();
+      _searchResults =
+          [
+                {
+                  'id': '5',
+                  'name': 'خالد محمود',
+                  'email': 'khalid@example.com',
+                  'isOnline': true,
+                  'lastSeen': DateTime.now(),
+                  'avatar': null,
+                },
+                {
+                  'id': '6',
+                  'name': 'نورا سامي',
+                  'email': 'noura@example.com',
+                  'isOnline': false,
+                  'lastSeen': DateTime.now().subtract(const Duration(hours: 1)),
+                  'avatar': null,
+                },
+              ]
+              .where(
+                (user) =>
+                    (user['name']?.toString().toLowerCase() ?? '').contains(
+                      query.toLowerCase(),
+                    ) ||
+                    (user['email']?.toString().toLowerCase() ?? '').contains(
+                      query.toLowerCase(),
+                    ),
+              )
+              .toList();
     } finally {
       setState(() => _isSearching = false);
     }
@@ -165,17 +227,25 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
                     slivers: [
                       _buildStellarAppBar(),
                       SliverPadding(
-                        padding: const EdgeInsets.all(AppDimensions.paddingLG),
+                        padding: ResponsiveHelper.getResponsivePadding(context),
                         sliver: SliverList(
                           delegate: SliverChildListDelegate([
                             _buildTabNavigation(),
-                            const SizedBox(height: AppDimensions.paddingLG),
+                            SizedBox(
+                              height: ResponsiveHelper.isSmallScreen(context)
+                                  ? 12
+                                  : AppDimensions.paddingLG,
+                            ),
                             if (_selectedTab == 'search') _buildSearchSection(),
                             if (_selectedTab == 'friends')
                               _buildFriendsSection(),
                             if (_selectedTab == 'requests')
                               _buildRequestsSection(),
-                            const SizedBox(height: AppDimensions.paddingXXL),
+                            SizedBox(
+                              height: ResponsiveHelper.isSmallScreen(context)
+                                  ? 16
+                                  : AppDimensions.paddingXXL,
+                            ),
                           ]),
                         ),
                       ),
@@ -192,7 +262,7 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
 
   Widget _buildStellarAppBar() {
     return SliverAppBar(
-      expandedHeight: 200.0,
+      expandedHeight: ResponsiveHelper.getResponsiveAppBarHeight(context),
       floating: false,
       pinned: true,
       backgroundColor: Colors.transparent,
@@ -205,49 +275,63 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
             gradient: AppColors.nebularGradient,
             boxShadow: AppShadows.card,
           ),
-          child: const Icon(
+          child: Icon(
             Icons.arrow_back,
             color: AppColors.textPrimary,
+            size: ResponsiveHelper.getResponsiveIconSize(context, 24),
           ),
         ),
         onPressed: () => Navigator.pop(context),
       ),
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
-            gradient: AppColors.nebularGradient,
-          ),
+          decoration: const BoxDecoration(gradient: AppColors.nebularGradient),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 60),
+              SizedBox(
+                height: ResponsiveHelper.isSmallScreen(context) ? 40 : 60,
+              ),
               Container(
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(
+                  ResponsiveHelper.isSmallScreen(context) ? 16 : 20,
+                ),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: AppColors.stellarGradient,
                   boxShadow: AppShadows.stellar,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.people,
-                  size: 50,
+                  size: ResponsiveHelper.getResponsiveIconSize(context, 50),
                   color: AppColors.textPrimary,
                 ),
               ),
-              const SizedBox(height: AppDimensions.paddingLG),
+              SizedBox(
+                height: ResponsiveHelper.isSmallScreen(context)
+                    ? 8
+                    : AppDimensions.paddingLG,
+              ),
               Text(
                 'الأصدقاء النجميون',
                 style: AppTextStyles.displayMedium.copyWith(
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.w900,
+                  fontSize: ResponsiveHelper.getResponsiveFontSize(context, 24),
                 ),
               ),
-              const SizedBox(height: AppDimensions.paddingSM),
+              SizedBox(
+                height: ResponsiveHelper.isSmallScreen(context)
+                    ? 4
+                    : AppDimensions.paddingSM,
+              ),
               Text(
                 'اتصل مع أصدقائك عبر المجرة',
                 style: AppTextStyles.bodyLarge.copyWith(
                   color: AppColors.textSecondary,
+                  fontSize: ResponsiveHelper.getResponsiveFontSize(context, 16),
                 ),
+                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -268,24 +352,11 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
               _friends.length,
             ),
           ),
-          Container(
-            width: 1,
-            height: 40,
-            color: AppColors.dividerPrimary,
-          ),
+          Container(width: 1, height: 40, color: AppColors.dividerPrimary),
           Expanded(
-            child: _buildTabButton(
-              'search',
-              'البحث',
-              Icons.search,
-              null,
-            ),
+            child: _buildTabButton('search', 'البحث', Icons.search, null),
           ),
-          Container(
-            width: 1,
-            height: 40,
-            color: AppColors.dividerPrimary,
-          ),
+          Container(width: 1, height: 40, color: AppColors.dividerPrimary),
           Expanded(
             child: _buildTabButton(
               'requests',
@@ -301,6 +372,7 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
 
   Widget _buildTabButton(String tab, String title, IconData icon, int? count) {
     final isSelected = _selectedTab == tab;
+    final isSmall = ResponsiveHelper.isSmallScreen(context);
 
     return InkWell(
       onTap: () {
@@ -309,23 +381,25 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
       },
       borderRadius: BorderRadius.circular(AppDimensions.radiusMD),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: isSmall ? 8 : 12),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Stack(
               children: [
                 Icon(
                   icon,
-                  color:
-                      isSelected ? AppColors.primary : AppColors.textTertiary,
-                  size: 24,
+                  color: isSelected
+                      ? AppColors.primary
+                      : AppColors.textTertiary,
+                  size: ResponsiveHelper.getResponsiveIconSize(context, 24),
                 ),
                 if (count != null && count > 0)
                   Positioned(
                     right: -2,
                     top: -2,
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: EdgeInsets.all(isSmall ? 2 : 4),
                       decoration: BoxDecoration(
                         color: AppColors.error,
                         shape: BoxShape.circle,
@@ -342,7 +416,10 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
                         count.toString(),
                         style: AppTextStyles.labelSmall.copyWith(
                           color: AppColors.textPrimary,
-                          fontSize: 10,
+                          fontSize: ResponsiveHelper.getResponsiveFontSize(
+                            context,
+                            10,
+                          ),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -350,13 +427,16 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
                   ),
               ],
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: isSmall ? 2 : 4),
             Text(
               title,
               style: AppTextStyles.labelMedium.copyWith(
                 color: isSelected ? AppColors.primary : AppColors.textTertiary,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                fontSize: ResponsiveHelper.getResponsiveFontSize(context, 12),
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
@@ -370,15 +450,19 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
         TextField(
           controller: _searchController,
           onChanged: _searchUsers,
-          style: AppTextStyles.bodyLarge,
+          style: AppTextStyles.bodyLarge.copyWith(
+            fontSize: ResponsiveHelper.getResponsiveFontSize(context, 16),
+          ),
           decoration: InputDecoration(
             hintText: 'ابحث عن أصدقاء جدد...',
             hintStyle: AppTextStyles.bodyLarge.copyWith(
               color: AppColors.textTertiary,
+              fontSize: ResponsiveHelper.getResponsiveFontSize(context, 16),
             ),
-            prefixIcon: const Icon(
+            prefixIcon: Icon(
               Icons.search,
               color: AppColors.textSecondary,
+              size: ResponsiveHelper.getResponsiveIconSize(context, 24),
             ),
             filled: true,
             fillColor: AppColors.surfaceSecondary,
@@ -394,9 +478,17 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
               borderRadius: BorderRadius.circular(AppDimensions.radiusMD),
               borderSide: const BorderSide(color: AppColors.primary, width: 2),
             ),
+            contentPadding: EdgeInsets.symmetric(
+              vertical: ResponsiveHelper.isSmallScreen(context) ? 12 : 16,
+              horizontal: 16,
+            ),
           ),
         ),
-        const SizedBox(height: AppDimensions.paddingLG),
+        SizedBox(
+          height: ResponsiveHelper.isSmallScreen(context)
+              ? 12
+              : AppDimensions.paddingLG,
+        ),
         if (_isSearching)
           const Center(
             child: CircularProgressIndicator(
@@ -410,8 +502,9 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
             Icons.search_off,
           )
         else
-          ..._searchResults
-              .map((user) => _buildUserCard(user, _buildAddFriendButton(user))),
+          ..._searchResults.map(
+            (user) => _buildUserCard(user, _buildAddFriendButton(user)),
+          ),
       ],
     );
   }
@@ -436,7 +529,8 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
     return Column(
       children: [
         ..._friends.map(
-            (friend) => _buildUserCard(friend, _buildFriendActions(friend))),
+          (friend) => _buildUserCard(friend, _buildFriendActions(friend)),
+        ),
       ],
     );
   }
@@ -452,23 +546,28 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
 
     return Column(
       children: [
-        ..._friendRequests
-            .map((user) => _buildUserCard(user, _buildRequestActions(user))),
+        ..._friendRequests.map(
+          (user) => _buildUserCard(user, _buildRequestActions(user)),
+        ),
       ],
     );
   }
 
   Widget _buildUserCard(Map<String, dynamic> user, Widget actions) {
+    final isSmall = ResponsiveHelper.isSmallScreen(context);
+    final avatarSize = isSmall ? 50.0 : 60.0;
+    final iconSize = isSmall ? 24.0 : 30.0;
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppDimensions.paddingMD),
+      padding: EdgeInsets.only(bottom: isSmall ? 8 : AppDimensions.paddingMD),
       child: AppComponents.stellarCard(
         child: Row(
           children: [
             Stack(
               children: [
                 Container(
-                  width: 60,
-                  height: 60,
+                  width: avatarSize,
+                  height: avatarSize,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: AppColors.stellarGradient,
@@ -476,12 +575,12 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
                       color: user['isOnline']
                           ? AppColors.success
                           : AppColors.textTertiary,
-                      width: 3,
+                      width: isSmall ? 2 : 3,
                     ),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.person,
-                    size: 30,
+                    size: iconSize,
                     color: AppColors.textPrimary,
                   ),
                 ),
@@ -490,8 +589,8 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
                     bottom: 0,
                     right: 0,
                     child: Container(
-                      width: 16,
-                      height: 16,
+                      width: isSmall ? 12 : 16,
+                      height: isSmall ? 12 : 16,
                       decoration: BoxDecoration(
                         color: AppColors.success,
                         shape: BoxShape.circle,
@@ -504,7 +603,7 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
                   ),
               ],
             ),
-            const SizedBox(width: AppDimensions.paddingMD),
+            SizedBox(width: isSmall ? 8 : AppDimensions.paddingMD),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -514,7 +613,13 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
                     style: AppTextStyles.titleMedium.copyWith(
                       color: AppColors.textPrimary,
                       fontWeight: FontWeight.w600,
+                      fontSize: ResponsiveHelper.getResponsiveFontSize(
+                        context,
+                        16,
+                      ),
                     ),
+                    maxLines: ResponsiveHelper.getResponsiveMaxLines(context),
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -525,7 +630,13 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
                       color: user['isOnline']
                           ? AppColors.success
                           : AppColors.textTertiary,
+                      fontSize: ResponsiveHelper.getResponsiveFontSize(
+                        context,
+                        12,
+                      ),
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -538,51 +649,68 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
   }
 
   Widget _buildAddFriendButton(Map<String, dynamic> user) {
+    final isSmall = ResponsiveHelper.isSmallScreen(context);
+
     return ElevatedButton.icon(
       onPressed: () => _addFriend(user),
-      icon: const Icon(Icons.person_add, size: 18),
-      label: const Text('إضافة'),
+      icon: Icon(
+        Icons.person_add,
+        size: ResponsiveHelper.getResponsiveIconSize(context, 18),
+      ),
+      label: Text(
+        'إضافة',
+        style: TextStyle(
+          fontSize: ResponsiveHelper.getResponsiveFontSize(context, 12),
+        ),
+      ),
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.textPrimary,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        minimumSize: const Size(80, 32),
+        padding: EdgeInsets.symmetric(
+          horizontal: isSmall ? 8 : 12,
+          vertical: isSmall ? 4 : 6,
+        ),
+        minimumSize: Size(isSmall ? 70 : 80, isSmall ? 28 : 32),
       ),
     );
   }
 
   Widget _buildFriendActions(Map<String, dynamic> friend) {
+    final isSmall = ResponsiveHelper.isSmallScreen(context);
+    final iconSize = ResponsiveHelper.getResponsiveIconSize(context, 20);
+    final paddingSize = isSmall ? 6.0 : 8.0;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
           icon: Container(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(paddingSize),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: AppColors.cosmicButtonGradient,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.games,
               color: AppColors.textPrimary,
-              size: 20,
+              size: iconSize,
             ),
           ),
           onPressed: () => _inviteToGame(friend),
         ),
-        const SizedBox(width: AppDimensions.paddingSM),
+        SizedBox(width: isSmall ? 4 : AppDimensions.paddingSM),
         IconButton(
           icon: Container(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(paddingSize),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.error.withOpacity(0.2),
+              color: AppColors.error.withValues(alpha: 0.2),
               border: Border.all(color: AppColors.error),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.person_remove,
               color: AppColors.error,
-              size: 20,
+              size: iconSize,
             ),
           ),
           onPressed: () => _removeFriend(friend),
@@ -592,34 +720,42 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
   }
 
   Widget _buildRequestActions(Map<String, dynamic> user) {
+    final isSmall = ResponsiveHelper.isSmallScreen(context);
+    final iconSize = ResponsiveHelper.getResponsiveIconSize(context, 18);
+    final paddingSize = isSmall ? 6.0 : 8.0;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         ElevatedButton.icon(
           onPressed: () => _acceptRequest(user),
-          icon: const Icon(Icons.check, size: 18),
-          label: const Text('قبول'),
+          icon: Icon(Icons.check, size: iconSize),
+          label: Text(
+            'قبول',
+            style: TextStyle(
+              fontSize: ResponsiveHelper.getResponsiveFontSize(context, 12),
+            ),
+          ),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.success,
             foregroundColor: AppColors.textPrimary,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            minimumSize: const Size(80, 32),
+            padding: EdgeInsets.symmetric(
+              horizontal: isSmall ? 8 : 12,
+              vertical: isSmall ? 4 : 6,
+            ),
+            minimumSize: Size(isSmall ? 70 : 80, isSmall ? 28 : 32),
           ),
         ),
-        const SizedBox(width: AppDimensions.paddingSM),
+        SizedBox(width: isSmall ? 4 : AppDimensions.paddingSM),
         IconButton(
           icon: Container(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(paddingSize),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.error.withOpacity(0.2),
+              color: AppColors.error.withValues(alpha: 0.2),
               border: Border.all(color: AppColors.error),
             ),
-            child: const Icon(
-              Icons.close,
-              color: AppColors.error,
-              size: 20,
-            ),
+            child: Icon(Icons.close, color: AppColors.error, size: iconSize),
           ),
           onPressed: () => _rejectRequest(user),
         ),
@@ -628,33 +764,34 @@ class _StellarFriendsScreenState extends State<StellarFriendsScreen>
   }
 
   Widget _buildEmptyState(String title, String message, IconData icon) {
+    final isSmall = ResponsiveHelper.isSmallScreen(context);
+    final iconSize = ResponsiveHelper.getResponsiveIconSize(context, 48);
+
     return AppComponents.stellarCard(
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(isSmall ? 16 : 20),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.textTertiary.withOpacity(0.1),
+              color: AppColors.textTertiary.withValues(alpha: 0.1),
             ),
-            child: Icon(
-              icon,
-              size: 48,
-              color: AppColors.textTertiary,
-            ),
+            child: Icon(icon, size: iconSize, color: AppColors.textTertiary),
           ),
-          const SizedBox(height: AppDimensions.paddingLG),
+          SizedBox(height: isSmall ? 12 : AppDimensions.paddingLG),
           Text(
             title,
             style: AppTextStyles.headlineSmall.copyWith(
               color: AppColors.textSecondary,
+              fontSize: ResponsiveHelper.getResponsiveFontSize(context, 18),
             ),
           ),
-          const SizedBox(height: AppDimensions.paddingSM),
+          SizedBox(height: isSmall ? 8 : AppDimensions.paddingSM),
           Text(
             message,
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textTertiary,
+              fontSize: ResponsiveHelper.getResponsiveFontSize(context, 14),
             ),
             textAlign: TextAlign.center,
           ),
