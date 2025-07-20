@@ -1,375 +1,228 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-// import 'package:firebase_core/firebase_core.dart'; // معطل مؤقتاً للتشغيل على Windows
+import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:flutter/foundation.dart';
-import 'screens/responsive_home_screen.dart';
+import 'screens/modern_home_screen.dart';
+import 'screens/modern_auth_screen.dart';
+import 'design_system/modern_theme.dart';
+import 'services/unified_auth_services.dart';
 
 // ======================================================================
-// 🎮 TIC TAC TOE - UNIFIED MAIN FILE
-// تجميع جميع إصدارات main في ملف واحد منظم
+// 🚀 TIC TAC TOE - تطبيق حديث بالكامل
+// إعادة تصميم شاملة بأسلوب مجري
 // ======================================================================
 
-// App Configuration
-enum AppMode {
-  main, // التطبيق الرئيسي
-  simple, // نسخة مبسطة
-  admin, // لوحة الإدارة
-  debug, // وضع التطوير
-}
+void main() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-class AppConfig {
-  static AppMode currentMode = AppMode.main;
-  static bool isDebugMode = kDebugMode;
-
-  static void setMode(AppMode mode) {
-    currentMode = mode;
+  // تهيئة Firebase إذا لم يكن مهيأً مسبقاً
+  if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
   }
-}
 
-// ======================================================================
-// 🚀 MAIN ENTRY POINT
-// ======================================================================
+  // تهيئة خدمة المصادقة المحسنة
+  await FirebaseAuthService().initialize();
 
-void main([List<String>? args]) async {
-  WidgetsFlutterBinding.ensureInitialized();
+  // تعيين اتجاه الشاشة
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
-  // تحديد وضع التطبيق من المعاملات
-  _determineAppMode(args);
-
-  // تشغيل التطبيق المناسب
-  switch (AppConfig.currentMode) {
-    case AppMode.simple:
-      runApp(const SimpleTicTacToeApp());
-      break;
-    case AppMode.admin:
-      runApp(const AdminApp());
-      break;
-    case AppMode.debug:
-      runApp(const DebugApp());
-      break;
-    case AppMode.main:
-      runApp(const AdvancedTicTacToeApp());
-      break;
-  }
-}
-
-// تحديد وضع التطبيق
-void _determineAppMode(List<String>? args) {
-  const String appModeEnv = String.fromEnvironment(
-    'app_mode',
-    defaultValue: '',
+  // تعيين شريط الحالة
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.light,
+    ),
   );
 
-  if (appModeEnv.isNotEmpty) {
-    switch (appModeEnv.toLowerCase()) {
-      case 'simple':
-        AppConfig.setMode(AppMode.simple);
-        break;
-      case 'admin':
-        AppConfig.setMode(AppMode.admin);
-        break;
-      case 'debug':
-        AppConfig.setMode(AppMode.debug);
-        break;
-      default:
-        AppConfig.setMode(AppMode.main);
-    }
-  } else if (args != null && args.isNotEmpty) {
-    switch (args[0].toLowerCase()) {
-      case 'simple':
-        AppConfig.setMode(AppMode.simple);
-        break;
-      case 'admin':
-        AppConfig.setMode(AppMode.admin);
-        break;
-      case 'debug':
-        AppConfig.setMode(AppMode.debug);
-        break;
-      default:
-        AppConfig.setMode(AppMode.main);
-    }
-  }
+  runApp(const ModernTicTacToeApp());
 }
 
-// ======================================================================
-// 🎮 ADVANCED TIC TAC TOE APP (النسخة المتطورة)
-// ======================================================================
-
-class AdvancedTicTacToeApp extends StatelessWidget {
-  const AdvancedTicTacToeApp({super.key});
+/// التطبيق الرئيسي بالتصميم الحديث
+class ModernTicTacToeApp extends StatelessWidget {
+  const ModernTicTacToeApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '🎮 Tic Tac Toe - Advanced',
-      theme: _getAdvancedTheme(),
+      title: 'Tic Tac Toe - Modern',
       debugShowCheckedModeBanner: false,
-      home: const ResponsiveHomeScreen(),
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      // إعدادات دعم اللغة العربية
-      supportedLocales: const [
-        Locale('ar', 'SA'), // العربية
-        Locale('en', 'US'), // الإنجليزية
-      ],
-      locale: const Locale('ar', 'SA'),
-    );
-  }
 
-  ThemeData _getAdvancedTheme() {
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.deepPurple,
-        brightness: Brightness.dark,
-      ),
-      fontFamily: 'Roboto',
-      appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
+      // التصميم الحديث
+      theme: ModernThemeManager.lightTheme,
+
+      // الشاشة الرئيسية
+      home: const AppRouter(),
+
+      // دعم الاتجاه من اليمين لليسار للعربية
+      builder: (context, child) {
+        return Directionality(textDirection: TextDirection.rtl, child: child!);
+      },
+
+      // المسارات
+      routes: {
+        '/home': (context) => const ModernHomeScreen(),
+        '/auth': (context) => const ModernAuthScreen(),
+      },
     );
   }
 }
 
-// ======================================================================
-// 🔧 SIMPLE TIC TAC TOE APP (النسخة المبسطة)
-// ======================================================================
-
-class SimpleTicTacToeApp extends StatelessWidget {
-  const SimpleTicTacToeApp({super.key});
+/// موجه التطبيق - يحدد الشاشة المناسبة بناءً على حالة المصادقة
+class AppRouter extends StatefulWidget {
+  const AppRouter({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Tic Tac Toe - Simple',
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
-      debugShowCheckedModeBanner: false,
-      home: const SimpleGameScreen(),
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [Locale('ar', 'SA'), Locale('en', 'US')],
-      locale: const Locale('ar', 'SA'),
-    );
-  }
+  State<AppRouter> createState() => _AppRouterState();
 }
 
-class SimpleGameScreen extends StatefulWidget {
-  const SimpleGameScreen({super.key});
+class _AppRouterState extends State<AppRouter> {
+  final FirebaseAuthService _authService = FirebaseAuthService();
+  bool _isLoading = true;
+  bool _isAuthenticated = false;
 
   @override
-  State<SimpleGameScreen> createState() => _SimpleGameScreenState();
-}
+  void initState() {
+    super.initState();
+    _checkAuthState();
+  }
 
-class _SimpleGameScreenState extends State<SimpleGameScreen> {
-  List<String> board = List.filled(9, '');
-  bool isXTurn = true;
-  String winner = '';
+  Future<void> _checkAuthState() async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 1500)); // شاشة splash
 
-  void _makeMove(int index) {
-    if (board[index].isEmpty && winner.isEmpty) {
+      final user = await _authService.getCurrentUser();
       setState(() {
-        board[index] = isXTurn ? 'X' : 'O';
-        isXTurn = !isXTurn;
-        winner = _checkWinner();
+        _isAuthenticated = user != null && !user.isGuest;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isAuthenticated = false;
+        _isLoading = false;
       });
     }
   }
 
-  String _checkWinner() {
-    // فحص الصفوف
-    for (int i = 0; i < 9; i += 3) {
-      if (board[i].isNotEmpty &&
-          board[i] == board[i + 1] &&
-          board[i] == board[i + 2]) {
-        return board[i];
-      }
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const ModernSplashScreen();
     }
 
-    // فحص الأعمدة
-    for (int i = 0; i < 3; i++) {
-      if (board[i].isNotEmpty &&
-          board[i] == board[i + 3] &&
-          board[i] == board[i + 6]) {
-        return board[i];
-      }
-    }
-
-    // فحص الأقطار
-    if (board[0].isNotEmpty && board[0] == board[4] && board[0] == board[8]) {
-      return board[0];
-    }
-    if (board[2].isNotEmpty && board[2] == board[4] && board[2] == board[6]) {
-      return board[2];
-    }
-
-    // فحص التعادل
-    if (!board.contains('')) {
-      return 'Tie';
-    }
-
-    return '';
+    // دائماً عرض الشاشة الرئيسية - سيتم التعامل مع المصادقة بداخلها
+    return const ModernHomeScreen();
   }
+}
 
-  void _resetGame() {
-    setState(() {
-      board = List.filled(9, '');
-      isXTurn = true;
-      winner = '';
-    });
-  }
+/// شاشة البداية الحديثة
+class ModernSplashScreen extends StatelessWidget {
+  const ModernSplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('🎮 Tic Tac Toe - Simple'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-      ),
-      body: Column(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: ModernDesignSystem.primaryGradient,
+        ),
+        child: Center(
+          child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // حالة اللعبة
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Text(
-              winner.isEmpty
-                  ? 'دور اللاعب ${isXTurn ? 'X' : 'O'}'
-                  : winner == 'Tie'
-                  ? 'تعادل!'
-                  : 'اللاعب $winner فاز!',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-          ),
-
-          // لوحة اللعب
-          Container(
-            margin: const EdgeInsets.all(20),
-            child: GridView.builder(
-              shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 4,
-                mainAxisSpacing: 4,
-              ),
-              itemCount: 9,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () => _makeMove(index),
+              // شعار التطبيق مع تحريكة
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.0, end: 1.0),
+                duration: const Duration(milliseconds: 1500),
+                curve: Curves.elasticOut,
+                builder: (context, value, child) {
+                  return Transform.scale(
+                    scale: value,
                   child: Container(
+                      width: 120,
+                      height: 120,
                     decoration: BoxDecoration(
-                      color: Colors.blue[100],
-                      border: Border.all(color: Colors.blue, width: 2),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        board[index],
-                        style: TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          color: board[index] == 'X'
-                              ? Colors.red
-                              : Colors.green,
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(ModernRadius.xxl),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.3),
+                          width: 2,
                         ),
+                        boxShadow: ModernDesignSystem.largeShadow,
                       ),
+                      child: const Icon(
+                        Icons.games,
+                        size: 60,
+                        color: Colors.white,
                     ),
                   ),
                 );
               },
             ),
-          ),
 
-          // زر إعادة التشغيل
-          ElevatedButton(
-            onPressed: _resetGame,
-            child: const Text('لعبة جديدة'),
+              const SizedBox(height: ModernSpacing.xxl),
+
+              // عنوان التطبيق
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.0, end: 1.0),
+                duration: const Duration(milliseconds: 2000),
+                builder: (context, value, child) {
+                  return Opacity(
+                    opacity: value,
+                    child: Column(
+                      children: [
+                        Text(
+                          'X O لعبة',
+                          style: ModernTextStyles.displayLarge.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 40,
+                          ),
+                        ),
+                        const SizedBox(height: ModernSpacing.sm),
+                        Text(
+                          'تصميم حديث ومجري',
+                          style: ModernTextStyles.bodyLarge.copyWith(
+                            color: Colors.white.withOpacity(0.8),
+                          ),
           ),
         ],
       ),
     );
-  }
-}
+                },
+              ),
 
-// ======================================================================
-// 🔧 ADMIN APP (تطبيق الإدارة)
-// ======================================================================
+              const SizedBox(height: ModernSpacing.xxxl),
 
-class AdminApp extends StatelessWidget {
-  const AdminApp({super.key});
+              // مؤشر التحميل
+              SizedBox(
+                width: 40,
+                height: 40,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Colors.white.withOpacity(0.8),
+                  ),
+                ),
+              ),
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Admin Panel',
-      theme: ThemeData(primarySwatch: Colors.red, brightness: Brightness.dark),
-      debugShowCheckedModeBanner: false,
-      home: const AdminHomeScreen(),
-    );
-  }
-}
+              const SizedBox(height: ModernSpacing.lg),
 
-class AdminHomeScreen extends StatelessWidget {
-  const AdminHomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('🔧 لوحة الإدارة')),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.admin_panel_settings, size: 64),
-            SizedBox(height: 16),
-            Text('لوحة إدارة Tic Tac Toe', style: TextStyle(fontSize: 24)),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ======================================================================
-// 🔍 DEBUG APP (تطبيق التطوير)
-// ======================================================================
-
-class DebugApp extends StatelessWidget {
-  const DebugApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Debug Mode',
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-        brightness: Brightness.dark,
-      ),
-      debugShowCheckedModeBanner: true,
-      home: const DebugHomeScreen(),
-    );
-  }
-}
-
-class DebugHomeScreen extends StatelessWidget {
-  const DebugHomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('🔍 وضع التطوير')),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.bug_report, size: 64),
-            SizedBox(height: 16),
-            Text('وضع تطوير وتصحيح الأخطاء', style: TextStyle(fontSize: 24)),
-          ],
+              Text(
+                'جاري التحضير...',
+                style: ModernTextStyles.bodyMedium.copyWith(
+                  color: Colors.white.withOpacity(0.7),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

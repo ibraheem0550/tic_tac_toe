@@ -5,20 +5,64 @@ class AudioHelper {
   static final AudioPlayer _player = AudioPlayer();
   static bool _initialized = false;
   static bool _soundEnabled = true;
+  static bool _isPreloading = false;
 
   static Future<void> initializeAudio() async {
-    if (!_initialized) {
-      if (kIsWeb) {
-        // Pre-load sounds for web by creating source objects
-        await Future.wait([
-          _player.setSource(AssetSource('sounds/click.mp3')),
-          _player.setSource(AssetSource('sounds/win.mp3')),
-          _player.setSource(AssetSource('sounds/lose.mp3')),
-          _player.setSource(AssetSource('sounds/draw.mp3')),
-        ]);
-      }
+    if (_initialized) return;
+
+    try {
       _initialized = true;
+
+      if (!kIsWeb) {
+        // تحميل سريع للموبايل/ديسكتوب - بدون انتظار
+        _preloadSoundsAsync();
+      } else {
+        // تحميل مبسط للويب
+        _preloadWebSounds();
+      }
+
+      debugPrint('✅ Audio system initialized');
+    } catch (e) {
+      debugPrint('⚠️ Audio initialization warning: $e');
+      // نستمر بدون الصوت
     }
+  }
+
+  // تحميل الأصوات في الخلفية للموبايل/ديسكتوب
+  static void _preloadSoundsAsync() {
+    if (_isPreloading) return;
+    _isPreloading = true;
+
+    // تحميل في الخلفية بدون await
+    Future.microtask(() async {
+      try {
+        const sounds = ['click.mp3', 'win.mp3', 'lose.mp3', 'draw.mp3'];
+        for (final sound in sounds) {
+          await _player.setSource(AssetSource('sounds/$sound'));
+          await Future.delayed(
+            const Duration(milliseconds: 50),
+          ); // استراحة صغيرة
+        }
+        debugPrint('✅ Audio preload completed');
+      } catch (e) {
+        debugPrint('⚠️ Audio preload warning: $e');
+      } finally {
+        _isPreloading = false;
+      }
+    });
+  }
+
+  // تحميل مبسط للويب
+  static void _preloadWebSounds() {
+    // تحميل واحد فقط للاختبار السريع
+    Future.microtask(() async {
+      try {
+        await _player.setSource(AssetSource('sounds/click.mp3'));
+        debugPrint('✅ Web audio ready');
+      } catch (e) {
+        debugPrint('⚠️ Web audio warning: $e');
+      }
+    });
   }
 
   static void setSoundEnabled(bool enabled) {
@@ -31,21 +75,28 @@ class AudioHelper {
     if (!_soundEnabled) return;
 
     try {
+      // تهيئة سريعة إذا لم تتم
       if (!_initialized) {
         await initializeAudio();
       }
 
-      // Stop any currently playing sound
-      await _player.stop();
+      // إيقاف الصوت السابق بسرعة
+      unawaited(_player.stop());
 
-      // Use source with full path for web
-      final source =
-          kIsWeb ? AssetSource('sounds/$soundPath') : AssetSource(soundPath);
-
-      await _player.play(source);
+      // تشغيل الصوت الجديد
+      final source = AssetSource('sounds/$soundPath');
+      unawaited(_player.play(source));
     } catch (e) {
-      debugPrint('Error playing sound: $e');
+      debugPrint('⚠️ Sound play warning: $e');
+      // نستمر بدون الصوت
     }
+  }
+
+  // دالة مساعدة للعمليات غير المنتظرة
+  static void unawaited(Future<void> future) {
+    future.catchError((e) {
+      debugPrint('⚠️ Unawaited operation warning: $e');
+    });
   }
 
   static Future<void> playClickSound() async {
@@ -67,6 +118,10 @@ class AudioHelper {
   }
 
   static void dispose() {
-    _player.dispose();
+    try {
+      _player.dispose();
+    } catch (e) {
+      debugPrint('⚠️ Audio dispose warning: $e');
+    }
   }
 }

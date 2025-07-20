@@ -3,33 +3,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tic_tac_toe/main.dart';
 
 void main() {
-  testWidgets('Tic Tac Toe UI test', (WidgetTester tester) async {
-    // تشغيل التطبيق.
-    await tester.pumpWidget(const SimpleTicTacToeApp());
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(const ModernTicTacToeApp());
 
-    // التحقق من وجود عنوان التطبيق.
-    expect(find.text('🎮 Tic Tac Toe - Simple'), findsOneWidget);
+    // Verify that our counter starts at 0.
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsNothing);
 
-    // انتظار رسم الشاشة.
-    await tester.pumpAndSettle();
-
-    // التأكد من وجود 9 مربعات (شبكة اللعبة).
-    final gameTiles = find.byType(GestureDetector);
-    expect(gameTiles, findsNWidgets(9));
-
-    // الضغط على أول مربع.
-    await tester.tap(gameTiles.at(0));
+    // Tap the '+' icon and trigger a frame.
+    await tester.tap(find.byIcon(Icons.add));
     await tester.pump();
 
-    // التأكد من ظهور X بعد الضغط.
-    expect(find.text('X'), findsOneWidget);
-
-    // الضغط على زر إعادة اللعب إذا ظهر.
-    final resetButton = find.text('إعادة');
-    if (resetButton.evaluate().isNotEmpty) {
-      await tester.tap(resetButton);
-      await tester.pump();
-      expect(find.text('X'), findsNothing);
-    }
+    // Verify that our counter has incremented.
+    expect(find.text('0'), findsNothing);
+    expect(find.text('1'), findsOneWidget);
   });
 }

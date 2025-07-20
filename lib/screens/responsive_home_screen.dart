@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../utils/app_theme_new.dart';
+import '../themes/stellar_theme.dart';
 import '../services/unified_auth_services.dart';
 import 'game_screen.dart';
 import 'auth_screen.dart';
 import 'stellar_friends_screen_simple.dart';
+import '../AI/ai_level_selection.dart';
+import 'stellar_statistics_screen.dart';
+import 'stellar_gems_store_screen.dart';
+import 'stellar_settings_screen.dart';
 
 // Helper للتجاوب مع الشاشات المختلفة
 class ResponsiveHelper {
@@ -143,7 +148,9 @@ class _ResponsiveHomeScreenState extends State<ResponsiveHomeScreen>
       elevation: 0,
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(gradient: AppColors.nebularGradient),
+          decoration: const BoxDecoration(
+            gradient: StellarTheme.cosmicGradient,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -279,21 +286,21 @@ class _ResponsiveHomeScreenState extends State<ResponsiveHomeScreen>
         'title': 'لعبة سريعة',
         'subtitle': 'ابدأ مباراة فورية',
         'icon': Icons.flash_on,
-        'gradient': AppColors.stellarGradient,
+        'gradient': StellarTheme.cosmicGradient,
         'onTap': () => _startQuickGame(),
       },
       {
         'title': 'ضد الذكي الاصطناعي',
         'subtitle': 'تحدى الكمبيوتر',
         'icon': Icons.smart_toy,
-        'gradient': AppColors.stellarGradient,
+        'gradient': StellarTheme.cosmicGradient,
         'onTap': () => _startAIGame(),
       },
       {
         'title': 'اللعب مع الأصدقاء',
         'subtitle': 'ادع أصدقائك للعب',
         'icon': Icons.people,
-        'gradient': AppColors.nebularGradient,
+        'gradient': StellarTheme.cosmicGradient,
         'onTap': () => _openFriendsScreen(),
       },
     ];
@@ -446,12 +453,9 @@ class _ResponsiveHomeScreenState extends State<ResponsiveHomeScreen>
   }
 
   void _startAIGame() {
-    // تنفيذ لعبة ضد الذكي الاصطناعي
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('ميزة اللعب ضد الذكي الاصطناعي قريباً'),
-        backgroundColor: AppColors.info,
-      ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const AILevelSelectionScreen()),
     );
   }
 
@@ -464,29 +468,23 @@ class _ResponsiveHomeScreenState extends State<ResponsiveHomeScreen>
   }
 
   void _openStatistics() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('شاشة الإحصائيات قريباً'),
-        backgroundColor: AppColors.info,
-      ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const StellarStatisticsScreen()),
     );
   }
 
   void _openStore() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('المتجر قريباً'),
-        backgroundColor: AppColors.info,
-      ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const StellarGemsStoreScreen()),
     );
   }
 
   void _openSettings() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('الإعدادات قريباً'),
-        backgroundColor: AppColors.info,
-      ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const StellarSettingsScreen()),
     );
   }
 }

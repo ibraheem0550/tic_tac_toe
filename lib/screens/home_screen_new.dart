@@ -25,16 +25,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _authService.addAuthListener(_onUserDataChanged);
+    _authService.addAuthListener(_onAuthStateChanged);
   }
 
   @override
   void dispose() {
-    _authService.removeAuthListener(_onUserDataChanged);
+    _authService.removeAuthListener(_onAuthStateChanged);
     super.dispose();
   }
 
-  void _onUserDataChanged(User? user) {
+  void _onAuthStateChanged() {
     if (mounted) {
       setState(() {});
     }

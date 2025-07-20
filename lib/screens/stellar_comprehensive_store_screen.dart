@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../services/unified_auth_services.dart';
 import '../models/gems_models.dart';
+import '../models/store_models.dart';
+import '../services/unified_auth_services.dart';
 import '../utils/app_theme_new.dart';
 
 class StellarComprehensiveStoreScreen extends StatefulWidget {
@@ -21,12 +22,16 @@ class _StellarComprehensiveStoreScreenState
   late AnimationController _sparkleController;
   late Animation<double> _fadeAnimation;
 
-  UserGems? _userGems;
-  bool _isLoading = false;
-  String _selectedCategory = 'gems'; // gems, themes, sounds, boosts, offers
-
-  // البيانات
+  // بيانات المتجر
   List<GemsPackage> _gemsPackages = [];
+  List<StoreTheme> _availableThemes = [];
+  List<StoreSoundPack> _availableSounds = [];
+  List<StoreBoost> _availableBoosts = [];
+  List<StoreOffer> _availableOffers = [];
+
+  UserGems? _userGems;
+  bool _isLoading = true;
+  String _selectedCategory = 'gems'; // gems, themes, sounds, boosts, offers
 
   final List<Map<String, dynamic>> _categories = [
     {
@@ -140,7 +145,7 @@ class _StellarComprehensiveStoreScreenState
   }
 
   Future<void> _loadGemsPackages() async {
-    // Temporary mock data
+    // Temporary mock data for gems
     _gemsPackages = [
       GemsPackage(
         id: 'starter_gems',
@@ -163,6 +168,764 @@ class _StellarComprehensiveStoreScreenState
         isPopular: true,
       ),
     ];
+
+    // Mock data for themes
+    _availableThemes = [
+      StoreTheme(
+        id: 'dark_theme',
+        name: 'الثيم المظلم',
+        description: 'ثيم أنيق بألوان داكنة',
+        price: 50,
+        colorScheme: {
+          'primary': '0xFF1F2937',
+          'secondary': '0xFF374151',
+          'background': '0xFF111827',
+        },
+        isUnlocked: false,
+      ),
+      StoreTheme(
+        id: 'gold_theme',
+        name: 'الثيم الذهبي',
+        description: 'ثيم فاخر بألوان ذهبية',
+        price: 100,
+        colorScheme: {
+          'primary': '0xFFFFD700',
+          'secondary': '0xFFFFA500',
+          'background': '0xFFFFF8DC',
+        },
+        isPremium: true,
+        isUnlocked: false,
+      ),
+      StoreTheme(
+        id: 'neon_theme',
+        name: 'ثيم النيون',
+        description: 'ثيم مشرق بألوان النيون',
+        price: 75,
+        colorScheme: {
+          'primary': '0xFF00FF87',
+          'secondary': '0xFF00D9FF',
+          'background': '0xFF0D1117',
+        },
+        isUnlocked: false,
+      ),
+    ];
+
+    // Mock data for sound packs
+    _availableSounds = [
+      StoreSoundPack(
+        id: 'classic_sounds',
+        name: 'الأصوات الكلاسيكية',
+        description: 'أصوات تقليدية ومألوفة',
+        price: 30,
+        soundFiles: ['click.mp3', 'win.mp3', 'lose.mp3'],
+        isUnlocked: true,
+      ),
+      StoreSoundPack(
+        id: 'space_sounds',
+        name: 'أصوات الفضاء',
+        description: 'أصوات فضائية مستقبلية',
+        price: 50,
+        soundFiles: ['space_click.mp3', 'victory.mp3', 'defeat.mp3'],
+        isPremium: true,
+        isUnlocked: false,
+      ),
+      StoreSoundPack(
+        id: 'nature_sounds',
+        name: 'أصوات الطبيعة',
+        description: 'أصوات الطبيعة المهدئة',
+        price: 40,
+        soundFiles: ['water_drop.mp3', 'bird_song.mp3', 'wind.mp3'],
+        isUnlocked: false,
+      ),
+    ];
+
+    // Mock data for boosts
+    _availableBoosts = [
+      StoreBoost(
+        id: 'xp_boost',
+        name: 'مضاعف الخبرة',
+        description: 'احصل على ضعف نقاط الخبرة',
+        price: 25,
+        duration: 24,
+        multiplier: 2.0,
+        type: 'xp',
+      ),
+      StoreBoost(
+        id: 'gem_boost',
+        name: 'مضاعف الجواهر',
+        description: 'احصل على جواهر إضافية من الانتصارات',
+        price: 40,
+        duration: 12,
+        multiplier: 1.5,
+        type: 'gems',
+      ),
+      StoreBoost(
+        id: 'coin_boost',
+        name: 'مضاعف العملات',
+        description: 'احصل على عملات إضافية',
+        price: 20,
+        duration: 48,
+        multiplier: 3.0,
+        type: 'coins',
+      ),
+    ];
+
+    // Mock data for special offers
+    _availableOffers = [
+      StoreOffer(
+        id: 'weekend_special',
+        name: 'عرض نهاية الأسبوع',
+        description: 'خصم خاص على جميع حزم الجواهر',
+        originalPrice: 100,
+        discountedPrice: 70,
+        discountPercentage: 30.0,
+        validUntil: DateTime.now().add(Duration(days: 2)),
+        category: 'gems',
+      ),
+      StoreOffer(
+        id: 'theme_bundle',
+        name: 'حزمة الثيمات الكاملة',
+        description: 'احصل على جميع الثيمات بسعر مخفض',
+        originalPrice: 300,
+        discountedPrice: 200,
+        discountPercentage: 33.3,
+        validUntil: DateTime.now().add(Duration(days: 7)),
+        category: 'themes',
+      ),
+      StoreOffer(
+        id: 'starter_pack',
+        name: 'حزمة المبتدئين',
+        description: 'كل ما تحتاجه للبداية بسعر رائع',
+        originalPrice: 150,
+        discountedPrice: 99,
+        discountPercentage: 34.0,
+        validUntil: DateTime.now().add(Duration(days: 30)),
+        category: 'bundle',
+      ),
+    ];
+  }
+
+  // دوال بناء الكروت
+  Widget _buildThemeCard(StoreTheme theme) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
+        gradient: LinearGradient(
+          colors: [
+            Color(
+              int.parse(theme.colorScheme['primary'].replaceFirst('#', '0xFF')),
+            ),
+            Color(
+              int.parse(
+                theme.colorScheme['secondary'].replaceFirst('#', '0xFF'),
+              ),
+            ),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header with premium badge
+          Padding(
+            padding: const EdgeInsets.all(AppDimensions.paddingMD),
+            child: Row(
+              children: [
+                if (theme.isPremium)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.accent,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'مميز',
+                      style: AppTextStyles.labelSmall.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                const Spacer(),
+                Icon(
+                  theme.isUnlocked ? Icons.check_circle : Icons.lock,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ],
+            ),
+          ),
+
+          // Theme preview
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.symmetric(
+                horizontal: AppDimensions.paddingMD,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.palette, color: Colors.white, size: 40),
+            ),
+          ),
+
+          // Theme info
+          Padding(
+            padding: const EdgeInsets.all(AppDimensions.paddingMD),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  theme.name,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  theme.description,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: Colors.white.withOpacity(0.8),
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.diamond, color: AppColors.accent, size: 16),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${theme.price}',
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    ElevatedButton(
+                      onPressed: theme.isUnlocked
+                          ? null
+                          : () => _purchaseTheme(theme),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.isUnlocked
+                            ? Colors.grey
+                            : AppColors.accent,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                      ),
+                      child: Text(
+                        theme.isUnlocked ? 'مملوك' : 'شراء',
+                        style: AppTextStyles.labelSmall,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSoundPackCard(StoreSoundPack soundPack) {
+    return Container(
+      padding: const EdgeInsets.all(AppDimensions.paddingMD),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceSecondary,
+        borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
+        border: Border.all(color: AppColors.borderPrimary),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.music_note,
+                  color: AppColors.primary,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      soundPack.name,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      '${soundPack.soundFiles.length} أصوات',
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (soundPack.isPremium)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.accent,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'مميز',
+                    style: AppTextStyles.labelSmall.copyWith(
+                      color: Colors.white,
+                      fontSize: 10,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            soundPack.description,
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const Spacer(),
+          Row(
+            children: [
+              IconButton(
+                onPressed: () => _previewSound(soundPack),
+                icon: const Icon(Icons.play_arrow),
+                color: AppColors.primary,
+                tooltip: 'تجربة الصوت',
+              ),
+              const Spacer(),
+              Icon(Icons.diamond, color: AppColors.accent, size: 16),
+              const SizedBox(width: 4),
+              Text(
+                '${soundPack.price}',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: soundPack.isUnlocked
+                    ? null
+                    : () => _purchaseSoundPack(soundPack),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: soundPack.isUnlocked
+                      ? Colors.grey
+                      : AppColors.primary,
+                ),
+                child: Text(
+                  soundPack.isUnlocked ? 'مملوك' : 'شراء',
+                  style: AppTextStyles.labelSmall,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBoostCard(StoreBoost boost) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppDimensions.paddingMD),
+      padding: const EdgeInsets.all(AppDimensions.paddingMD),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceSecondary,
+        borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
+        border: Border.all(color: AppColors.borderPrimary),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppColors.primary, AppColors.accent],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              _getBoostIcon(boost.type),
+              color: Colors.white,
+              size: 28,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      boost.name,
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.accent.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        '×${boost.multiplier}',
+                        style: AppTextStyles.labelSmall.copyWith(
+                          color: AppColors.accent,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  boost.description,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.schedule,
+                      color: AppColors.textSecondary,
+                      size: 16,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${boost.duration} ساعة',
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Icon(Icons.diamond, color: AppColors.accent, size: 16),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${boost.price}',
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => _purchaseBoost(boost),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            ),
+            child: Text(
+              'تفعيل',
+              style: AppTextStyles.labelMedium.copyWith(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOfferCard(StoreOffer offer) {
+    final timeLeft = offer.validUntil.difference(DateTime.now());
+    final isExpired = timeLeft.isNegative;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppDimensions.paddingMD),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppDimensions.radiusLG),
+        gradient: LinearGradient(
+          colors: [
+            AppColors.accent.withOpacity(0.8),
+            AppColors.primary.withOpacity(0.8),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Stack(
+        children: [
+          // Discount badge
+          Positioned(
+            top: 16,
+            left: 16,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                '-${offer.discountPercentage.round()}%',
+                style: AppTextStyles.labelMedium.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(AppDimensions.paddingLG),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20),
+                Text(
+                  offer.name,
+                  style: AppTextStyles.headlineMedium.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  offer.description,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: Colors.white.withOpacity(0.9),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Price section
+                Row(
+                  children: [
+                    Text(
+                      '${offer.originalPrice}',
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        color: Colors.white.withOpacity(0.7),
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Icon(Icons.diamond, color: AppColors.starGold, size: 20),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${offer.discountedPrice}',
+                      style: AppTextStyles.headlineSmall.copyWith(
+                        color: AppColors.starGold,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    if (!isExpired)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.schedule, color: Colors.white, size: 16),
+                            const SizedBox(width: 4),
+                            Text(
+                              _formatTimeLeft(timeLeft),
+                              style: AppTextStyles.labelSmall.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: isExpired ? null : () => _purchaseOffer(offer),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isExpired ? Colors.grey : Colors.white,
+                      foregroundColor: isExpired
+                          ? Colors.white
+                          : AppColors.primary,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: Text(
+                      isExpired ? 'انتهى العرض' : 'شراء العرض',
+                      style: AppTextStyles.labelLarge.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // دوال مساعدة
+  IconData _getBoostIcon(String type) {
+    switch (type) {
+      case 'xp':
+        return Icons.trending_up;
+      case 'gems':
+        return Icons.diamond;
+      case 'luck':
+        return Icons.auto_awesome;
+      default:
+        return Icons.flash_on;
+    }
+  }
+
+  String _formatTimeLeft(Duration timeLeft) {
+    if (timeLeft.inDays > 0) {
+      return '${timeLeft.inDays}د ${timeLeft.inHours % 24}س';
+    } else if (timeLeft.inHours > 0) {
+      return '${timeLeft.inHours}س ${timeLeft.inMinutes % 60}د';
+    } else {
+      return '${timeLeft.inMinutes}د';
+    }
+  }
+
+  // دوال الشراء
+  void _purchaseTheme(StoreTheme theme) {
+    // تطبيق شراء الثيم
+    _showPurchaseDialog('ثيم', theme.name, theme.price);
+  }
+
+  void _purchaseSoundPack(StoreSoundPack soundPack) {
+    // تطبيق شراء حزمة الأصوات
+    _showPurchaseDialog('حزمة أصوات', soundPack.name, soundPack.price);
+  }
+
+  void _purchaseBoost(StoreBoost boost) {
+    // تطبيق شراء التحسين
+    _showPurchaseDialog('تحسين', boost.name, boost.price);
+  }
+
+  void _purchaseOffer(StoreOffer offer) {
+    // تطبيق شراء العرض
+    _showPurchaseDialog('عرض خاص', offer.name, offer.discountedPrice);
+  }
+
+  void _previewSound(StoreSoundPack soundPack) {
+    // تشغيل معاينة الصوت
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('تشغيل معاينة: ${soundPack.name}'),
+        duration: const Duration(seconds: 1),
+      ),
+    );
+  }
+
+  void _showPurchaseDialog(String type, String name, int price) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('تأكيد الشراء'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('هل تريد شراء $type التالي؟'),
+              const SizedBox(height: 8),
+              Text(
+                name,
+                style: AppTextStyles.bodyLarge.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(Icons.diamond, color: AppColors.accent, size: 16),
+                  const SizedBox(width: 4),
+                  Text(
+                    '$price جوهرة',
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('إلغاء'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _processPurchase(type, name, price);
+              },
+              child: const Text('شراء'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _processPurchase(String type, String name, int price) {
+    // معالجة الشراء
+    if (_userGems != null && _userGems!.currentGems >= price) {
+      setState(() {
+        _userGems = _userGems!.copyWith(
+          currentGems: _userGems!.currentGems - price,
+          totalSpent: _userGems!.totalSpent + price,
+          lastUpdated: DateTime.now(),
+        );
+      });
+
+      _showSuccessMessage('تم شراء $name بنجاح!');
+    } else {
+      _showErrorMessage('لا تملك جواهر كافية لهذا الشراء');
+    }
   }
 
   @override
@@ -518,38 +1281,58 @@ class _StellarComprehensiveStoreScreenState
   }
 
   Widget _buildThemesContent() {
-    return const Center(
-      child: Text(
-        'الثيمات قريباً...',
-        style: TextStyle(color: AppColors.textSecondary),
+    return GridView.builder(
+      padding: const EdgeInsets.all(AppDimensions.paddingMD),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: AppDimensions.paddingMD,
+        mainAxisSpacing: AppDimensions.paddingMD,
+        childAspectRatio: 0.8,
       ),
+      itemCount: _availableThemes.length,
+      itemBuilder: (context, index) {
+        final theme = _availableThemes[index];
+        return _buildThemeCard(theme);
+      },
     );
   }
 
   Widget _buildSoundsContent() {
-    return const Center(
-      child: Text(
-        'الأصوات قريباً...',
-        style: TextStyle(color: AppColors.textSecondary),
+    return GridView.builder(
+      padding: const EdgeInsets.all(AppDimensions.paddingMD),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: AppDimensions.paddingMD,
+        mainAxisSpacing: AppDimensions.paddingMD,
+        childAspectRatio: 1.2,
       ),
+      itemCount: _availableSounds.length,
+      itemBuilder: (context, index) {
+        final soundPack = _availableSounds[index];
+        return _buildSoundPackCard(soundPack);
+      },
     );
   }
 
   Widget _buildBoostsContent() {
-    return const Center(
-      child: Text(
-        'التحسينات قريباً...',
-        style: TextStyle(color: AppColors.textSecondary),
-      ),
+    return ListView.builder(
+      padding: const EdgeInsets.all(AppDimensions.paddingMD),
+      itemCount: _availableBoosts.length,
+      itemBuilder: (context, index) {
+        final boost = _availableBoosts[index];
+        return _buildBoostCard(boost);
+      },
     );
   }
 
   Widget _buildOffersContent() {
-    return const Center(
-      child: Text(
-        'العروض قريباً...',
-        style: TextStyle(color: AppColors.textSecondary),
-      ),
+    return ListView.builder(
+      padding: const EdgeInsets.all(AppDimensions.paddingMD),
+      itemCount: _availableOffers.length,
+      itemBuilder: (context, index) {
+        final offer = _availableOffers[index];
+        return _buildOfferCard(offer);
+      },
     );
   }
 
@@ -646,7 +1429,7 @@ class _StellarComprehensiveStoreScreenState
 
   void _showErrorMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.errorPrimary),
+      SnackBar(content: Text(message), backgroundColor: AppColors.error),
     );
   }
 }

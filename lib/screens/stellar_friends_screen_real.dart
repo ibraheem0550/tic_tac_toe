@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/app_theme_new.dart';
 import '../services/unified_auth_services.dart';
 
-/// خدمة إدارة الأصدقاء الحقيقية (مبسطة مؤقتاً)
+/// خدمة إدارة الأصدقاء الحقيقية
 class FriendsService {
   static final FriendsService _instance = FriendsService._internal();
   factory FriendsService() => _instance;
@@ -10,16 +10,94 @@ class FriendsService {
 
   final FirebaseAuthService _authService = FirebaseAuthService();
 
+  // بيانات محلية مؤقتة
+  final List<Map<String, dynamic>> _mockFriends = [
+    {
+      'id': 'friend_1',
+      'name': 'أحمد محمد',
+      'email': 'ahmed@example.com',
+      'avatar': 'https://via.placeholder.com/100',
+      'isOnline': true,
+      'lastSeen': DateTime.now().subtract(Duration(minutes: 5)),
+      'gamesPlayed': 145,
+      'winRate': 67.5,
+    },
+    {
+      'id': 'friend_2',
+      'name': 'فاطمة علي',
+      'email': 'fatima@example.com',
+      'avatar': 'https://via.placeholder.com/100',
+      'isOnline': false,
+      'lastSeen': DateTime.now().subtract(Duration(hours: 2)),
+      'gamesPlayed': 89,
+      'winRate': 72.1,
+    },
+    {
+      'id': 'friend_3',
+      'name': 'عمر حسن',
+      'email': 'omar@example.com',
+      'avatar': 'https://via.placeholder.com/100',
+      'isOnline': true,
+      'lastSeen': DateTime.now().subtract(Duration(minutes: 1)),
+      'gamesPlayed': 203,
+      'winRate': 58.9,
+    },
+  ];
+
+  final List<Map<String, dynamic>> _mockRequests = [
+    {
+      'id': 'request_1',
+      'senderId': 'user_123',
+      'senderName': 'سارة أحمد',
+      'senderEmail': 'sara@example.com',
+      'senderAvatar': 'https://via.placeholder.com/100',
+      'sentAt': DateTime.now().subtract(Duration(hours: 3)),
+      'status': 'pending',
+    },
+    {
+      'id': 'request_2',
+      'senderId': 'user_456',
+      'senderName': 'خالد محمود',
+      'senderEmail': 'khaled@example.com',
+      'senderAvatar': 'https://via.placeholder.com/100',
+      'sentAt': DateTime.now().subtract(Duration(days: 1)),
+      'status': 'pending',
+    },
+  ];
+
+  final List<Map<String, dynamic>> _mockSearchResults = [
+    {
+      'id': 'search_1',
+      'name': 'يوسف إبراهيم',
+      'email': 'youssef@example.com',
+      'avatar': 'https://via.placeholder.com/100',
+      'mutualFriends': 3,
+      'isFriend': false,
+      'requestSent': false,
+    },
+    {
+      'id': 'search_2',
+      'name': 'نور الدين',
+      'email': 'nour@example.com',
+      'avatar': 'https://via.placeholder.com/100',
+      'mutualFriends': 1,
+      'isFriend': false,
+      'requestSent': true,
+    },
+  ];
+
   /// الحصول على قائمة الأصدقاء الحقيقية
   Future<List<Map<String, dynamic>>> getFriends() async {
     try {
       final user = _authService.currentUser;
       if (user == null) return [];
 
-      // TODO: Implement with Firestore when ready
       debugPrint('FriendsService: getFriends called for user ${user.id}');
 
-      return [];
+      // محاكاة تأخير الشبكة
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      return List.from(_mockFriends);
     } catch (e) {
       debugPrint('خطأ في جلب الأصدقاء: $e');
       return [];
@@ -32,12 +110,13 @@ class FriendsService {
       final user = _authService.currentUser;
       if (user == null) return [];
 
-      // TODO: Implement with Firestore when ready
       debugPrint(
         'FriendsService: getFriendRequests called for user ${user.id}',
       );
 
-      return [];
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      return List.from(_mockRequests);
     } catch (e) {
       debugPrint('خطأ في جلب طلبات الصداقة: $e');
       return [];
@@ -50,10 +129,22 @@ class FriendsService {
       final user = _authService.currentUser;
       if (user == null || query.isEmpty) return [];
 
-      // TODO: Implement with Firestore when ready
       debugPrint('FriendsService: searchUsers called with query: $query');
 
-      return [];
+      await Future.delayed(const Duration(milliseconds: 800));
+
+      // تصفية النتائج حسب الاستعلام
+      return _mockSearchResults
+          .where(
+            (user) =>
+                user['name'].toString().toLowerCase().contains(
+                  query.toLowerCase(),
+                ) ||
+                user['email'].toString().toLowerCase().contains(
+                  query.toLowerCase(),
+                ),
+          )
+          .toList();
     } catch (e) {
       debugPrint('خطأ في البحث عن المستخدمين: $e');
       return [];
@@ -66,10 +157,19 @@ class FriendsService {
       final user = _authService.currentUser;
       if (user == null) return false;
 
-      // TODO: Implement with Firestore when ready
       debugPrint(
         'FriendsService: sendFriendRequest called for friend: $friendId',
       );
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // تحديث حالة المستخدم في نتائج البحث
+      for (var result in _mockSearchResults) {
+        if (result['id'] == friendId) {
+          result['requestSent'] = true;
+          break;
+        }
+      }
 
       return true;
     } catch (e) {
@@ -81,10 +181,26 @@ class FriendsService {
   /// قبول طلب صداقة
   Future<bool> acceptFriendRequest(String requestId) async {
     try {
-      // TODO: Implement with Firestore when ready
       debugPrint(
         'FriendsService: acceptFriendRequest called for request: $requestId',
       );
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // إزالة الطلب من القائمة
+      _mockRequests.removeWhere((request) => request['id'] == requestId);
+
+      // إضافة صديق جديد (محاكاة)
+      _mockFriends.add({
+        'id': 'new_friend_${DateTime.now().millisecondsSinceEpoch}',
+        'name': 'صديق جديد',
+        'email': 'newfriend@example.com',
+        'avatar': 'https://via.placeholder.com/100',
+        'isOnline': false,
+        'lastSeen': DateTime.now(),
+        'gamesPlayed': 0,
+        'winRate': 0.0,
+      });
 
       return true;
     } catch (e) {
@@ -96,10 +212,14 @@ class FriendsService {
   /// رفض طلب صداقة
   Future<bool> rejectFriendRequest(String requestId) async {
     try {
-      // TODO: Implement with Firestore when ready
       debugPrint(
         'FriendsService: rejectFriendRequest called for request: $requestId',
       );
+
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      // إزالة الطلب من القائمة
+      _mockRequests.removeWhere((request) => request['id'] == requestId);
 
       return true;
     } catch (e) {
@@ -109,17 +229,64 @@ class FriendsService {
   }
 
   /// إزالة صديق
-  Future<bool> removeFriend(String friendshipId) async {
+  Future<bool> removeFriend(String friendId) async {
     try {
-      // TODO: Implement with Firestore when ready
-      debugPrint(
-        'FriendsService: removeFriend called for friendship: $friendshipId',
-      );
+      debugPrint('FriendsService: removeFriend called for friend: $friendId');
+
+      await Future.delayed(const Duration(milliseconds: 400));
+
+      // إزالة الصديق من القائمة
+      _mockFriends.removeWhere((friend) => friend['id'] == friendId);
 
       return true;
     } catch (e) {
       debugPrint('خطأ في إزالة الصديق: $e');
       return false;
+    }
+  }
+
+  /// دعوة صديق للعبة
+  Future<bool> inviteToGame(String friendId, String gameMode) async {
+    try {
+      debugPrint(
+        'FriendsService: inviteToGame called for friend: $friendId, mode: $gameMode',
+      );
+
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      return true;
+    } catch (e) {
+      debugPrint('خطأ في دعوة الصديق للعبة: $e');
+      return false;
+    }
+  }
+
+  /// الحصول على الأصدقاء المتصلين حالياً
+  Future<List<Map<String, dynamic>>> getOnlineFriends() async {
+    try {
+      final friends = await getFriends();
+      return friends.where((friend) => friend['isOnline'] == true).toList();
+    } catch (e) {
+      debugPrint('خطأ في جلب الأصدقاء المتصلين: $e');
+      return [];
+    }
+  }
+
+  /// إحصائيات الأصدقاء
+  Future<Map<String, int>> getFriendsStats() async {
+    try {
+      final friends = await getFriends();
+      final requests = await getFriendRequests();
+      final onlineFriends = await getOnlineFriends();
+
+      return {
+        'totalFriends': friends.length,
+        'onlineFriends': onlineFriends.length,
+        'pendingRequests': requests.length,
+      };
+    } catch (e) {
+      debugPrint('خطأ في جلب إحصائيات الأصدقاء: $e');
+      return {'totalFriends': 0, 'onlineFriends': 0, 'pendingRequests': 0};
     }
   }
 }

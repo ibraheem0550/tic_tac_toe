@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/stellar_home_screen.dart';
+import 'themes/stellar_theme.dart';
 
 // ======================================================================
 // 🎮 TIC TAC TOE - WINDOWS VERSION (No Firebase)
@@ -22,17 +22,14 @@ class TicTacToeApp extends StatelessWidget {
     return MaterialApp(
       title: 'لعبة X O النجمية',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Cairo'),
+      theme: StellarTheme.dark,
       home: const StellarHomeScreen(),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('ar', 'SA'),
-        Locale('en', 'US'),
-      ],
+      supportedLocales: const [Locale('ar', 'SA'), Locale('en', 'US')],
       locale: const Locale('ar', 'SA'),
       builder: (context, child) {
         return Directionality(textDirection: TextDirection.rtl, child: child!);

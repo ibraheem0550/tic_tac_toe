@@ -214,7 +214,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
               ),
               const SizedBox(height: AppDimensions.paddingLG),
               Text(
-                '????????? ???????',
+                'إعدادات النجوم',
                 style: AppTextStyles.displayMedium.copyWith(
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.w900,
@@ -222,7 +222,7 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
               ),
               const SizedBox(height: AppDimensions.paddingSM),
               Text(
-                '??? ?????? ?? ??????',
+                'تخصيص تجربة اللعبة',
                 style: AppTextStyles.bodyLarge.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -410,28 +410,28 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader('??????', Icons.palette),
+        _buildSectionHeader('المظهر', Icons.palette),
         const SizedBox(height: AppDimensions.paddingLG),
         AppComponents.stellarCard(
           child: Column(
             children: [
               _buildOptionSetting(
-                '?????',
+                'اللغة',
                 _getLanguageName(_selectedLanguage),
                 Icons.language,
                 _showLanguageOptions,
               ),
               _buildDivider(),
               _buildOptionSetting(
-                '?????',
+                'الثيم',
                 _getThemeName(_selectedTheme),
                 Icons.color_lens,
                 _showThemeOptions,
               ),
               _buildDivider(),
               _buildSwitchSetting(
-                '????? ??????',
-                '??????? ????? ??????',
+                'الوضع المظلم',
+                'تفعيل الوضع المظلم',
                 Icons.dark_mode,
                 true,
                 (value) => {},
@@ -690,24 +690,24 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
   String _getLanguageName(String code) {
     switch (code) {
       case 'ar':
-        return '???????';
+        return 'العربية';
       case 'en':
         return 'English';
       default:
-        return '???????';
+        return 'العربية';
     }
   }
 
   String _getThemeName(String theme) {
     switch (theme) {
       case 'stellar':
-        return '??????';
+        return 'النجمي';
       case 'dark':
-        return '??????';
+        return 'المظلم';
       case 'light':
-        return '??????';
+        return 'الفاتح';
       default:
-        return '??????';
+        return 'النجمي';
     }
   }
 
@@ -721,14 +721,14 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('?? ??? ???????? ?????'),
+          content: Text('تم حفظ البيانات بنجاح'),
           backgroundColor: AppColors.success,
         ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('??? ?? ??? ????????: $e'),
+          content: Text('خطأ في حفظ البيانات: $e'),
           backgroundColor: AppColors.error,
         ),
       );
@@ -746,19 +746,73 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
   }
 
   void _showNotificationOptions(String type) {
-    // TODO: Implement notification options
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('إعدادات الإشعارات - $type'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SwitchListTile(
+              title: const Text('تفعيل الإشعارات'),
+              value: true,
+              onChanged: (value) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'تم ${value ? "تفعيل" : "إيقاف"} إشعارات $type',
+                    ),
+                    backgroundColor: AppColors.success,
+                  ),
+                );
+              },
+            ),
+            SwitchListTile(
+              title: const Text('الصوت'),
+              value: true,
+              onChanged: (value) {
+                // تطبيق تغيير إعدادات الصوت
+              },
+            ),
+            SwitchListTile(
+              title: const Text('الاهتزاز'),
+              value: false,
+              onChanged: (value) {
+                // تطبيق تغيير إعدادات الاهتزاز
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('إغلاق'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _changePassword() {
-    // TODO: Implement change password
+    showDialog(
+      context: context,
+      builder: (context) => const ChangePasswordDialog(),
+    );
   }
 
   void _showPrivacySettings() {
-    // TODO: Implement privacy settings
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const PrivacySettingsScreen()),
+    );
   }
 
   void _showBackupOptions() {
-    // TODO: Implement backup options
+    showDialog(
+      context: context,
+      builder: (context) => const BackupOptionsDialog(),
+    );
   }
 
   void _deleteAccount() {
@@ -931,6 +985,493 @@ class _StellarSettingsScreenState extends State<StellarSettingsScreen>
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// حوار تغيير كلمة المرور
+class ChangePasswordDialog extends StatefulWidget {
+  const ChangePasswordDialog({super.key});
+
+  @override
+  State<ChangePasswordDialog> createState() => _ChangePasswordDialogState();
+}
+
+class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
+  final _formKey = GlobalKey<FormState>();
+  final _currentPasswordController = TextEditingController();
+  final _newPasswordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  bool _isLoading = false;
+  bool _showCurrentPassword = false;
+  bool _showNewPassword = false;
+  bool _showConfirmPassword = false;
+
+  @override
+  void dispose() {
+    _currentPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('تغيير كلمة المرور'),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: _currentPasswordController,
+              decoration: InputDecoration(
+                labelText: 'كلمة المرور الحالية',
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _showCurrentPassword
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                  ),
+                  onPressed: () => setState(
+                    () => _showCurrentPassword = !_showCurrentPassword,
+                  ),
+                ),
+              ),
+              obscureText: !_showCurrentPassword,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'يرجى إدخال كلمة المرور الحالية';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _newPasswordController,
+              decoration: InputDecoration(
+                labelText: 'كلمة المرور الجديدة',
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _showNewPassword ? Icons.visibility_off : Icons.visibility,
+                  ),
+                  onPressed: () =>
+                      setState(() => _showNewPassword = !_showNewPassword),
+                ),
+              ),
+              obscureText: !_showNewPassword,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'يرجى إدخال كلمة المرور الجديدة';
+                }
+                if (value.length < 6) {
+                  return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _confirmPasswordController,
+              decoration: InputDecoration(
+                labelText: 'تأكيد كلمة المرور',
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _showConfirmPassword
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                  ),
+                  onPressed: () => setState(
+                    () => _showConfirmPassword = !_showConfirmPassword,
+                  ),
+                ),
+              ),
+              obscureText: !_showConfirmPassword,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'يرجى تأكيد كلمة المرور';
+                }
+                if (value != _newPasswordController.text) {
+                  return 'كلمات المرور غير متطابقة';
+                }
+                return null;
+              },
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _isLoading ? null : () => Navigator.pop(context),
+          child: const Text('إلغاء'),
+        ),
+        ElevatedButton(
+          onPressed: _isLoading ? null : _changePassword,
+          child: _isLoading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Text('تغيير'),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _changePassword() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      // محاكاة تغيير كلمة المرور
+      await Future.delayed(const Duration(seconds: 2));
+
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('تم تغيير كلمة المرور بنجاح'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('حدث خطأ: $e'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+}
+
+// شاشة إعدادات الخصوصية
+class PrivacySettingsScreen extends StatefulWidget {
+  const PrivacySettingsScreen({super.key});
+
+  @override
+  State<PrivacySettingsScreen> createState() => _PrivacySettingsScreenState();
+}
+
+class _PrivacySettingsScreenState extends State<PrivacySettingsScreen> {
+  bool _shareDataForAnalytics = false;
+  bool _allowFriendRequests = true;
+  bool _showOnlineStatus = true;
+  bool _allowGameInvitations = true;
+  bool _shareGameStats = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('إعدادات الخصوصية'),
+        backgroundColor: AppColors.surfacePrimary,
+      ),
+      backgroundColor: AppColors.backgroundPrimary,
+      body: ListView(
+        padding: const EdgeInsets.all(AppDimensions.paddingLG),
+        children: [
+          _buildPrivacySection('البيانات والتحليل', [
+            _buildPrivacyOption(
+              'مشاركة البيانات للتحليل',
+              'يساعد في تحسين التطبيق',
+              _shareDataForAnalytics,
+              (value) => setState(() => _shareDataForAnalytics = value),
+            ),
+            _buildPrivacyOption(
+              'مشاركة إحصائيات اللعبة',
+              'السماح للآخرين برؤية إحصائياتك',
+              _shareGameStats,
+              (value) => setState(() => _shareGameStats = value),
+            ),
+          ]),
+          const SizedBox(height: AppDimensions.paddingXL),
+          _buildPrivacySection('الأصدقاء والتفاعل', [
+            _buildPrivacyOption(
+              'السماح بطلبات الصداقة',
+              'يمكن للآخرين إرسال طلبات صداقة',
+              _allowFriendRequests,
+              (value) => setState(() => _allowFriendRequests = value),
+            ),
+            _buildPrivacyOption(
+              'إظهار الحالة المتصلة',
+              'يظهر للأصدقاء أنك متصل',
+              _showOnlineStatus,
+              (value) => setState(() => _showOnlineStatus = value),
+            ),
+            _buildPrivacyOption(
+              'السماح بدعوات اللعب',
+              'يمكن للأصدقاء دعوتك للعب',
+              _allowGameInvitations,
+              (value) => setState(() => _allowGameInvitations = value),
+            ),
+          ]),
+          const SizedBox(height: AppDimensions.paddingXL),
+          _buildActionButtons(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPrivacySection(String title, List<Widget> options) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: AppTextStyles.headlineSmall.copyWith(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: AppDimensions.paddingMD),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.surfacePrimary,
+            borderRadius: BorderRadius.circular(AppDimensions.radiusMD),
+            border: Border.all(color: AppColors.borderPrimary),
+          ),
+          child: Column(children: options),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPrivacyOption(
+    String title,
+    String subtitle,
+    bool value,
+    ValueChanged<bool> onChanged,
+  ) {
+    return SwitchListTile(
+      title: Text(title),
+      subtitle: Text(subtitle),
+      value: value,
+      onChanged: onChanged,
+    );
+  }
+
+  Widget _buildActionButtons() {
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _savePrivacySettings,
+            child: const Text('حفظ الإعدادات'),
+          ),
+        ),
+        const SizedBox(height: AppDimensions.paddingMD),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton(
+            onPressed: _resetToDefaults,
+            child: const Text('إعادة تعيين للافتراضي'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _savePrivacySettings() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('تم حفظ إعدادات الخصوصية'),
+        backgroundColor: AppColors.success,
+      ),
+    );
+  }
+
+  void _resetToDefaults() {
+    setState(() {
+      _shareDataForAnalytics = false;
+      _allowFriendRequests = true;
+      _showOnlineStatus = true;
+      _allowGameInvitations = true;
+      _shareGameStats = false;
+    });
+  }
+}
+
+// حوار خيارات النسخ الاحتياطي
+class BackupOptionsDialog extends StatefulWidget {
+  const BackupOptionsDialog({super.key});
+
+  @override
+  State<BackupOptionsDialog> createState() => _BackupOptionsDialogState();
+}
+
+class _BackupOptionsDialogState extends State<BackupOptionsDialog> {
+  bool _isBackingUp = false;
+  bool _isRestoring = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Row(
+        children: [
+          Icon(Icons.backup, color: AppColors.primary),
+          const SizedBox(width: 8),
+          const Text('النسخ الاحتياطي'),
+        ],
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.cloud_upload),
+            title: const Text('إنشاء نسخة احتياطية'),
+            subtitle: const Text('حفظ بياناتك في السحابة'),
+            trailing: _isBackingUp
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.arrow_forward_ios),
+            onTap: _isBackingUp ? null : _createBackup,
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.cloud_download),
+            title: const Text('استعادة النسخة الاحتياطية'),
+            subtitle: const Text('استعادة بياناتك من السحابة'),
+            trailing: _isRestoring
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.arrow_forward_ios),
+            onTap: _isRestoring ? null : _restoreBackup,
+          ),
+          const Divider(),
+          ListTile(
+            leading: Icon(Icons.info_outline, color: AppColors.info),
+            title: const Text('معلومات النسخة الأخيرة'),
+            subtitle: const Text('آخر نسخة: اليوم 3:45 ص'),
+            onTap: _showBackupInfo,
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('إغلاق'),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _createBackup() async {
+    setState(() => _isBackingUp = true);
+
+    try {
+      // محاكاة إنشاء نسخة احتياطية
+      await Future.delayed(const Duration(seconds: 3));
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('تم إنشاء النسخة الاحتياطية بنجاح'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('فشل في إنشاء النسخة الاحتياطية: $e'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isBackingUp = false);
+      }
+    }
+  }
+
+  Future<void> _restoreBackup() async {
+    setState(() => _isRestoring = true);
+
+    try {
+      // محاكاة استعادة النسخة الاحتياطية
+      await Future.delayed(const Duration(seconds: 2));
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('تم استعادة البيانات بنجاح'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('فشل في استعادة البيانات: $e'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isRestoring = false);
+      }
+    }
+  }
+
+  void _showBackupInfo() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('معلومات النسخة الاحتياطية'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildInfoRow('آخر نسخة', 'اليوم 3:45 ص'),
+            _buildInfoRow('حجم البيانات', '2.4 MB'),
+            _buildInfoRow('عدد الألعاب', '145'),
+            _buildInfoRow('عدد الأصدقاء', '12'),
+            _buildInfoRow('النقاط', '1,250'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('إغلاق'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              '$label:',
+              style: AppTextStyles.bodyMedium.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Text(value),
+        ],
       ),
     );
   }

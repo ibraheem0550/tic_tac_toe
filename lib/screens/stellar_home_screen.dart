@@ -35,7 +35,7 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
   @override
   void initState() {
     super.initState();
-    _authService.addAuthListener(_onUserDataChanged);
+    _authService.addAuthListener(_onAuthStateChanged);
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 1500),
@@ -55,12 +55,12 @@ class _StellarHomeScreenState extends State<StellarHomeScreen>
 
   @override
   void dispose() {
-    _authService.removeAuthListener(_onUserDataChanged);
+    _authService.removeAuthListener(_onAuthStateChanged);
     _animationController.dispose();
     super.dispose();
   }
 
-  void _onUserDataChanged(User? user) {
+  void _onAuthStateChanged() {
     if (mounted) {
       setState(() {});
     }

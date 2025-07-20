@@ -2,6 +2,10 @@
 cmake_minimum_required(VERSION 3.14)
 project(tic_tac_toe LANGUAGES CXX)
 
+# Work-around for MSVC std::variant compilation issue with Flutter's EncodableValue (error C2665).
+# Using the legacy implementation avoids wide-char constructor problems in firebase_auth and similar plugins.
+add_compile_definitions(USE_LEGACY_ENCODABLE_VALUE)
+
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
 set(BINARY_NAME "tic_tac_toe")

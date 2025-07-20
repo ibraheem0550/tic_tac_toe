@@ -41,55 +41,55 @@ class OnlineGameService extends ChangeNotifier {
     if (_isConnected) return;
 
     try {
-      // تهيئة اتصال السوكت الجديد
-      _socket = IO.io(
-        'http://localhost:3000',
-        IO.OptionBuilder()
-            .setTransports(['websocket', 'polling'])
-            .enableAutoConnect()
-            .setTimeout(20000)
-            .build(),
+      // تهيئة اتصال السوكت الجديد - Socket.IO Client 3.x
+      _socket = IO.io('http://localhost:3000', <String, dynamic>{
+        'transports': ['websocket', 'polling'],
+        'autoConnect': false, // تعطيل الاتصال التلقائي
+        'timeout': 5000, // تقليل timeout إلى 5 ثواني
+        'forceNew': true,
+      });
+
+      // محاولة الاتصال مع timeout محدود
+      final connectFuture = Future(() {
+        _socket?.connect();
+        return _socket?.onConnect;
+      });
+
+      // انتظار لمدة 3 ثواني فقط
+      await connectFuture.timeout(
+        const Duration(seconds: 3),
+        onTimeout: () {
+          debugPrint(
+            '⚠️ Socket connection timeout - continuing in offline mode',
+          );
+          _socket?.disconnect();
+          _socket?.dispose();
+          _socket = null;
+          return null;
+        },
       );
 
-      _socket?.connect();
-
-      _socket?.onConnect((_) {
+      if (_socket?.connected == true) {
         _isConnected = true;
-        debugPrint('? Connected to game server');
+        debugPrint('✅ Connected to game server');
 
-        // ????? ?????? ???????? ??? ???????
+        // تسجيل اللاعب الحالي عند الاتصال
         final currentUser = _authService.currentUserModel;
         if (currentUser != null) {
           registerPlayer(currentUser);
         }
-
+        _setupEventListeners();
         notifyListeners();
-      });
-
-      _socket?.onDisconnect((_) {
-        _isConnected = false;
-        debugPrint('? Disconnected from game server');
-        _resetGameState();
-        notifyListeners();
-      });
-
-      _socket?.onConnectError((error) {
-        debugPrint('? Connection error: $error');
-        _isConnected = false;
-        notifyListeners();
-      });
-
-      _setupEventListeners();
-
-      // ?????? ??????? ???? 5 ?????
-      await Future.delayed(const Duration(seconds: 5));
-
-      if (!_isConnected) {
-        throw Exception('??? ?? ??????? ???????');
+      } else {
+        debugPrint('⚠️ Failed to connect to game server - offline mode');
       }
     } catch (e) {
-      debugPrint('? Connection error: $e');
-      rethrow;
+      debugPrint('⚠️ Socket connection error (offline mode): $e');
+      _isConnected = false;
+      _socket?.disconnect();
+      _socket?.dispose();
+      _socket = null;
+      // لا نرمي الخطأ - نستمر في الوضع غير المتصل
     }
   }
 
@@ -116,46 +116,47 @@ class OnlineGameService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// ????? ?????? ???????
+  /// إعداد مستمعي الأحداث
   void _setupEventListeners() {
-    // ????? ????? ??????
+    if (_socket?.connected != true) return;
+
+    // عند تسجيل اللاعب بنجاح
     _socket?.on('player_registered', (data) {
-      debugPrint('? Player registered: $data');
+      debugPrint('✅ Player registered: $data');
       _playerId = data['playerId'];
     });
 
-    // ????? ??? ?????? ??? ??????
+    // عند العثور على مباراة
     _socket?.on('match_found', (data) {
-      debugPrint('?? Match found: $data');
+      debugPrint('🎮 Match found: $data');
       _handleMatchFound(data);
     });
 
-    // ????? ???? ???? ?????
+    // عند تحريك خصم
     _socket?.on('move_made', (data) {
-      debugPrint('?? Move made: $data');
-      _handleMoveMade(data);
+      debugPrint('👋 Opponent move: $data');
+      _handleOpponentMove(data);
     });
 
-    // ????? ????? ??????
-    _socket?.on('game_ended', (data) {
-      debugPrint('?? Game ended: $data');
-      _handleGameEnded(data);
+    // عند انتهاء المباراة
+    _socket?.on('game_over', (data) {
+      debugPrint('🏁 Game over: $data');
+      _handleGameOver(data);
     });
 
-    // ????? ????? ????
-    _socket?.on('player_left', (data) {
-      debugPrint('?? Player left: $data');
-      _handlePlayerLeft(data);
+    // عند قطع الاتصال
+    _socket?.onDisconnect((_) {
+      _isConnected = false;
+      debugPrint('🔌 Disconnected from game server');
+      _resetGameState();
+      notifyListeners();
     });
 
-    // ????? ?????
-    _socket?.on('error', (data) {
-      debugPrint('? Game server error: $data');
-    });
-
-    // ????? ??????? ??????
-    _socket?.on('game_info', (data) {
-      debugPrint('?? Game info: $data');
+    // عند حدوث خطأ في الاتصال
+    _socket?.onConnectError((error) {
+      debugPrint('❌ Connection error: $error');
+      _isConnected = false;
+      notifyListeners();
     });
   }
 
@@ -251,116 +252,128 @@ class OnlineGameService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// ??????? ?? ?????? ??? ??????
-  void _handleMatchFound(dynamic data) {
-    _gameRoomId = data['gameId'];
-    _mySymbol = data['yourSymbol'];
-    _gameStatus = 'playing';
-    _isMyTurn = data['currentPlayer'] == _mySymbol;
-    _board = List.filled(9, ''); // ????? ????? ??????
-
-    // ????? ?????? ?????
-    Map<String, dynamic>? opponentData;
-    final currentUser = _authService.currentUser;
-
-    if (currentUser != null) {
-      // ????? ?? ?? ?????
-      if (data['player1']['socketId'] != _playerId) {
-        opponentData = data['player1'];
-      } else {
-        opponentData = data['player2'];
-      }
-    }
-
-    if (opponentData != null) {
-      _opponent = UserModels.User(
-        id: opponentData['userId'] ?? opponentData['socketId'],
-        email: opponentData['email'] ?? '',
-        displayName: opponentData['username'] ?? '????',
-        photoURL: opponentData['avatarUrl'],
-        provider: UserModels.AuthProvider.email,
-        gems: opponentData['gems'] ?? 0,
-        createdAt: DateTime.now(),
-        lastLoginAt: DateTime.now(),
-        profile: UserModels.UserProfile(
-          preferences: const UserModels.UserPreferences(),
-          gameStats: UserModels.GameStats.empty(
-            opponentData['userId'] ?? opponentData['socketId'],
-          ),
-        ),
-        linkedProviders: [UserModels.AuthProvider.email],
-        linkedAccounts: [],
-      );
-    }
-    debugPrint(
-      '?? Match found! Room: $_gameRoomId, Symbol: $_mySymbol, My turn: $_isMyTurn',
-    );
-    notifyListeners();
-  }
-
-  /// ??????? ?? ???? ????
-  void _handleMoveMade(dynamic data) {
-    int position = data['position'];
-    String symbol = data['symbol'];
-
-    _board[position] = symbol;
-    _isMyTurn = !_isMyTurn; // ????? ?????
-
-    debugPrint('?? Move made at position $position with symbol $symbol');
-    notifyListeners();
-  }
-
-  /// ??????? ?? ?????? ??????
-  void _handleGameEnded(dynamic data) {
-    _gameStatus = 'finished';
-    _winner = data['winner'];
-    _isMyTurn = false;
-
-    // ????? ???????? ??????
-    if (_winner == _playerId) {
-      _rewardWinner();
-    }
-
-    debugPrint('?? Game ended! Winner: $_winner');
-    notifyListeners();
-  }
-
-  /// ??????? ?? ?????? ????
-  void _handlePlayerLeft(dynamic data) {
-    _gameStatus = 'finished';
-    _winner = _playerId; // ??? ?????? ??? ???? ?????
-    _isMyTurn = false;
-
-    debugPrint('?? Opponent left the game');
-    notifyListeners();
-  }
-
-  /// ?????? ??????
-  Future<void> _rewardWinner() async {
+  /// معالجة العثور على مباراة
+  void _handleMatchFound(Map<String, dynamic> data) {
     try {
-      final currentUser = _authService.currentUserModel;
-      if (currentUser == null) return;
+      _gameRoomId = data['roomId'];
+      _mySymbol = data['symbol'] ?? 'X';
+      _isMyTurn = data['isYourTurn'] ?? (_mySymbol == 'X');
+      _gameStatus = 'playing';
 
-      const int winReward = 10; // 10 ????? ?????
+      // معلومات الخصم
+      if (data['opponent'] != null) {
+        // يمكن إضافة معالجة معلومات الخصم هنا
+      }
 
-      // TODO: Implement updateUserModel method in AuthService to update gems
-      debugPrint('?? Reward added: $winReward gems');
+      _board = List.filled(9, '');
+      notifyListeners();
     } catch (e) {
-      debugPrint('? Error adding reward: $e');
+      debugPrint('Error handling match found: $e');
     }
   }
 
-  /// ????? ????? ???? ??????
+  /// معالجة حركة الخصم
+  void _handleOpponentMove(Map<String, dynamic> data) {
+    try {
+      final position = data['position'];
+      final symbol = data['symbol'];
+
+      if (position != null && position >= 0 && position < 9) {
+        _board[position] = symbol ?? 'O';
+        _isMyTurn = true;
+
+        // التحقق من انتهاء اللعبة
+        _checkGameEnd();
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error handling opponent move: $e');
+    }
+  }
+
+  /// معالجة انتهاء اللعبة
+  void _handleGameOver(Map<String, dynamic> data) {
+    try {
+      _winner = data['winner'];
+      _gameStatus = 'finished';
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error handling game over: $e');
+    }
+  }
+
+  /// إعادة تعيين حالة اللعبة
   void _resetGameState() {
     _gameRoomId = null;
-    _playerId = null;
-    _currentGame = null;
     _opponent = null;
     _board = List.filled(9, '');
     _isMyTurn = false;
     _mySymbol = '';
     _gameStatus = 'waiting';
     _winner = null;
+  }
+
+  /// التحقق من انتهاء اللعبة
+  void _checkGameEnd() {
+    // فحص الصفوف
+    for (int i = 0; i < 9; i += 3) {
+      if (_board[i].isNotEmpty &&
+          _board[i] == _board[i + 1] &&
+          _board[i] == _board[i + 2]) {
+        _winner = _board[i];
+        _gameStatus = 'finished';
+        return;
+      }
+    }
+
+    // فحص الأعمدة
+    for (int i = 0; i < 3; i++) {
+      if (_board[i].isNotEmpty &&
+          _board[i] == _board[i + 3] &&
+          _board[i] == _board[i + 6]) {
+        _winner = _board[i];
+        _gameStatus = 'finished';
+        return;
+      }
+    }
+
+    // فحص الأقطار
+    if (_board[0].isNotEmpty &&
+        _board[0] == _board[4] &&
+        _board[0] == _board[8]) {
+      _winner = _board[0];
+      _gameStatus = 'finished';
+      return;
+    }
+
+    if (_board[2].isNotEmpty &&
+        _board[2] == _board[4] &&
+        _board[2] == _board[6]) {
+      _winner = _board[2];
+      _gameStatus = 'finished';
+      return;
+    }
+
+    // فحص التعادل
+    if (!_board.contains('')) {
+      _winner = 'draw';
+      _gameStatus = 'finished';
+    }
+  }
+
+  /// مكافأة الفائز
+  Future<void> _rewardWinner() async {
+    try {
+      final currentUser = _authService.currentUserModel;
+      if (currentUser.id == _playerId && _winner == _mySymbol) {
+        const int winReward = 10; // 10 جوهرة للفوز
+
+        // TODO: Implement updateUserModel method in AuthService to update gems
+        debugPrint('🎉 Reward added: $winReward gems');
+      }
+    } catch (e) {
+      debugPrint('❌ Error adding reward: $e');
+    }
   }
 
   /// ?????? ?? ?????

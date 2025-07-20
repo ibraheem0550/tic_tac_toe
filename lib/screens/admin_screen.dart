@@ -5,6 +5,8 @@ import '../utils/responsive_helper.dart';
 import '../utils/app_theme_new.dart';
 import '../audio_helper.dart';
 import 'stellar_tournament_admin_screen.dart';
+import 'theme_management_screen.dart';
+import 'system_analytics_screen.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({super.key});
@@ -538,30 +540,19 @@ class _AdminScreenState extends State<AdminScreen> {
               if (_showAdvancedSettings) ...[
                 const SizedBox(height: 12),
                 _buildQuickActionButton('إدارة الثيمات', Icons.palette, () {
-                  // TODO: فتح شاشة إدارة الثيمات
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'ستتوفر قريباً',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.textLight,
-                        ),
-                      ),
-                      backgroundColor: AppColors.secondary,
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ThemeManagementScreen(),
                     ),
                   );
                 }),
                 const SizedBox(height: 8),
                 _buildQuickActionButton('إحصائيات النظام', Icons.analytics, () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'ستتوفر قريباً',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.textLight,
-                        ),
-                      ),
-                      backgroundColor: AppColors.secondary,
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SystemAnalyticsScreen(),
                     ),
                   );
                 }),

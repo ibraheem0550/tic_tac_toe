@@ -46,9 +46,15 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
   void _loadExistingTheme(Product theme) {
     final metadata = theme.metadata;
     _themeName = theme.name;
-    _primaryColor = Color(metadata['primaryColor'] ?? Colors.deepPurple.value);
-    _secondaryColor = Color(metadata['secondaryColor'] ?? Colors.teal.value);
-    _accentColor = Color(metadata['accentColor'] ?? Colors.amberAccent.value);
+    _primaryColor = Color(
+      metadata['primaryColor'] ?? Colors.deepPurple.toARGB32(),
+    );
+    _secondaryColor = Color(
+      metadata['secondaryColor'] ?? Colors.teal.toARGB32(),
+    );
+    _accentColor = Color(
+      metadata['accentColor'] ?? Colors.amberAccent.toARGB32(),
+    );
     _backgroundColor = Color(
       metadata['backgroundColor'] ?? Colors.grey.shade900.value,
     );
@@ -483,15 +489,15 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         metadata: {
-          'primaryColor': _primaryColor.value,
-          'secondaryColor': _secondaryColor.value,
-          'accentColor': _accentColor.value,
-          'backgroundColor': _backgroundColor.value,
-          'textColor': _textColor.value,
-          'buttonColor': _buttonColor.value,
-          'gradientStart': _gradientStart.value,
-          'gradientMiddle': _gradientMiddle.value,
-          'gradientEnd': _gradientEnd.value,
+          'primaryColor': _primaryColor.toARGB32(),
+          'secondaryColor': _secondaryColor.toARGB32(),
+          'accentColor': _accentColor.toARGB32(),
+          'backgroundColor': _backgroundColor.toARGB32(),
+          'textColor': _textColor.toARGB32(),
+          'buttonColor': _buttonColor.toARGB32(),
+          'gradientStart': _gradientStart.toARGB32(),
+          'gradientMiddle': _gradientMiddle.toARGB32(),
+          'gradientEnd': _gradientEnd.toARGB32(),
           'type': 'custom_theme',
         },
       ); // حفظ السمة في الخدمة
@@ -605,7 +611,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
                     const SizedBox(height: 15),
                     _buildPreviewButton(
                       '🎯 المهام',
-                      _accentColor.withOpacity(0.8),
+                      _accentColor.withValues(alpha: 0.8),
                     ),
 
                     const SizedBox(height: 40),
@@ -614,7 +620,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
                     Container(
                       padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.4),
+                        color: Colors.black.withValues(alpha: 0.4),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: _primaryColor, width: 1),
                       ),
@@ -662,7 +668,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen> {
             borderRadius: BorderRadius.circular(15),
           ),
           elevation: 5,
-          shadowColor: color.withOpacity(0.5),
+                        shadowColor: color.withValues(alpha: 0.5),
         ),
         onPressed: () {
           // معاينة فقط - لا تفعل شيئاً

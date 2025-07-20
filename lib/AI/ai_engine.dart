@@ -177,7 +177,10 @@ class AIEngine {
 
   /// خوارزمية Minimax للمستوى الخبير
   static MoveResult _minimax(
-      List<String> board, String player, bool isMaximizing) {
+    List<String> board,
+    String player,
+    bool isMaximizing,
+  ) {
     String winner = _getWinner(board);
 
     if (winner == 'O') return MoveResult(score: 1, position: -1);
@@ -191,8 +194,11 @@ class AIEngine {
       if (board[i].isEmpty) {
         board[i] = player;
 
-        MoveResult result =
-            _minimax(board, player == 'O' ? 'X' : 'O', !isMaximizing);
+        MoveResult result = _minimax(
+          board,
+          player == 'O' ? 'X' : 'O',
+          !isMaximizing,
+        );
 
         board[i] = '';
 
@@ -251,6 +257,11 @@ class AIEngine {
         return 'تحدي نجمي';
     }
   }
+
+  /// دالة للحصول على أفضل حركة للذكاء الاصطناعي مع تحديد اللاعب
+  static int getBestMoveForPlayer(List<String> board, String player) {
+    return _minimax(board, player, true).position;
+  }
 }
 
 /// نتيجة حركة المحرك
@@ -264,7 +275,11 @@ class MoveResult {
 /// فئة الذكاء الاصطناعي القديمة للتوافق مع الكود القديم
 class AI {
   static int getBestMove(
-      List<String> board, String aiPlayer, String humanPlayer, int level) {
+    List<String> board,
+    String aiPlayer,
+    String humanPlayer,
+    int level,
+  ) {
     return AIEngine.getBestMove(board, level);
   }
 }

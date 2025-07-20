@@ -78,56 +78,78 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
     final metadata = theme.metadata;
 
     _themeName = theme.name;
-    _primaryColor =
-        Color(metadata['primaryColor'] ?? Colors.deepPurple.toARGB32());
-    _secondaryColor =
-        Color(metadata['secondaryColor'] ?? Colors.teal.toARGB32());
-    _accentColor =
-        Color(metadata['accentColor'] ?? Colors.amberAccent.toARGB32());
-    _backgroundColor =
-        Color(metadata['backgroundColor'] ?? Colors.grey.shade900.toARGB32());
-    _surfaceColor =
-        Color(metadata['surfaceColor'] ?? Colors.grey.shade800.toARGB32());
-    _cardColor =
-        Color(metadata['cardColor'] ?? const Color(0xFF424242).toARGB32());
+    _primaryColor = Color(
+      metadata['primaryColor'] ?? Colors.deepPurple.toARGB32(),
+    );
+    _secondaryColor = Color(
+      metadata['secondaryColor'] ?? Colors.teal.toARGB32(),
+    );
+    _accentColor = Color(
+      metadata['accentColor'] ?? Colors.amberAccent.toARGB32(),
+    );
+    _backgroundColor = Color(
+      metadata['backgroundColor'] ?? Colors.grey.shade900.toARGB32(),
+    );
+    _surfaceColor = Color(
+      metadata['surfaceColor'] ?? Colors.grey.shade800.toARGB32(),
+    );
+    _cardColor = Color(
+      metadata['cardColor'] ?? const Color(0xFF424242).toARGB32(),
+    );
 
-    _primaryTextColor =
-        Color(metadata['primaryTextColor'] ?? Colors.white.toARGB32());
+    _primaryTextColor = Color(
+      metadata['primaryTextColor'] ?? Colors.white.toARGB32(),
+    );
     _secondaryTextColor = Color(
-        metadata['secondaryTextColor'] ?? Colors.grey.shade300.toARGB32());
-    _titleTextColor =
-        Color(metadata['titleTextColor'] ?? Colors.yellow.toARGB32());
+      metadata['secondaryTextColor'] ?? Colors.grey.shade300.toARGB32(),
+    );
+    _titleTextColor = Color(
+      metadata['titleTextColor'] ?? Colors.yellow.toARGB32(),
+    );
 
-    _primaryButtonColor = Color(metadata['primaryButtonColor'] ??
-        Colors.deepPurple.shade500.toARGB32());
+    _primaryButtonColor = Color(
+      metadata['primaryButtonColor'] ?? Colors.deepPurple.shade500.toARGB32(),
+    );
     _secondaryButtonColor = Color(
-        metadata['secondaryButtonColor'] ?? Colors.teal.shade500.toARGB32());
-    _dangerButtonColor =
-        Color(metadata['dangerButtonColor'] ?? Colors.red.shade500.toARGB32());
+      metadata['secondaryButtonColor'] ?? Colors.teal.shade500.toARGB32(),
+    );
+    _dangerButtonColor = Color(
+      metadata['dangerButtonColor'] ?? Colors.red.shade500.toARGB32(),
+    );
     _successButtonColor = Color(
-        metadata['successButtonColor'] ?? Colors.green.shade500.toARGB32());
+      metadata['successButtonColor'] ?? Colors.green.shade500.toARGB32(),
+    );
 
-    _gameXColor =
-        Color(metadata['gameXColor'] ?? Colors.blue.shade400.toARGB32());
-    _gameOColor =
-        Color(metadata['gameOColor'] ?? Colors.red.shade400.toARGB32());
-    _gameBoardColor =
-        Color(metadata['gameBoardColor'] ?? Colors.grey.shade700.toARGB32());
-    _gameWinColor =
-        Color(metadata['gameWinColor'] ?? Colors.green.shade400.toARGB32());
+    _gameXColor = Color(
+      metadata['gameXColor'] ?? Colors.blue.shade400.toARGB32(),
+    );
+    _gameOColor = Color(
+      metadata['gameOColor'] ?? Colors.red.shade400.toARGB32(),
+    );
+    _gameBoardColor = Color(
+      metadata['gameBoardColor'] ?? Colors.grey.shade700.toARGB32(),
+    );
+    _gameWinColor = Color(
+      metadata['gameWinColor'] ?? Colors.green.shade400.toARGB32(),
+    );
 
-    _gradientStart =
-        Color(metadata['gradientStart'] ?? Colors.grey.shade900.toARGB32());
+    _gradientStart = Color(
+      metadata['gradientStart'] ?? Colors.grey.shade900.toARGB32(),
+    );
     _gradientMiddle = Color(
-        metadata['gradientMiddle'] ?? Colors.deepPurple.shade900.toARGB32());
-    _gradientEnd =
-        Color(metadata['gradientEnd'] ?? Colors.grey.shade900.toARGB32());
+      metadata['gradientMiddle'] ?? Colors.deepPurple.shade900.toARGB32(),
+    );
+    _gradientEnd = Color(
+      metadata['gradientEnd'] ?? Colors.grey.shade900.toARGB32(),
+    );
 
-    _borderColor =
-        Color(metadata['borderColor'] ?? Colors.grey.shade600.toARGB32());
+    _borderColor = Color(
+      metadata['borderColor'] ?? Colors.grey.shade600.toARGB32(),
+    );
     _shadowColor = Color(metadata['shadowColor'] ?? Colors.black54.toARGB32());
-    _highlightColor =
-        Color(metadata['highlightColor'] ?? Colors.white24.toARGB32());
+    _highlightColor = Color(
+      metadata['highlightColor'] ?? Colors.white24.toARGB32(),
+    );
   }
 
   @override
@@ -213,10 +235,14 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
         onBackground: _primaryTextColor,
       ),
       textTheme: TextTheme(
-        titleLarge:
-            TextStyle(color: _titleTextColor, fontWeight: FontWeight.bold),
-        titleMedium:
-            TextStyle(color: _primaryTextColor, fontWeight: FontWeight.w600),
+        titleLarge: TextStyle(
+          color: _titleTextColor,
+          fontWeight: FontWeight.bold,
+        ),
+        titleMedium: TextStyle(
+          color: _primaryTextColor,
+          fontWeight: FontWeight.w600,
+        ),
         bodyLarge: TextStyle(color: _primaryTextColor),
         bodyMedium: TextStyle(color: _secondaryTextColor),
       ),
@@ -428,14 +454,17 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
   }
 
   Widget _buildColorCard(
-      String name, Color color, Function(Color) onColorChanged) {
+    String name,
+    Color color,
+    Function(Color) onColorChanged,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: _surfaceColor,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: _borderColor.withOpacity(0.5)),
+        border: Border.all(color: _borderColor.withValues(alpha: 0.5)),
       ),
       child: Row(
         children: [
@@ -565,18 +594,12 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
           const SizedBox(height: 8),
           Text(
             'هذا نص أساسي في التطبيق',
-            style: TextStyle(
-              fontSize: 16,
-              color: _primaryTextColor,
-            ),
+            style: TextStyle(fontSize: 16, color: _primaryTextColor),
           ),
           const SizedBox(height: 8),
           Text(
             'هذا نص ثانوي أو توضيحي',
-            style: TextStyle(
-              fontSize: 14,
-              color: _secondaryTextColor,
-            ),
+            style: TextStyle(fontSize: 14, color: _secondaryTextColor),
           ),
         ],
       ),
@@ -802,24 +825,60 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
             crossAxisSpacing: 8,
             mainAxisSpacing: 8,
             children: [
-              _buildQuickThemeCard('الليل الأرجواني', Colors.deepPurple,
-                  Colors.purple.shade900, Colors.amberAccent),
-              _buildQuickThemeCard('المحيط الأزرق', Colors.blue,
-                  Colors.lightBlue.shade800, Colors.cyan),
-              _buildQuickThemeCard('الغابة الخضراء', Colors.green,
-                  Colors.teal.shade800, Colors.lightGreen),
-              _buildQuickThemeCard('الغروب البرتقالي', Colors.orange,
-                  Colors.deepOrange.shade800, Colors.yellow),
-              _buildQuickThemeCard('الياقوت الأحمر', Colors.red,
-                  Colors.pink.shade800, Colors.pinkAccent),
-              _buildQuickThemeCard('الأناقة الذهبية', Colors.amber,
-                  Colors.yellow.shade800, Colors.yellowAccent),
-              _buildQuickThemeCard('اللافندر الناعم', Colors.purple.shade300,
-                  Colors.purple.shade100, Colors.deepPurple),
-              _buildQuickThemeCard('النعناع البارد', Colors.teal.shade300,
-                  Colors.cyan.shade100, Colors.green),
-              _buildQuickThemeCard('الرمادي الأنيق', Colors.blueGrey,
-                  Colors.grey.shade700, Colors.lightBlue),
+              _buildQuickThemeCard(
+                'الليل الأرجواني',
+                Colors.deepPurple,
+                Colors.purple.shade900,
+                Colors.amberAccent,
+              ),
+              _buildQuickThemeCard(
+                'المحيط الأزرق',
+                Colors.blue,
+                Colors.lightBlue.shade800,
+                Colors.cyan,
+              ),
+              _buildQuickThemeCard(
+                'الغابة الخضراء',
+                Colors.green,
+                Colors.teal.shade800,
+                Colors.lightGreen,
+              ),
+              _buildQuickThemeCard(
+                'الغروب البرتقالي',
+                Colors.orange,
+                Colors.deepOrange.shade800,
+                Colors.yellow,
+              ),
+              _buildQuickThemeCard(
+                'الياقوت الأحمر',
+                Colors.red,
+                Colors.pink.shade800,
+                Colors.pinkAccent,
+              ),
+              _buildQuickThemeCard(
+                'الأناقة الذهبية',
+                Colors.amber,
+                Colors.yellow.shade800,
+                Colors.yellowAccent,
+              ),
+              _buildQuickThemeCard(
+                'اللافندر الناعم',
+                Colors.purple.shade300,
+                Colors.purple.shade100,
+                Colors.deepPurple,
+              ),
+              _buildQuickThemeCard(
+                'النعناع البارد',
+                Colors.teal.shade300,
+                Colors.cyan.shade100,
+                Colors.green,
+              ),
+              _buildQuickThemeCard(
+                'الرمادي الأنيق',
+                Colors.blueGrey,
+                Colors.grey.shade700,
+                Colors.lightBlue,
+              ),
             ],
           ),
         ],
@@ -828,16 +887,20 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
   }
 
   Widget _buildQuickThemeCard(
-      String name, Color primary, Color background, Color accent) {
+    String name,
+    Color primary,
+    Color background,
+    Color accent,
+  ) {
     return GestureDetector(
       onTap: () {
         setState(() {
           _primaryColor = primary;
           _backgroundColor = background;
           _accentColor = accent;
-          _secondaryColor = primary.withOpacity(0.7);
+          _secondaryColor = primary.withValues(alpha: 0.7);
           _gradientStart = background;
-          _gradientMiddle = primary.withOpacity(0.3);
+          _gradientMiddle = primary.withValues(alpha: 0.3);
           _gradientEnd = background;
           _primaryButtonColor = primary;
           _secondaryButtonColor = accent;
@@ -852,7 +915,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [background, primary.withOpacity(0.3), background],
+            colors: [background, primary.withValues(alpha: 0.3), background],
           ),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: primary, width: 2),
@@ -863,10 +926,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
             Container(
               width: 20,
               height: 20,
-              decoration: BoxDecoration(
-                color: primary,
-                shape: BoxShape.circle,
-              ),
+              decoration: BoxDecoration(color: primary, shape: BoxShape.circle),
             ),
             const SizedBox(height: 4),
             Text(
@@ -891,10 +951,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: _cardColor,
-        title: Text(
-          'اختر اللون',
-          style: TextStyle(color: _titleTextColor),
-        ),
+        title: Text('اختر اللون', style: TextStyle(color: _titleTextColor)),
         content: SingleChildScrollView(
           child: BlockPicker(
             pickerColor: currentColor,
@@ -904,10 +961,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(
-              'إغلاق',
-              style: TextStyle(color: _primaryColor),
-            ),
+            child: Text('إغلاق', style: TextStyle(color: _primaryColor)),
           ),
         ],
       ),
@@ -932,7 +986,8 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
     try {
       // إنشاء منتج جديد للسمة مع جميع الألوان
       final themeProduct = Product(
-        id: widget.existingTheme?.id ??
+        id:
+            widget.existingTheme?.id ??
             DateTime.now().millisecondsSinceEpoch.toString(),
         name: _themeName,
         description: 'سمة مخصصة مع ألوان وتدرجات مميزة لجميع عناصر التطبيق',
@@ -943,39 +998,39 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
         updatedAt: DateTime.now(),
         metadata: {
           // الألوان الأساسية
-          'primaryColor': _primaryColor.value,
-          'secondaryColor': _secondaryColor.value,
-          'accentColor': _accentColor.value,
-          'backgroundColor': _backgroundColor.value,
-          'surfaceColor': _surfaceColor.value,
-          'cardColor': _cardColor.value,
+          'primaryColor': _primaryColor.toARGB32(),
+          'secondaryColor': _secondaryColor.toARGB32(),
+          'accentColor': _accentColor.toARGB32(),
+          'backgroundColor': _backgroundColor.toARGB32(),
+          'surfaceColor': _surfaceColor.toARGB32(),
+          'cardColor': _cardColor.toARGB32(),
 
           // ألوان النصوص
-          'primaryTextColor': _primaryTextColor.value,
-          'secondaryTextColor': _secondaryTextColor.value,
-          'titleTextColor': _titleTextColor.value,
+          'primaryTextColor': _primaryTextColor.toARGB32(),
+          'secondaryTextColor': _secondaryTextColor.toARGB32(),
+          'titleTextColor': _titleTextColor.toARGB32(),
 
           // ألوان الأزرار
-          'primaryButtonColor': _primaryButtonColor.value,
-          'secondaryButtonColor': _secondaryButtonColor.value,
-          'dangerButtonColor': _dangerButtonColor.value,
-          'successButtonColor': _successButtonColor.value,
+          'primaryButtonColor': _primaryButtonColor.toARGB32(),
+          'secondaryButtonColor': _secondaryButtonColor.toARGB32(),
+          'dangerButtonColor': _dangerButtonColor.toARGB32(),
+          'successButtonColor': _successButtonColor.toARGB32(),
 
           // ألوان اللعبة
-          'gameXColor': _gameXColor.value,
-          'gameOColor': _gameOColor.value,
-          'gameBoardColor': _gameBoardColor.value,
-          'gameWinColor': _gameWinColor.value,
+          'gameXColor': _gameXColor.toARGB32(),
+          'gameOColor': _gameOColor.toARGB32(),
+          'gameBoardColor': _gameBoardColor.toARGB32(),
+          'gameWinColor': _gameWinColor.toARGB32(),
 
           // التدرجات
-          'gradientStart': _gradientStart.value,
-          'gradientMiddle': _gradientMiddle.value,
-          'gradientEnd': _gradientEnd.value,
+          'gradientStart': _gradientStart.toARGB32(),
+          'gradientMiddle': _gradientMiddle.toARGB32(),
+          'gradientEnd': _gradientEnd.toARGB32(),
 
           // ألوان إضافية
-          'borderColor': _borderColor.value,
-          'shadowColor': _shadowColor.value,
-          'highlightColor': _highlightColor.value,
+          'borderColor': _borderColor.toARGB32(),
+          'shadowColor': _shadowColor.toARGB32(),
+          'highlightColor': _highlightColor.toARGB32(),
 
           'type': 'advanced_theme',
           'version': '2.0',
@@ -1015,9 +1070,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
   void _previewTheme() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => _buildFullPreview(),
-      ),
+      MaterialPageRoute(builder: (context) => _buildFullPreview()),
     );
   }
 
@@ -1062,10 +1115,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         children: [
-                          Text(
-                            '🎮',
-                            style: const TextStyle(fontSize: 60),
-                          ),
+                          Text('🎮', style: const TextStyle(fontSize: 60)),
                           const SizedBox(height: 10),
                           Text(
                             'Tic Tac Toe',
@@ -1094,7 +1144,9 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
                   _buildPreviewButton('🤖 ضد الكمبيوتر', _primaryButtonColor),
                   const SizedBox(height: 10),
                   _buildPreviewButton(
-                      '👥 متعدد اللاعبين', _secondaryButtonColor),
+                    '👥 متعدد اللاعبين',
+                    _secondaryButtonColor,
+                  ),
                   const SizedBox(height: 10),
                   _buildPreviewButton('🏪 المتجر', _accentColor),
                   const SizedBox(height: 10),
@@ -1129,8 +1181,8 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
                               physics: const NeverScrollableScrollPhysics(),
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                              ),
+                                    crossAxisCount: 3,
+                                  ),
                               itemCount: 9,
                               itemBuilder: (context, index) {
                                 String symbol = '';
@@ -1233,10 +1285,7 @@ class _ThemeEditorScreenState extends State<ThemeEditorScreen>
         onPressed: () {},
         child: Text(
           text,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -1325,7 +1374,7 @@ class BlockPicker extends StatelessWidget {
         itemCount: colors.length,
         itemBuilder: (context, index) {
           final color = colors[index];
-          final isSelected = pickerColor.value == color.value;
+          final isSelected = pickerColor.toARGB32() == color.toARGB32();
           return GestureDetector(
             onTap: () => onColorChanged(color),
             child: Container(
@@ -1339,7 +1388,7 @@ class BlockPicker extends StatelessWidget {
                 boxShadow: isSelected
                     ? [
                         BoxShadow(
-                          color: color.withOpacity(0.5),
+                          color: color.withValues(alpha: 0.5),
                           blurRadius: 8,
                           spreadRadius: 2,
                         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/unified_auth_services.dart';
 import '../utils/app_theme_new.dart';
 import '../utils/responsive_sizes.dart';
+import 'responsive_home_screen.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -59,8 +60,8 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppColors.primary.withValues(alpha: 0.1),
-              AppColors.secondary.withValues(alpha: 0.05),
+              AppColors.primary.withOpacity(0.1),
+              AppColors.secondary.withOpacity(0.05),
               AppColors.background,
             ],
           ),
@@ -76,8 +77,10 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
 
   Widget _buildDesktopLayout() {
     return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 24),
       child: Container(
-        width: 400,
+          width: 420,
         margin: const EdgeInsets.all(AppDimensions.paddingXL),
         child: Card(
           elevation: 12,
@@ -96,6 +99,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
               ),
             ),
             child: _buildAuthContent(),
+            ),
           ),
         ),
       ),
@@ -172,13 +176,13 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
     double formHeight;
     switch (responsiveSizes.deviceType) {
       case ResponsiveDeviceType.mobile:
-        formHeight = screenHeight * 0.6; // 60% من ارتفاع الشاشة
+        formHeight = screenHeight * 0.45; // أصغر لمنع الفيض
         break;
       case ResponsiveDeviceType.tablet:
         formHeight = screenHeight * 0.5; // 50% من ارتفاع الشاشة
         break;
       case ResponsiveDeviceType.desktop:
-        formHeight = 500; // ارتفاع ثابت للديسكتوب
+        formHeight = screenHeight * 0.75; // 75% من ارتفاع الشاشة لتجنب فيض
         break;
     }
 
@@ -196,7 +200,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
             children: [_buildLoginForm(), _buildSignUpForm()],
           ),
         ),
-        _buildQuickSignInButton(), // زر الدخول السريع
+        // زر الدخول السريع موجود داخل _buildSocialLogins لتجنب التكرار
       ],
     );
   }
@@ -237,8 +241,9 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
 
   Widget _buildLoginForm() {
     final responsiveSizes = ResponsiveSizes(context);
-
-    return Column(
+    // تغليف الاستمارة فى SingleChildScrollView لمنع الفيض الرأسى.
+    return SingleChildScrollView(
+      child: Column(
       children: [
         _buildTextField(
           controller: _emailController,
@@ -289,13 +294,15 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
         SizedBox(height: responsiveSizes.paddingLarge),
         _buildSocialLogins(),
       ],
+      ),
     );
   }
 
   Widget _buildSignUpForm() {
     final responsiveSizes = ResponsiveSizes(context);
-
-    return Column(
+    // تغليف الاستمارة فى SingleChildScrollView لمنع الفيض الرأسى.
+    return SingleChildScrollView(
+      child: Column(
       children: [
         _buildTextField(
           controller: _displayNameController,
@@ -335,7 +342,9 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
           obscureText: _obscureConfirmPassword,
           suffixIcon: IconButton(
             icon: Icon(
-              _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
+                _obscureConfirmPassword
+                    ? Icons.visibility
+                    : Icons.visibility_off,
               color: AppColors.textSecondary,
             ),
             onPressed: () {
@@ -352,6 +361,7 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
         SizedBox(height: responsiveSizes.paddingLarge),
         _buildSocialLogins(),
       ],
+      ),
     );
   }
 
@@ -881,6 +891,8 @@ class _AuthScreenState extends State<AuthScreen> with TickerProviderStateMixin {
   }
 
   void _navigateToHome() {
-    Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const ResponsiveHomeScreen()),
+    );
   }
 }

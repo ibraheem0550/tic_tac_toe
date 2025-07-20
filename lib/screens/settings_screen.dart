@@ -3,6 +3,8 @@ import '../services/unified_auth_services.dart';
 import '../models/complete_user_models.dart';
 import '../utils/app_theme_new.dart';
 import '../utils/app_localizations.dart';
+import 'blocked_users_screen.dart';
+import 'problem_report_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -632,10 +634,16 @@ class _SettingsScreenState extends State<SettingsScreen>
   }
 
   void _showBlockedUsers() {
-    _showInfoSnackBar('ميزة إدارة المستخدمين المحظورين ستتوفر قريباً');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const BlockedUsersScreen()),
+    );
   }
 
   void _reportProblem() {
-    _showInfoSnackBar('ميزة الإبلاغ عن المشاكل ستتوفر قريباً');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ProblemReportScreen()),
+    );
   }
 }
